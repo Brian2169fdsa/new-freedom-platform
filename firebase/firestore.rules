@@ -1,0 +1,95 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users can read/write their own profile
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth.token.role in ['admin', 'case_manager', 'super_admin'];
+    }
+
+    // Lane 1 collections
+    match /goals/{goalId} {
+      allow read, write: if request.auth != null;
+    }
+    match /documents/{docId} {
+      allow read, write: if request.auth != null;
+    }
+    match /action_plans/{planId} {
+      allow read, write: if request.auth != null;
+    }
+    match /appointments/{appointmentId} {
+      allow read, write: if request.auth != null;
+    }
+    match /job_applications/{appId} {
+      allow read, write: if request.auth != null;
+    }
+    match /budgets/{budgetId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Lane 2 collections
+    match /courses/{courseId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth.token.role in ['admin', 'super_admin'];
+    }
+    match /course_modules/{moduleId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth.token.role in ['admin', 'super_admin'];
+    }
+    match /user_progress/{progressId} {
+      allow read, write: if request.auth != null;
+    }
+    match /journal_entries/{entryId} {
+      allow read, write: if request.auth != null;
+    }
+    match /achievements/{achievementId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Lane 3 collections - social feed is public read
+    match /posts/{postId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /comments/{commentId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /resources/{resourceId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /mentor_matches/{matchId} {
+      allow read, write: if request.auth != null;
+    }
+    match /donations/{donationId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Shared collections
+    match /messages/{messageId} {
+      allow read, write: if request.auth != null;
+    }
+    match /conversations/{conversationId} {
+      allow read, write: if request.auth != null;
+    }
+    match /notifications/{notificationId} {
+      allow read, write: if request.auth != null;
+    }
+    match /assessments/{assessmentId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Existing collections
+    match /invites/{inviteId} {
+      allow read: if true;
+    }
+    match /inviteRequests/{requestId} {
+      allow read, write: if true;
+    }
+    match /moderationReports/{reportId} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

@@ -1,0 +1,50 @@
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { InviteGate, ProtectedRoute, LoginForm, LoadingScreen, AppShell } from '@nfp/shared';
+import type { NavItem } from '@nfp/shared/components/layout/BottomNav';
+import { Home, Target, MessageSquare, Wrench, UserCircle } from 'lucide-react';
+import Dashboard from './pages/Dashboard';
+import Goals from './pages/Goals';
+import Messages from './pages/Messages';
+import Tools from './pages/Tools';
+import Profile from './pages/Profile';
+import AIChat from './pages/AIChat';
+import Onboarding from './pages/Onboarding';
+
+const navItems: NavItem[] = [
+  { label: 'Home', path: '/', icon: Home },
+  { label: 'Goals', path: '/goals', icon: Target },
+  { label: 'Messages', path: '/messages', icon: MessageSquare },
+  { label: 'Tools', path: '/tools', icon: Wrench },
+  { label: 'Profile', path: '/profile', icon: UserCircle },
+];
+
+function App() {
+  return (
+    <InviteGate>
+      <Routes>
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
+        <Route
+          path="/*"
+          element={
+            <ProtectedRoute>
+              <AppShell navItems={navItems} title="Re-Entry">
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/goals" element={<Goals />} />
+                  <Route path="/messages" element={<Messages />} />
+                  <Route path="/tools" element={<Tools />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/ai-chat" element={<AIChat />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </AppShell>
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </InviteGate>
+  );
+}
+
+export default App;
