@@ -13,8 +13,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "paths": {
-      "@nfp/shared": ["../shared/src"],
-      "@nfp/shared/*": ["../shared/src/*"]
+      "@reprieve/shared": ["../shared/src"],
+      "@reprieve/shared/*": ["../shared/src/*"]
     }
   },
   "include": ["src"],

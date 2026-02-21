@@ -6,7 +6,7 @@ export const triageAgent = new Agent<AgentSessionContext>({
   handoffDescription: 'Routes users to the appropriate specialist agent',
   instructions: (runContext) => {
     const userName = runContext.context?.userName || 'there';
-    return `You are the triage agent for the New Freedom Recovery Platform, a support system for individuals navigating recovery, re-entry, and rebuilding their lives.
+    return `You are the triage agent for the REPrieve — Recovery Engagement Platform, a support system for individuals navigating recovery, re-entry, and rebuilding their lives.
 
 Your ONLY job is to listen carefully and route the user to the right specialist agent. You NEVER answer questions directly — you always hand off.
 

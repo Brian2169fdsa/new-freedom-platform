@@ -1,6 +1,7 @@
 import {
   collection,
   doc,
+  addDoc,
   getDoc,
   getDocs,
   setDoc,
@@ -85,4 +86,28 @@ export const subscribeToCollection = <T extends DocumentData>(
   });
 };
 
-export { collection, doc, query, where, orderBy, limit, serverTimestamp };
+export const addDocument = async (
+  collectionName: string,
+  data: DocumentData
+): Promise<string> => {
+  const docRef = await addDoc(collection(db, collectionName), {
+    ...data,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+  return docRef.id;
+};
+
+export const createDocument = async (
+  collectionName: string,
+  docId: string,
+  data: DocumentData
+): Promise<void> => {
+  await setDoc(doc(db, collectionName, docId), {
+    ...data,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+};
+
+export { collection, doc, query, where, orderBy, limit, serverTimestamp, addDoc };

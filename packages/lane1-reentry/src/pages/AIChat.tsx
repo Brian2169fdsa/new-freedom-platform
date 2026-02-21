@@ -1,4 +1,4 @@
-import { AIChatPanel } from '@nfp/shared';
+import { AIChatPanel } from '@reprieve/shared';
 
 export default function AIChat() {
   return (

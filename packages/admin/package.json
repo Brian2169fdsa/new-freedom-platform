@@ -1,5 +1,5 @@
 {
-  "name": "@nfp/admin",
+  "name": "@reprieve/admin",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -12,10 +12,12 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@nfp/shared": "*",
+    "@reprieve/shared": "*",
+    "lucide-react": "^0.460.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.28.0"
+    "react-router-dom": "^6.28.0",
+    "recharts": "^2.15.4"
   },
   "devDependencies": {
     "@types/react": "^18.3.0",

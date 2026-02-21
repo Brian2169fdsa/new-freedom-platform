@@ -27,7 +27,7 @@
 ## 1. PROJECT OVERVIEW & MISSION
 
 ### What Is This
-A three-lane digital platform serving justice-involved individuals, people in recovery, and people experiencing homelessness. Built for New Freedom AZ (behavioral health center, Phoenix AZ, 370-400 members, 92.5% efficacy rate, 99% employment rate for graduates).
+A three-lane digital platform serving justice-involved individuals, people in recovery, and people experiencing homelessness. Built for REPrieve AZ (behavioral health center, Phoenix AZ, 370-400 members, 92.5% efficacy rate, 99% employment rate for graduates).
 
 ### The Three Lanes
 1. **Re-Entry Platform** — Agentic AI-powered case management, employment, housing, wellness tools for people leaving incarceration
@@ -73,7 +73,7 @@ A three-lane digital platform serving justice-involved individuals, people in re
 
 ### Monorepo Structure
 ```
-new-freedom-platform/
+reprieve-platform/
 ├── packages/
 │   ├── shared/              # Shared components, hooks, utils, types
 │   │   ├── components/      # UI components (Button, Card, Avatar, etc.)
@@ -340,7 +340,7 @@ npm install workbox-webpack-plugin workbox-precaching workbox-routing
 
 ### Firebase Project Setup
 ```
-Project Name: new-freedom-platform
+Project Name: reprieve-platform
 Region: us-central1 (closest to Phoenix, AZ)
 
 Enable:
@@ -1102,7 +1102,7 @@ const AI_PERSONAS = {
 - [ ] Offline mode for critical features
 - [ ] Performance optimization (code splitting, lazy loading)
 - [ ] Load testing
-- [ ] Beta testing with real New Freedom members
+- [ ] Beta testing with real REPrieve members
 - [ ] Feedback collection + iteration
 - [ ] Documentation for new center onboarding
 
@@ -1173,7 +1173,7 @@ on release tag:
 **Step 1: Connect to repo**
 ```bash
 # Clone or navigate to your existing repo
-cd /path/to/new-freedom-platform
+cd /path/to/reprieve-platform
 
 # Copy this document to the repo root
 cp MASTER_BUILD_PLAN.md ./

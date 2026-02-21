@@ -26,7 +26,7 @@ export function InviteGate({ children }: InviteGateProps) {
           <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-amber-100 flex items-center justify-center">
             <span className="text-2xl">🌱</span>
           </div>
-          <CardTitle className="text-2xl">Welcome to New Freedom</CardTitle>
+          <CardTitle className="text-2xl">Welcome to REPrieve</CardTitle>
           <CardDescription>
             Enter your invite code to get started on your journey.
           </CardDescription>

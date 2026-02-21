@@ -1,8 +1,8 @@
 {
-  "name": "new-freedom-platform",
+  "name": "reprieve-platform",
   "version": "0.1.0",
   "private": true,
-  "description": "New Freedom Recovery Platform — Three-lane digital platform for behavioral health",
+  "description": "REPrieve — Recovery Engagement Platform — Three-lane digital platform for behavioral health",
   "workspaces": [
     "packages/*"
   ],

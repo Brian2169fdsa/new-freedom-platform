@@ -15,8 +15,8 @@
     "declaration": true,
     "declarationMap": true,
     "paths": {
-      "@nfp/shared": ["./packages/shared/src"],
-      "@nfp/shared/*": ["./packages/shared/src/*"]
+      "@reprieve/shared": ["./packages/shared/src"],
+      "@reprieve/shared/*": ["./packages/shared/src/*"]
     }
   },
   "exclude": ["node_modules", "dist", "firebase"]

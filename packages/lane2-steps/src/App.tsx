@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { InviteGate, ProtectedRoute, LoginForm, AppShell } from '@nfp/shared';
-import type { NavItem } from '@nfp/shared/components/layout/BottomNav';
+import { InviteGate, ProtectedRoute, LoginForm, AppShell } from '@reprieve/shared';
+import type { NavItem } from '@reprieve/shared/components/layout/BottomNav';
 import { Home, BookOpen, PenSquare, Users, UserCircle } from 'lucide-react';
 import StepHome from './pages/StepHome';
 import Steps from './pages/Steps';

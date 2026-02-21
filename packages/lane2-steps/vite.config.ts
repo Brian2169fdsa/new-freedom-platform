@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@nfp/shared': path.resolve(__dirname, '../shared/src'),
+      '@reprieve/shared': path.resolve(__dirname, '../shared/src'),
     },
   },
   server: {

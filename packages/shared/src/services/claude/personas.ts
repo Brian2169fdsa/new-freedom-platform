@@ -48,7 +48,7 @@ interface AgentDisplay {
 
 export const AGENT_DISPLAY: Record<string, AgentDisplay> = {
   'Triage Agent': {
-    name: 'New Freedom AI',
+    name: 'REPrieve AI',
     avatar: '🤝',
     description: 'Connecting you to the right support',
   },

@@ -40,6 +40,10 @@ firebase-debug.*.log
 # Test
 coverage/
 
+# Reference repos (not part of build)
+reference-repos/
+extract-repos.ps1
+
 # Misc
 *.tgz
 .cache

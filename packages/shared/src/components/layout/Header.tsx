@@ -15,7 +15,7 @@ export function Header({ title }: HeaderProps) {
       <div className="flex items-center justify-between h-14 px-4 max-w-7xl mx-auto">
         <div className="flex items-center gap-3">
           <h1 className="text-lg font-semibold text-stone-800">
-            {title || 'New Freedom'}
+            {title || 'REPrieve'}
           </h1>
         </div>
         <div className="flex items-center gap-3">

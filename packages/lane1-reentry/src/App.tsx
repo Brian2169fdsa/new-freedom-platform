@@ -1,11 +1,14 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { InviteGate, ProtectedRoute, LoginForm, LoadingScreen, AppShell } from '@nfp/shared';
-import type { NavItem } from '@nfp/shared/components/layout/BottomNav';
+import { InviteGate, ProtectedRoute, LoginForm, LoadingScreen, AppShell } from '@reprieve/shared';
+import type { NavItem } from '@reprieve/shared/components/layout/BottomNav';
 import { Home, Target, MessageSquare, Wrench, UserCircle } from 'lucide-react';
 import Dashboard from './pages/Dashboard';
 import Goals from './pages/Goals';
 import Messages from './pages/Messages';
 import Tools from './pages/Tools';
+import DocumentVault from './pages/DocumentVault';
+import BudgetTracker from './pages/BudgetTracker';
+import CalendarView from './pages/CalendarView';
 import Profile from './pages/Profile';
 import AIChat from './pages/AIChat';
 import Onboarding from './pages/Onboarding';
@@ -34,6 +37,9 @@ function App() {
                   <Route path="/goals" element={<Goals />} />
                   <Route path="/messages" element={<Messages />} />
                   <Route path="/tools" element={<Tools />} />
+                  <Route path="/tools/documents" element={<DocumentVault />} />
+                  <Route path="/tools/budget" element={<BudgetTracker />} />
+                  <Route path="/tools/calendar" element={<CalendarView />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/ai-chat" element={<AIChat />} />
                   <Route path="*" element={<Navigate to="/" replace />} />

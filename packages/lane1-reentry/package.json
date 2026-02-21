@@ -1,5 +1,5 @@
 {
-  "name": "@nfp/lane1-reentry",
+  "name": "@reprieve/lane1-reentry",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -12,7 +12,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@nfp/shared": "*",
+    "@reprieve/shared": "*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0"

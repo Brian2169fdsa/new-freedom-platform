@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { ProtectedRoute, LoginForm } from '@nfp/shared';
+import { ProtectedRoute, LoginForm } from '@reprieve/shared';
 import { AdminSidebar } from './components/AdminSidebar';
 import AdminDashboard from './pages/AdminDashboard';
 import Members from './pages/Members';

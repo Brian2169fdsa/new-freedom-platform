@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { cn } from '@nfp/shared/utils/cn';
+import { cn } from '@reprieve/shared/utils/cn';
 import {
   LayoutDashboard, Users, UserCog, Shield, BookOpen,
   MapPin, Briefcase, BarChart3, Ticket, Heart, Settings,
@@ -23,7 +23,7 @@ export function AdminSidebar() {
   return (
     <aside className="fixed left-0 top-0 bottom-0 w-64 bg-stone-900 text-white flex flex-col z-40">
       <div className="p-6 border-b border-stone-700">
-        <h1 className="text-lg font-bold">New Freedom</h1>
+        <h1 className="text-lg font-bold">REPrieve</h1>
         <p className="text-xs text-stone-400 mt-0.5">Admin Dashboard</p>
       </div>
       <nav className="flex-1 py-4 overflow-y-auto">

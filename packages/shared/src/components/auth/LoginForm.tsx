@@ -56,7 +56,7 @@ export function LoginForm() {
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-stone-50 flex items-center justify-center px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">New Freedom</CardTitle>
+          <CardTitle className="text-2xl">REPrieve</CardTitle>
           <CardDescription>Your recovery, your way</CardDescription>
         </CardHeader>
         <CardContent>

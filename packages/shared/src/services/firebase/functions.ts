@@ -23,3 +23,7 @@ export const saveProfilePicture = callFunction('saveProfilePicture');
 export const removeProfilePicture = callFunction('removeProfilePicture');
 export const markMessageAsRead = callFunction('markMessageAsRead');
 export const getPendingModerationReportId = callFunction('getPendingModerationReportId');
+export const chatWithAI = callFunction<
+  { message: string; sessionId?: string },
+  { reply: string; agentName: string; sessionId: string; handoffOccurred: boolean; crisisDetected: boolean }
+>('chatWithAI');

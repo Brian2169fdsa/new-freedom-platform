@@ -1,4 +1,4 @@
-export const APP_NAME = 'New Freedom';
+export const APP_NAME = 'REPrieve';
 
 export const LANE_NAMES = {
   lane1: 'Re-Entry',
