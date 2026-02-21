@@ -38,3 +38,48 @@ export const PERSONAS: Record<AIPersona, PersonaConfig> = {
     greeting: "Let's work on your career readiness! I can help with your resume, interview prep, or finding fair-chance employers.",
   },
 };
+
+// Agent display names — maps server-side agent names to UI-friendly config
+interface AgentDisplay {
+  name: string;
+  avatar: string;
+  description: string;
+}
+
+export const AGENT_DISPLAY: Record<string, AgentDisplay> = {
+  'Triage Agent': {
+    name: 'New Freedom AI',
+    avatar: '🤝',
+    description: 'Connecting you to the right support',
+  },
+  'Crisis Agent': {
+    name: 'Crisis Support',
+    avatar: '🆘',
+    description: 'Immediate safety and crisis resources',
+  },
+  'Life Navigator': {
+    name: 'Life Navigator',
+    avatar: '🧭',
+    description: 'Practical guidance for re-entering society',
+  },
+  'Recovery Guide': {
+    name: 'Recovery Guide',
+    avatar: '🌱',
+    description: 'Compassionate support for your recovery journey',
+  },
+  'Resource Finder': {
+    name: 'Resource Finder',
+    avatar: '📍',
+    description: 'Find shelters, food, medical care, and more in Phoenix',
+  },
+  'Resume Coach': {
+    name: 'Resume Coach',
+    avatar: '💼',
+    description: 'Build your resume and prepare for interviews',
+  },
+  'Peer Mentor': {
+    name: 'Peer Mentor',
+    avatar: '🫂',
+    description: 'Community connection and shared experience',
+  },
+};

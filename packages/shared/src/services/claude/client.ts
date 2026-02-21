@@ -1,5 +1,6 @@
 import { callFunction } from '../firebase/functions';
 
+// Legacy persona type (still used for selecting initial persona in UI)
 export type AIPersona = 'recoveryGuide' | 'lifeNavigator' | 'resourceFinder' | 'resumeCoach';
 
 interface ChatMessage {
@@ -7,26 +8,34 @@ interface ChatMessage {
   content: string;
 }
 
-interface ChatRequest {
-  persona: AIPersona;
+// --- New multi-agent types ---
+interface AgentChatRequest {
   message: string;
-  history?: ChatMessage[];
+  sessionId?: string;
 }
 
-interface ChatResponse {
+interface AgentChatResponse {
   reply: string;
+  agentName: string;
+  sessionId: string;
+  handoffOccurred: boolean;
+  crisisDetected: boolean;
 }
 
-// All AI calls go through Cloud Functions — never expose API keys client-side
-const chatWithAI = callFunction<ChatRequest, ChatResponse>('chatWithAI');
+// The callable function that maps to the backend chatWithAI
+const chatWithAI = callFunction<AgentChatRequest, AgentChatResponse>('chatWithAI');
 
+/**
+ * Send a message to the multi-agent AI system.
+ * The triage agent routes to the correct specialist automatically.
+ * Pass `sessionId` from a previous response to continue the conversation.
+ */
 export const sendAIMessage = async (
-  persona: AIPersona,
   message: string,
-  history: ChatMessage[] = []
-): Promise<string> => {
-  const result = await chatWithAI({ persona, message, history });
-  return result.data.reply;
+  sessionId?: string
+): Promise<AgentChatResponse> => {
+  const result = await chatWithAI({ message, sessionId });
+  return result.data;
 };
 
-export type { ChatMessage, ChatRequest, ChatResponse };
+export type { ChatMessage, AgentChatRequest, AgentChatResponse };

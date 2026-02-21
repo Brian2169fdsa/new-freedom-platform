@@ -12,6 +12,7 @@ import {FieldValue} from "firebase-admin/firestore";
  */
 export const onAuthUserCreated = identity.beforeUserCreated(async (event) => {
   const user = event.data;
+  if (!user) return;
   const userData: User = {
     id: user.uid,
     ownerId: user.uid,

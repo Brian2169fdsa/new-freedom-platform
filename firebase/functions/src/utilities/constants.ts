@@ -41,6 +41,9 @@ const CONVERSATIONS_COLLECTION = "conversations";
 const NOTIFICATIONS_COLLECTION = "notifications";
 const ASSESSMENTS_COLLECTION = "assessments";
 
+// Agent infrastructure collections
+const AGENT_SESSIONS_COLLECTION = "agent_sessions";
+
 // Firestore prod collection names
 const ProdCollections = [
   POSTS_COLLECTION,
@@ -69,6 +72,7 @@ const ProdCollections = [
   CONVERSATIONS_COLLECTION,
   NOTIFICATIONS_COLLECTION,
   ASSESSMENTS_COLLECTION,
+  AGENT_SESSIONS_COLLECTION,
 ];
 
 // Firestore data types
@@ -101,6 +105,7 @@ export {
   CONVERSATIONS_COLLECTION,
   NOTIFICATIONS_COLLECTION,
   ASSESSMENTS_COLLECTION,
+  AGENT_SESSIONS_COLLECTION,
   ProdCollections,
   FirestoreTypes,
   ProjectConfig,

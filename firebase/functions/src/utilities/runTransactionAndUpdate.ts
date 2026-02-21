@@ -39,7 +39,7 @@ export const runTransactionAndUpdate =
 
         // Save to db.
         transaction.update(ref, {
-          ...doc,
+          ...(doc as Record<string, unknown>),
           updatedAt: FieldValue.serverTimestamp(),
         });
       });
