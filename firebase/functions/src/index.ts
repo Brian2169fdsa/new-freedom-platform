@@ -30,13 +30,21 @@ export {unlikePost} from "./callable/unlikePost";
 export {savePost} from "./callable/savePost";
 export {reportPost} from "./callable/reportPost";
 
-// Notifications.
+// Notification triggers + callable.
 export {
-  appointmentReminders,
-  documentExpiration,
-  wellnessCrisis,
-  moderationTrigger,
+  onGoalCompleted,
+  onStepCompleted,
+  onNewMessage,
+  onCrisisDetected,
+  markNotificationRead,
+  getUnreadCount,
 } from "./notifications";
+
+// Scheduled functions.
+export {
+  dailyCheckInReminder,
+  weeklyProgressReport,
+} from "./scheduled";
 
 // Public endpoints.
 export {me} from "./public/me";

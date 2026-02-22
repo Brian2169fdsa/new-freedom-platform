@@ -25,3 +25,14 @@ export const chatWithAI = callFunction<
   { message: string; sessionId?: string },
   { reply: string; agentName: string; sessionId: string; handoffOccurred: boolean; crisisDetected: boolean }
 >('chatWithAI');
+
+// Notification callable functions
+export const markNotificationRead = callFunction<
+  { notificationId: string },
+  { success: boolean }
+>('markNotificationRead');
+
+export const getUnreadCount = callFunction<
+  void,
+  { total: number; lane1: number; lane2: number; lane3: number }
+>('getUnreadCount');
