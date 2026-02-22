@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import {
   PageContainer,
   Card,
@@ -7,439 +7,375 @@ import {
   CardTitle,
   Badge,
   Button,
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
   useAuth,
   useCollection,
   toDate,
   formatDate,
+  AchievementBadge,
 } from '@reprieve/shared';
-import { where, orderBy, limit } from 'firebase/firestore';
-import type { Achievement, AchievementType } from '@reprieve/shared';
+import type { BadgeData } from '@reprieve/shared';
+import type { Achievement } from '@reprieve/shared';
+import {
+  ACHIEVEMENT_DEFINITIONS,
+  ACHIEVEMENT_CATEGORIES,
+  CATEGORY_LABELS,
+} from '@reprieve/shared/utils/achievements';
+import type { AchievementCategory } from '@reprieve/shared/utils/achievements';
+import { where, orderBy } from 'firebase/firestore';
 import {
   Trophy,
   Star,
-  Flame,
-  BookOpen,
-  Users,
-  Calendar,
+  Filter,
+  X,
   Share2,
   Lock,
-  Crown,
   Sparkles,
-  Medal,
-  Heart,
-  ChevronDown,
-  ChevronUp,
 } from 'lucide-react';
 
-// All badge definitions
-interface BadgeDefinition {
-  id: string;
-  type: AchievementType;
-  title: string;
-  description: string;
-  icon: string;
-  category: string;
-  hint: string;
-}
+// ── Filter Tab Type ─────────────────────────────────────────────────────────
 
-const ALL_BADGES: BadgeDefinition[] = [
-  // Sobriety Milestones
-  { id: 'sober_24h', type: 'sobriety_milestone', title: '24 Hours', description: 'One day sober', icon: '\u{1F31F}', category: 'Sobriety Milestones', hint: 'Complete your first 24 hours sober' },
-  { id: 'sober_7d', type: 'sobriety_milestone', title: '1 Week', description: 'Seven days sober', icon: '\u{2B50}', category: 'Sobriety Milestones', hint: 'Stay sober for 7 consecutive days' },
-  { id: 'sober_30d', type: 'sobriety_milestone', title: '30 Days', description: 'One month sober', icon: '\u{1F3C5}', category: 'Sobriety Milestones', hint: 'Reach 30 days of sobriety' },
-  { id: 'sober_90d', type: 'sobriety_milestone', title: '90 Days', description: 'Three months sober', icon: '\u{1F3C6}', category: 'Sobriety Milestones', hint: 'Reach 90 days of sobriety' },
-  { id: 'sober_180d', type: 'sobriety_milestone', title: '6 Months', description: 'Half a year sober', icon: '\u{1F48E}', category: 'Sobriety Milestones', hint: 'Reach 180 days of sobriety' },
-  { id: 'sober_365d', type: 'sobriety_milestone', title: '1 Year', description: 'One year sober!', icon: '\u{1F451}', category: 'Sobriety Milestones', hint: 'Reach 365 days of sobriety' },
-  // Step Completion
-  ...Array.from({ length: 12 }, (_, i) => ({
-    id: `step_${i + 1}`,
-    type: 'step_completion' as AchievementType,
-    title: `Step ${i + 1} Complete`,
-    description: `Completed Step ${i + 1}`,
-    icon: ['\u{0031}\u{FE0F}\u{20E3}', '\u{0032}\u{FE0F}\u{20E3}', '\u{0033}\u{FE0F}\u{20E3}', '\u{0034}\u{FE0F}\u{20E3}', '\u{0035}\u{FE0F}\u{20E3}', '\u{0036}\u{FE0F}\u{20E3}', '\u{0037}\u{FE0F}\u{20E3}', '\u{0038}\u{FE0F}\u{20E3}', '\u{0039}\u{FE0F}\u{20E3}', '\u{1F51F}', '\u{0031}\u{0031}\u{FE0F}\u{20E3}', '\u{0031}\u{0032}\u{FE0F}\u{20E3}'][i],
-    category: 'Step Completion',
-    hint: `Complete all modules in Step ${i + 1}`,
+type FilterTab = 'all' | AchievementCategory;
+
+const FILTER_TABS: readonly { readonly value: FilterTab; readonly label: string }[] = [
+  { value: 'all', label: 'All' },
+  ...ACHIEVEMENT_CATEGORIES.map((cat) => ({
+    value: cat as FilterTab,
+    label: CATEGORY_LABELS[cat],
   })),
-  // Course Completion
-  { id: 'all_steps', type: 'course_completion', title: 'Program Graduate', description: 'Completed all 12 steps', icon: '\u{1F393}', category: 'Course Completion', hint: 'Complete all 12 steps' },
-  // Streaks
-  { id: 'streak_7d', type: 'streak', title: '7-Day Streak', description: 'Checked in 7 days in a row', icon: '\u{1F525}', category: 'Streaks', hint: 'Check in for 7 consecutive days' },
-  { id: 'streak_30d', type: 'streak', title: '30-Day Streak', description: 'Checked in 30 days in a row', icon: '\u{1F4AA}', category: 'Streaks', hint: 'Check in for 30 consecutive days' },
-  { id: 'streak_90d', type: 'streak', title: '90-Day Streak', description: 'Checked in 90 days in a row', icon: '\u{26A1}', category: 'Streaks', hint: 'Check in for 90 consecutive days' },
-  // Community
-  { id: 'first_post', type: 'community', title: 'First Post', description: 'Posted your first discussion', icon: '\u{1F4AC}', category: 'Community', hint: 'Create your first community thread' },
-  { id: '10_replies', type: 'community', title: 'Helpful Member', description: 'Replied to 10 discussions', icon: '\u{1F91D}', category: 'Community', hint: 'Reply to 10 different discussions' },
-];
+] as const;
 
-const CATEGORIES = [
-  'All',
-  'Sobriety Milestones',
-  'Step Completion',
-  'Course Completion',
-  'Streaks',
-  'Community',
-];
-
-const RANK_CONFIG: Array<{
-  rank: 'bronze' | 'silver' | 'gold' | 'platinum';
-  label: string;
-  minBadges: number;
-  color: string;
-  bgColor: string;
-  icon: typeof Medal;
-}> = [
-  { rank: 'bronze', label: 'Bronze', minBadges: 0, color: 'text-orange-700', bgColor: 'bg-gradient-to-br from-orange-100 to-amber-200', icon: Medal },
-  { rank: 'silver', label: 'Silver', minBadges: 5, color: 'text-stone-600', bgColor: 'bg-gradient-to-br from-stone-100 to-stone-300', icon: Medal },
-  { rank: 'gold', label: 'Gold', minBadges: 15, color: 'text-yellow-700', bgColor: 'bg-gradient-to-br from-yellow-100 to-amber-300', icon: Crown },
-  { rank: 'platinum', label: 'Platinum', minBadges: 25, color: 'text-purple-700', bgColor: 'bg-gradient-to-br from-violet-100 to-purple-300', icon: Sparkles },
-];
+// ── Loading Skeleton ────────────────────────────────────────────────────────
 
 function LoadingSkeleton() {
   return (
     <div className="space-y-4 animate-pulse">
       <div className="h-24 bg-stone-100 rounded-xl" />
       <div className="h-10 bg-stone-100 rounded-lg" />
-      <div className="grid grid-cols-3 gap-3">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="h-28 bg-stone-100 rounded-xl" />
+      <div className="grid grid-cols-3 gap-4">
+        {Array.from({ length: 9 }).map((_, i) => (
+          <div key={i} className="flex flex-col items-center gap-2">
+            <div className="h-16 w-16 bg-stone-100 rounded-full" />
+            <div className="h-3 w-14 bg-stone-100 rounded" />
+          </div>
         ))}
       </div>
     </div>
   );
 }
 
+// ── Badge Detail Modal ──────────────────────────────────────────────────────
+
+interface BadgeModalProps {
+  readonly badge: BadgeData;
+  readonly earned: boolean;
+  readonly earnedAchievement: Achievement | undefined;
+  readonly onClose: () => void;
+  readonly onShare: (badge: BadgeData) => void;
+}
+
+function BadgeDetailModal({ badge, earned, earnedAchievement, onClose, onShare }: BadgeModalProps) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${badge.title} details`}
+    >
+      <div
+        className="bg-white rounded-2xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="relative bg-gradient-to-br from-amber-50 to-amber-100 p-6 text-center">
+          <button
+            onClick={onClose}
+            className="absolute top-3 right-3 p-1.5 rounded-full bg-white/80 hover:bg-white text-stone-500"
+            aria-label="Close"
+          >
+            <X className="h-4 w-4" />
+          </button>
+
+          <div
+            className={`h-20 w-20 mx-auto rounded-full flex items-center justify-center mb-3 ${
+              earned
+                ? 'bg-amber-100 border-2 border-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.3)]'
+                : 'bg-stone-100 border-2 border-stone-200 grayscale'
+            }`}
+          >
+            {earned ? (
+              <span className="text-4xl">{badge.icon}</span>
+            ) : (
+              <Lock className="h-8 w-8 text-stone-300" />
+            )}
+          </div>
+
+          <h3 className="text-lg font-bold text-stone-800">{badge.title}</h3>
+          <p className="text-sm text-stone-500 mt-1">{badge.description}</p>
+        </div>
+
+        {/* Body */}
+        <div className="p-5 space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-stone-500 uppercase tracking-wide">
+              Category
+            </span>
+            <Badge variant="secondary">
+              {CATEGORY_LABELS[badge.category]}
+            </Badge>
+          </div>
+
+          {earned && earnedAchievement && (
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-stone-500 uppercase tracking-wide">
+                Earned
+              </span>
+              <span className="text-sm font-medium text-amber-700">
+                {formatDate(earnedAchievement.earnedAt)}
+              </span>
+            </div>
+          )}
+
+          {!earned && (
+            <div className="bg-stone-50 rounded-lg p-3 text-center">
+              <Lock className="h-5 w-5 text-stone-300 mx-auto mb-1" />
+              <p className="text-xs text-stone-500">
+                Keep making progress to unlock this achievement!
+              </p>
+            </div>
+          )}
+
+          {earned && (
+            <Button
+              onClick={() => onShare(badge)}
+              variant="outline"
+              className="w-full flex items-center justify-center gap-2"
+            >
+              <Share2 className="h-4 w-4" />
+              Share to Community
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Main Page ───────────────────────────────────────────────────────────────
+
 export default function Achievements() {
   const { user } = useAuth();
   const uid = user?.uid ?? null;
 
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [showLeaderboard, setShowLeaderboard] = useState(false);
-  const [celebrationBadge, setCelebrationBadge] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
+  const [selectedBadge, setSelectedBadge] = useState<BadgeData | null>(null);
 
-  // Fetch user achievements
+  // Fetch user's earned achievements from Firestore
   const { data: achievements, loading } = useCollection<Achievement>(
     'achievements',
     where('userId', '==', uid ?? ''),
     orderBy('earnedAt', 'desc')
   );
 
-  // Fetch leaderboard (opt-in, anonymized)
-  const { data: leaderboardData } = useCollection<{
-    id: string;
-    displayName: string;
-    badgeCount: number;
-    rank: string;
-  }>(
-    'leaderboard',
-    orderBy('badgeCount', 'desc'),
-    limit(20)
-  );
-
-  // Create earned set
-  const earnedSet = useMemo(() => {
-    const set = new Set<string>();
-    achievements?.forEach((a) => {
-      // Try to match by the badge id patterns
-      set.add(a.id);
-      set.add(a.title);
-    });
-    return set;
+  // Build a set of earned achievement IDs for fast lookup
+  const earnedMap = useMemo(() => {
+    const map = new Map<string, Achievement>();
+    if (achievements) {
+      for (const a of achievements) {
+        map.set(a.id, a);
+      }
+    }
+    return map;
   }, [achievements]);
 
-  // Earned count
-  const earnedCount = achievements?.length ?? 0;
+  const earnedCount = earnedMap.size;
+  const totalCount = ACHIEVEMENT_DEFINITIONS.length;
+  const progressPercent = totalCount > 0 ? Math.round((earnedCount / totalCount) * 100) : 0;
 
-  // Current rank
-  const currentRank = useMemo(() => {
-    let rank = RANK_CONFIG[0];
-    for (const r of RANK_CONFIG) {
-      if (earnedCount >= r.minBadges) rank = r;
-    }
-    return rank;
-  }, [earnedCount]);
+  // Filter definitions by active tab
+  const filteredDefinitions = useMemo(() => {
+    if (activeFilter === 'all') return ACHIEVEMENT_DEFINITIONS;
+    return ACHIEVEMENT_DEFINITIONS.filter((d) => d.category === activeFilter);
+  }, [activeFilter]);
 
-  // Next rank
-  const nextRank = useMemo(() => {
-    const idx = RANK_CONFIG.findIndex((r) => r.rank === currentRank.rank);
-    return idx < RANK_CONFIG.length - 1 ? RANK_CONFIG[idx + 1] : null;
-  }, [currentRank]);
+  // Convert a definition into BadgeData for the AchievementBadge component
+  const toBadgeData = useCallback(
+    (def: typeof ACHIEVEMENT_DEFINITIONS[number]): BadgeData => {
+      const earnedAchievement = earnedMap.get(def.id);
+      const earnedAt = earnedAchievement
+        ? toDate(earnedAchievement.earnedAt) ?? undefined
+        : undefined;
 
-  // Filter badges by category
-  const filteredBadges = useMemo(() => {
-    if (selectedCategory === 'All') return ALL_BADGES;
-    return ALL_BADGES.filter((b) => b.category === selectedCategory);
-  }, [selectedCategory]);
+      return {
+        id: def.id,
+        title: def.title,
+        description: def.description,
+        icon: def.icon,
+        category: def.category,
+        earnedAt: earnedAt ?? null,
+        locked: !earnedAchievement,
+      };
+    },
+    [earnedMap]
+  );
 
-  // Check if a badge is earned
-  const isBadgeEarned = (badge: BadgeDefinition): boolean => {
-    return earnedSet.has(badge.id) || earnedSet.has(badge.title);
-  };
+  // Handle badge selection (open detail modal)
+  const handleBadgeSelect = useCallback((badge: BadgeData) => {
+    setSelectedBadge(badge);
+  }, []);
 
-  // Find earned achievement data for a badge
-  const getEarnedData = (badge: BadgeDefinition): Achievement | undefined => {
-    return achievements?.find((a) => a.id === badge.id || a.title === badge.title);
-  };
+  // Handle share to Lane 3 community feed
+  const handleShare = useCallback((badge: BadgeData) => {
+    // Placeholder: in production, post to Lane 3 social feed via setDocument
+    console.log('Share achievement to Lane 3 community:', badge.title);
+    setSelectedBadge(null);
+  }, []);
 
-  const handleShare = async (badge: BadgeDefinition) => {
-    // This would post to Lane 3 social feed
-    console.log('Share achievement to Lane 3:', badge.title);
-    // Placeholder: in production, call setDocument on a posts collection
-  };
+  // ── Render ──────────────────────────────────────────────────────────────
 
-  if (loading) return <LoadingSkeleton />;
+  if (loading) {
+    return (
+      <PageContainer title="Achievements" subtitle="Celebrate your milestones">
+        <LoadingSkeleton />
+      </PageContainer>
+    );
+  }
 
   return (
     <PageContainer title="Achievements" subtitle="Celebrate your milestones">
-      {/* Celebration Animation Placeholder */}
-      {celebrationBadge && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30"
-          onClick={() => setCelebrationBadge(null)}
-        >
-          <div className="bg-white rounded-2xl p-8 text-center shadow-2xl animate-bounce max-w-xs mx-4">
-            <div className="text-6xl mb-4">{celebrationBadge}</div>
-            <h3 className="text-xl font-bold text-stone-800 mb-2">Achievement Unlocked!</h3>
-            <p className="text-sm text-stone-500">Tap anywhere to dismiss</p>
-            {/* Confetti placeholder - in production, use react-confetti or canvas-confetti */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-              {Array.from({ length: 20 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="absolute w-2 h-2 rounded-full animate-ping"
-                  style={{
-                    left: `${Math.random() * 100}%`,
-                    top: `${Math.random() * 100}%`,
-                    backgroundColor: ['#f59e0b', '#10b981', '#6366f1', '#ef4444', '#ec4899'][i % 5],
-                    animationDelay: `${Math.random() * 0.5}s`,
-                    animationDuration: `${0.5 + Math.random() * 1}s`,
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Rank Card */}
-      <Card className={`${currentRank.bgColor} border-0`}>
+      {/* Progress Summary Card */}
+      <Card className="border-amber-200 bg-gradient-to-br from-amber-50 to-stone-50 border-0">
         <CardContent className="p-5">
           <div className="flex items-center gap-4">
-            <div className="h-16 w-16 rounded-full bg-white/60 flex items-center justify-center">
-              <currentRank.icon className={`h-8 w-8 ${currentRank.color}`} />
+            <div className="h-14 w-14 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+              <Trophy className="h-7 w-7 text-amber-600" />
             </div>
-            <div className="flex-1">
-              <p className="text-xs text-stone-500 font-medium uppercase tracking-wide">Current Rank</p>
-              <h3 className={`text-2xl font-bold ${currentRank.color}`}>{currentRank.label}</h3>
-              <p className="text-sm text-stone-600 mt-0.5">
-                {earnedCount} badge{earnedCount !== 1 ? 's' : ''} earned
+            <div className="flex-1 min-w-0">
+              <p className="text-sm text-stone-500 font-medium">Your Progress</p>
+              <p className="text-2xl font-bold text-stone-800">
+                {earnedCount}{' '}
+                <span className="text-base font-normal text-stone-500">
+                  of {totalCount} achievements
+                </span>
               </p>
             </div>
-          </div>
-          {nextRank && (
-            <div className="mt-4">
-              <div className="flex justify-between text-xs mb-1.5">
-                <span className="text-stone-500">Progress to {nextRank.label}</span>
-                <span className="font-medium text-stone-700">
-                  {earnedCount}/{nextRank.minBadges}
-                </span>
-              </div>
-              <div className="h-2 bg-white/40 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-white/80 rounded-full transition-all"
-                  style={{ width: `${Math.min(100, (earnedCount / nextRank.minBadges) * 100)}%` }}
-                />
+            <div className="text-right shrink-0">
+              <div className="flex items-center gap-1">
+                <Sparkles className="h-4 w-4 text-amber-500" />
+                <span className="text-lg font-bold text-amber-700">{progressPercent}%</span>
               </div>
             </div>
-          )}
+          </div>
+
+          {/* Progress Bar */}
+          <div className="mt-4">
+            <div className="h-3 bg-stone-200/60 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-amber-400 to-amber-600 rounded-full transition-all duration-700 ease-out"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+            <div className="flex justify-between mt-1.5 text-[10px] text-stone-400">
+              <span>Getting started</span>
+              <span>Journey complete</span>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
-      {/* Rank Progression */}
-      <div className="flex items-center justify-between px-2">
-        {RANK_CONFIG.map((rank, idx) => {
-          const isActive = currentRank.rank === rank.rank;
-          const isEarned = earnedCount >= rank.minBadges;
-          return (
-            <div key={rank.rank} className="flex flex-col items-center">
-              <div
-                className={`h-10 w-10 rounded-full flex items-center justify-center text-sm ${
-                  isActive
-                    ? `${rank.bgColor} shadow-md ring-2 ring-amber-400`
-                    : isEarned
-                      ? `${rank.bgColor}`
-                      : 'bg-stone-100 text-stone-400'
-                }`}
-              >
-                <rank.icon className={`h-5 w-5 ${isEarned ? rank.color : 'text-stone-400'}`} />
-              </div>
-              <p className={`text-[9px] mt-1 font-medium ${isActive ? rank.color : 'text-stone-400'}`}>
-                {rank.label}
-              </p>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Category Tabs */}
+      {/* Filter Tabs */}
       <div className="overflow-x-auto -mx-4 px-4 pb-1">
         <div className="flex gap-2">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                selectedCategory === cat
-                  ? 'bg-amber-700 text-white'
-                  : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+          {FILTER_TABS.map((tab) => {
+            const isActive = activeFilter === tab.value;
+            // Count earned in this category
+            const catCount =
+              tab.value === 'all'
+                ? earnedCount
+                : ACHIEVEMENT_DEFINITIONS.filter(
+                    (d) => d.category === tab.value && earnedMap.has(d.id)
+                  ).length;
+            const catTotal =
+              tab.value === 'all'
+                ? totalCount
+                : ACHIEVEMENT_DEFINITIONS.filter((d) => d.category === tab.value).length;
+
+            return (
+              <button
+                key={tab.value}
+                onClick={() => setActiveFilter(tab.value)}
+                className={`shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-colors flex items-center gap-1.5 ${
+                  isActive
+                    ? 'bg-amber-700 text-white shadow-sm'
+                    : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                }`}
+              >
+                {tab.label}
+                <span
+                  className={`text-[10px] ${
+                    isActive ? 'text-amber-200' : 'text-stone-400'
+                  }`}
+                >
+                  {catCount}/{catTotal}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Badge Grid */}
-      <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-        {filteredBadges.map((badge) => {
-          const earned = isBadgeEarned(badge);
-          const earnedData = getEarnedData(badge);
-
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
+        {filteredDefinitions.map((def) => {
+          const badgeData = toBadgeData(def);
           return (
-            <Card
-              key={badge.id}
-              className={`transition-all ${
-                earned
-                  ? 'border-amber-200 shadow-sm hover:shadow-md cursor-pointer'
-                  : 'opacity-50 border-stone-100'
-              }`}
-              onClick={() => {
-                if (earned) setCelebrationBadge(badge.icon);
-              }}
-            >
-              <CardContent className="p-3 text-center">
-                <div
-                  className={`h-14 w-14 mx-auto rounded-full flex items-center justify-center mb-2 ${
-                    earned
-                      ? 'bg-amber-50'
-                      : 'bg-stone-50'
-                  }`}
-                >
-                  {earned ? (
-                    <span className="text-2xl">{badge.icon}</span>
-                  ) : (
-                    <Lock className="h-5 w-5 text-stone-300" />
-                  )}
-                </div>
-                <p
-                  className={`text-xs font-medium line-clamp-2 ${
-                    earned ? 'text-stone-800' : 'text-stone-400'
-                  }`}
-                >
-                  {badge.title}
-                </p>
-                {earned && earnedData ? (
-                  <p className="text-[9px] text-stone-400 mt-0.5">
-                    {formatDate(earnedData.earnedAt)}
-                  </p>
-                ) : (
-                  <p className="text-[9px] text-stone-300 mt-0.5 line-clamp-1">
-                    {badge.hint}
-                  </p>
-                )}
-                {earned && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleShare(badge);
-                    }}
-                    className="mt-1.5 inline-flex items-center gap-0.5 text-[9px] text-amber-600 hover:text-amber-800"
-                  >
-                    <Share2 className="h-2.5 w-2.5" /> Share
-                  </button>
-                )}
-              </CardContent>
-            </Card>
+            <AchievementBadge
+              key={def.id}
+              badge={badgeData}
+              onSelect={handleBadgeSelect}
+            />
           );
         })}
       </div>
 
-      {/* Leaderboard */}
-      <Card>
-        <CardHeader className="pb-2">
-          <button
-            onClick={() => setShowLeaderboard(!showLeaderboard)}
-            className="w-full flex items-center justify-between"
-          >
-            <CardTitle className="text-base flex items-center gap-2">
-              <Trophy className="h-4 w-4 text-amber-600" /> Leaderboard
-            </CardTitle>
-            {showLeaderboard ? (
-              <ChevronUp className="h-4 w-4 text-stone-400" />
-            ) : (
-              <ChevronDown className="h-4 w-4 text-stone-400" />
-            )}
-          </button>
-        </CardHeader>
-        {showLeaderboard && (
-          <CardContent>
-            <p className="text-xs text-stone-400 mb-3">
-              Opt-in leaderboard showing anonymized usernames.
+      {/* Empty State */}
+      {filteredDefinitions.length === 0 && (
+        <Card className="border-dashed border-stone-300">
+          <CardContent className="p-8 text-center">
+            <Filter className="h-8 w-8 text-stone-300 mx-auto mb-2" />
+            <p className="text-sm text-stone-500">
+              No achievements in this category yet.
             </p>
-            {leaderboardData && leaderboardData.length > 0 ? (
-              <div className="space-y-2">
-                {leaderboardData.map((entry, i) => {
-                  const isCurrentUser = entry.id === uid;
-                  return (
-                    <div
-                      key={entry.id}
-                      className={`flex items-center gap-3 p-2 rounded-lg ${
-                        isCurrentUser ? 'bg-amber-50 border border-amber-200' : ''
-                      }`}
-                    >
-                      <span
-                        className={`text-sm font-bold w-6 text-center ${
-                          i === 0
-                            ? 'text-yellow-600'
-                            : i === 1
-                              ? 'text-stone-400'
-                              : i === 2
-                                ? 'text-orange-600'
-                                : 'text-stone-500'
-                        }`}
-                      >
-                        {i + 1}
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-stone-700 truncate">
-                          {isCurrentUser ? 'You' : entry.displayName}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <Trophy className="h-3 w-3 text-amber-500" />
-                        <span className="text-sm font-semibold text-stone-800">
-                          {entry.badgeCount}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="text-center py-4">
-                <Users className="h-8 w-8 text-stone-300 mx-auto mb-2" />
-                <p className="text-sm text-stone-400">
-                  Leaderboard data will appear as members earn badges.
-                </p>
-              </div>
-            )}
           </CardContent>
-        )}
-      </Card>
+        </Card>
+      )}
+
+      {/* Motivational Footer */}
+      {earnedCount === 0 && (
+        <Card className="bg-gradient-to-br from-stone-50 to-amber-50 border-0">
+          <CardContent className="p-5 text-center">
+            <Star className="h-8 w-8 text-amber-400 mx-auto mb-2" />
+            <h4 className="text-sm font-semibold text-stone-700 mb-1">
+              Your journey starts here
+            </h4>
+            <p className="text-xs text-stone-500 leading-relaxed max-w-xs mx-auto">
+              Complete daily check-ins, work through the steps, and engage with the community
+              to earn achievements and celebrate your progress.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Badge Detail Modal */}
+      {selectedBadge && (
+        <BadgeDetailModal
+          badge={selectedBadge}
+          earned={!selectedBadge.locked}
+          earnedAchievement={earnedMap.get(selectedBadge.id)}
+          onClose={() => setSelectedBadge(null)}
+          onShare={handleShare}
+        />
+      )}
     </PageContainer>
   );
 }

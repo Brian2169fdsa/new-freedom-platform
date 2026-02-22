@@ -10,9 +10,11 @@ import DocumentVault from './pages/DocumentVault';
 import ResumeBuilder from './pages/ResumeBuilder';
 import BudgetTracker from './pages/BudgetTracker';
 import CalendarView from './pages/CalendarView';
+import JobBoard from './pages/JobBoard';
 import Profile from './pages/Profile';
 import AIChat from './pages/AIChat';
 import Onboarding from './pages/Onboarding';
+import MockInterview from './pages/MockInterview';
 
 const navItems: NavItem[] = [
   { label: 'Home', path: '/', icon: Home },
@@ -41,6 +43,8 @@ function App() {
                 <Route path="/tools/resume" element={<ResumeBuilder />} />
                 <Route path="/tools/budget" element={<BudgetTracker />} />
                 <Route path="/tools/calendar" element={<CalendarView />} />
+                <Route path="/tools/jobs" element={<JobBoard />} />
+                <Route path="/tools/interview" element={<MockInterview />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/ai-chat" element={<AIChat />} />
                 <Route path="*" element={<Navigate to="/" replace />} />

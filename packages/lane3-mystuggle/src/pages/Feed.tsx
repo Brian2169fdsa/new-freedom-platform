@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth, useCollection, type Post, type User } from '@reprieve/shared';
 import { where, orderBy } from 'firebase/firestore';
 import { addDocument } from '@reprieve/shared/services/firebase/firestore';
+import { likePost, unlikePost, reportPost } from '@reprieve/shared/services/firebase/functions';
 import { Heart, MessageCircle, Share2, MoreHorizontal, Send, Eye, EyeOff, Image, Flag } from 'lucide-react';
 
 const MOOD_EMOJI: Record<string, string> = {
@@ -10,10 +11,36 @@ const MOOD_EMOJI: Record<string, string> = {
 
 function PostCard({ post, currentUserId }: { post: Post; currentUserId: string }) {
   const [showComments, setShowComments] = useState(false);
+  const [likeLoading, setLikeLoading] = useState(false);
   const isLiked = post.likes.includes(currentUserId);
   const timeAgo = post.createdAt?.toDate
     ? formatTimeAgo(post.createdAt.toDate())
     : '';
+
+  const handleLike = async () => {
+    if (likeLoading || !currentUserId) return;
+    setLikeLoading(true);
+    try {
+      if (isLiked) {
+        await unlikePost({ postId: post.id });
+      } else {
+        await likePost({ postId: post.id });
+      }
+    } catch (err) {
+      console.error('Like/unlike failed:', err);
+    } finally {
+      setLikeLoading(false);
+    }
+  };
+
+  const handleReport = async () => {
+    if (!currentUserId) return;
+    try {
+      await reportPost({ postId: post.id, reason: 'inappropriate' });
+    } catch (err) {
+      console.error('Report failed:', err);
+    }
+  };
 
   return (
     <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
@@ -63,7 +90,10 @@ function PostCard({ post, currentUserId }: { post: Post; currentUserId: string }
 
       {/* Engagement Bar */}
       <div className="flex items-center gap-1 px-4 py-2 border-t border-stone-100">
-        <button className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
+        <button
+          onClick={handleLike}
+          disabled={likeLoading}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
           isLiked ? 'text-red-500 bg-red-50' : 'text-stone-500 hover:bg-stone-100'
         }`}>
           <Heart className={`h-4 w-4 ${isLiked ? 'fill-current' : ''}`} />
@@ -80,7 +110,7 @@ function PostCard({ post, currentUserId }: { post: Post; currentUserId: string }
           <Share2 className="h-4 w-4" />
         </button>
         <div className="flex-1" />
-        <button className="text-stone-400 hover:text-stone-600 p-1.5">
+        <button onClick={handleReport} className="text-stone-400 hover:text-stone-600 p-1.5">
           <Flag className="h-3.5 w-3.5" />
         </button>
       </div>

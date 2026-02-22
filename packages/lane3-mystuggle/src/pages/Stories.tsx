@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth, useCollection, type Post } from '@reprieve/shared';
 import { where, orderBy } from 'firebase/firestore';
 import { addDocument } from '@reprieve/shared/services/firebase/firestore';
+import { likePost, unlikePost } from '@reprieve/shared/services/firebase/functions';
 import {
   BookHeart, Clock, Heart, MessageCircle, PenSquare, Send,
   ChevronRight, Eye, EyeOff, Bookmark, X,
@@ -29,9 +30,26 @@ function formatTimeAgo(date: Date): string {
 
 function StoryCard({ story, currentUserId }: { story: Post; currentUserId: string }) {
   const isLiked = story.likes.includes(currentUserId);
+  const [likeLoading, setLikeLoading] = useState(false);
   const timeAgo = story.createdAt?.toDate ? formatTimeAgo(story.createdAt.toDate()) : '';
   const preview = story.content.length > 200 ? story.content.substring(0, 200) + '...' : story.content;
   const [expanded, setExpanded] = useState(false);
+
+  const handleLike = async () => {
+    if (likeLoading || !currentUserId) return;
+    setLikeLoading(true);
+    try {
+      if (isLiked) {
+        await unlikePost({ postId: story.id });
+      } else {
+        await likePost({ postId: story.id });
+      }
+    } catch (err) {
+      console.error('Like/unlike failed:', err);
+    } finally {
+      setLikeLoading(false);
+    }
+  };
 
   return (
     <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
@@ -85,7 +103,10 @@ function StoryCard({ story, currentUserId }: { story: Post; currentUserId: strin
 
       {/* Engagement */}
       <div className="flex items-center gap-1 px-4 py-2 border-t border-stone-100">
-        <button className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
+        <button
+          onClick={handleLike}
+          disabled={likeLoading}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
           isLiked ? 'text-red-500 bg-red-50' : 'text-stone-500 hover:bg-stone-100'
         }`}>
           <Heart className={`h-4 w-4 ${isLiked ? 'fill-current' : ''}`} />

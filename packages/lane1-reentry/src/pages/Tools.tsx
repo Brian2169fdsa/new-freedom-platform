@@ -60,7 +60,7 @@ const tools = [
     icon: Mic,
     label: 'Mock Interview',
     description: 'Practice with AI-powered interviews',
-    path: '/tools/mock-interview',
+    path: '/tools/interview',
     color: 'bg-teal-100 text-teal-700',
   },
 ];
