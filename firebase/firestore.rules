@@ -2,94 +2,216 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users can read/write their own profile
+
+    // ── Helper Functions ──────────────────────────────────────────────
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function hasRole(role) {
+      return isSignedIn() && request.auth.token.role == role;
+    }
+
+    function isAdmin() {
+      return hasRole('admin') || hasRole('super_admin');
+    }
+
+    function isStaff() {
+      return isAdmin() || hasRole('case_manager');
+    }
+
+    function isParticipant(participants) {
+      return isSignedIn() && request.auth.uid in participants;
+    }
+
+    // ── Users ─────────────────────────────────────────────────────────
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-      allow read: if request.auth.token.role in ['admin', 'case_manager', 'super_admin'];
+      allow read: if isOwner(userId) || isStaff();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
     }
 
-    // Lane 1 collections
+    // ── Lane 1: Re-Entry ──────────────────────────────────────────────
     match /goals/{goalId} {
-      allow read, write: if request.auth != null;
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isStaff());
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
     }
+
     match /documents/{docId} {
-      allow read, write: if request.auth != null;
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isStaff());
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
     }
+
+    match /documentRequests/{requestId} {
+      allow read: if isSignedIn();
+      allow write: if isStaff();
+    }
+
     match /action_plans/{planId} {
-      allow read, write: if request.auth != null;
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isStaff());
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isSignedIn() && (resource.data.userId == request.auth.uid || isStaff());
     }
+
     match /appointments/{appointmentId} {
-      allow read, write: if request.auth != null;
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isStaff());
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isSignedIn() && (resource.data.userId == request.auth.uid || isStaff());
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
     }
+
     match /job_applications/{appId} {
-      allow read, write: if request.auth != null;
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isStaff());
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
     }
+
     match /budgets/{budgetId} {
-      allow read, write: if request.auth != null;
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isStaff());
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
     }
 
-    // Lane 2 collections
+    // ── Lane 2: Step Experience ───────────────────────────────────────
     match /courses/{courseId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth.token.role in ['admin', 'super_admin'];
-    }
-    match /course_modules/{moduleId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth.token.role in ['admin', 'super_admin'];
-    }
-    match /user_progress/{progressId} {
-      allow read, write: if request.auth != null;
-    }
-    match /journal_entries/{entryId} {
-      allow read, write: if request.auth != null;
-    }
-    match /achievements/{achievementId} {
-      allow read, write: if request.auth != null;
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
     }
 
-    // Lane 3 collections - social feed is public read
+    match /course_modules/{moduleId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /user_progress/{progressId} {
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isStaff());
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    match /journal_entries/{entryId} {
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid
+        || (resource.data.isPrivate == false && isStaff()));
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    match /achievements/{achievementId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    match /wellness_checkins/{checkinId} {
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isStaff());
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+    }
+
+    // ── Lane 3: My Struggle (social) ──────────────────────────────────
     match /posts/{postId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (resource.data.authorId == request.auth.uid || isStaff());
+      allow delete: if isSignedIn() && (resource.data.authorId == request.auth.uid || isAdmin());
     }
+
     match /comments/{commentId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (resource.data.authorId == request.auth.uid || isStaff());
+      allow delete: if isSignedIn() && (resource.data.authorId == request.auth.uid || isAdmin());
     }
+
     match /resources/{resourceId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isStaff();
     }
+
+    match /events/{eventId} {
+      allow read: if true;
+      allow write: if isStaff();
+    }
+
     match /mentor_matches/{matchId} {
-      allow read, write: if request.auth != null;
+      allow read: if isSignedIn() && (
+        resource.data.mentorId == request.auth.uid ||
+        resource.data.menteeId == request.auth.uid ||
+        isStaff()
+      );
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (
+        resource.data.mentorId == request.auth.uid ||
+        resource.data.menteeId == request.auth.uid ||
+        isStaff()
+      );
     }
+
     match /donations/{donationId} {
-      allow read, write: if request.auth != null;
+      allow read: if isSignedIn() && (resource.data.donorId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn();
+      allow update: if isAdmin();
     }
 
-    // Shared collections
-    match /messages/{messageId} {
-      allow read, write: if request.auth != null;
-    }
+    // ── Shared: Messaging ─────────────────────────────────────────────
     match /conversations/{conversationId} {
-      allow read, write: if request.auth != null;
-    }
-    match /notifications/{notificationId} {
-      allow read, write: if request.auth != null;
-    }
-    match /assessments/{assessmentId} {
-      allow read, write: if request.auth != null;
+      allow read: if isSignedIn() && isParticipant(resource.data.participants);
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && isParticipant(resource.data.participants);
     }
 
-    // Existing collections
+    match /messages/{messageId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.senderId == request.auth.uid;
+      allow update: if isSignedIn();
+    }
+
+    // ── Shared: Notifications ─────────────────────────────────────────
+    match /notifications/{notificationId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isStaff();
+    }
+
+    // ── Shared: Assessments ───────────────────────────────────────────
+    match /assessments/{assessmentId} {
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isStaff());
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+    }
+
+    // ── Admin: Invite Codes ───────────────────────────────────────────
     match /invites/{inviteId} {
       allow read: if true;
+      allow write: if isAdmin();
     }
+
     match /inviteRequests/{requestId} {
-      allow read, write: if true;
+      allow read: if isSignedIn();
+      allow create: if true;
+      allow update: if isAdmin();
     }
+
+    // ── Admin: Moderation ─────────────────────────────────────────────
     match /moderationReports/{reportId} {
-      allow read, write: if request.auth != null;
+      allow read: if isStaff();
+      allow create: if isSignedIn();
+      allow update: if isStaff();
+    }
+
+    match /moderationQueue/{queueId} {
+      allow read, write: if isStaff();
+    }
+
+    // ── Admin-only collections ────────────────────────────────────────
+    match /settings/{settingId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
     }
   }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Bell, Menu } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { Avatar } from '../ui/avatar';
+import { NotificationBell } from './NotificationBell';
 
 interface HeaderProps {
   title?: string;
@@ -19,9 +19,7 @@ export function Header({ title }: HeaderProps) {
           </h1>
         </div>
         <div className="flex items-center gap-3">
-          <button className="relative p-2 text-stone-500 hover:text-stone-700 rounded-lg hover:bg-stone-100">
-            <Bell className="h-5 w-5" />
-          </button>
+          <NotificationBell />
           <Avatar
             src={user?.photoURL}
             alt={user?.displayName}

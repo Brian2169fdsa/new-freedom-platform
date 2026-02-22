@@ -1,1 +1,15 @@
-{"projects":{"default":"newfreedom-637b5"}}
+{
+  "projects": {
+    "default": "newfreedom-637b5"
+  },
+  "targets": {
+    "newfreedom-637b5": {
+      "hosting": {
+        "lane1": ["reprieve-reentry"],
+        "lane2": ["reprieve-steps"],
+        "lane3": ["reprieve-mystuggle"],
+        "admin": ["reprieve-admin"]
+      }
+    }
+  }
+}

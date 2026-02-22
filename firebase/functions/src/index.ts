@@ -31,6 +31,14 @@ export {unlikePost} from "./callable/unlikePost";
 export {savePost} from "./callable/savePost";
 export {reportPost} from "./callable/reportPost";
 
+// Notifications.
+export {
+  appointmentReminders,
+  documentExpiration,
+  wellnessCrisis,
+  moderationTrigger,
+} from "./notifications";
+
 // Public endpoints.
 export {me} from "./public/me";
 export {verifyInviteCode} from "./public/verifyInviteCode";

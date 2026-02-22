@@ -4,3 +4,4 @@ export { Header } from './Header';
 export { PageContainer } from './PageContainer';
 export { LoadingScreen } from './LoadingScreen';
 export { CrisisButton } from './CrisisButton';
+export { NotificationBell } from './NotificationBell';
