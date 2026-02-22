@@ -26,7 +26,7 @@ function App() {
         path="/*"
         element={
           <ProtectedRoute>
-            <AppShell navItems={navItems} title="My Struggle">
+            <AppShell navItems={navItems} title="My Struggle" currentLane="lane3">
               <Routes>
                 <Route path="/" element={<Feed />} />
                 <Route path="/resources" element={<Resources />} />

@@ -7,6 +7,7 @@ import Goals from './pages/Goals';
 import Messages from './pages/Messages';
 import Tools from './pages/Tools';
 import DocumentVault from './pages/DocumentVault';
+import ResumeBuilder from './pages/ResumeBuilder';
 import BudgetTracker from './pages/BudgetTracker';
 import CalendarView from './pages/CalendarView';
 import Profile from './pages/Profile';
@@ -30,13 +31,14 @@ function App() {
         path="/*"
         element={
           <ProtectedRoute>
-            <AppShell navItems={navItems} title="Re-Entry">
+            <AppShell navItems={navItems} title="Re-Entry" currentLane="lane1">
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/goals" element={<Goals />} />
                 <Route path="/messages" element={<Messages />} />
                 <Route path="/tools" element={<Tools />} />
                 <Route path="/tools/documents" element={<DocumentVault />} />
+                <Route path="/tools/resume" element={<ResumeBuilder />} />
                 <Route path="/tools/budget" element={<BudgetTracker />} />
                 <Route path="/tools/calendar" element={<CalendarView />} />
                 <Route path="/profile" element={<Profile />} />

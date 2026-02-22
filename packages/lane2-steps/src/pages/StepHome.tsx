@@ -14,6 +14,7 @@ import {
   formatDate,
   MOOD_LABELS,
   CRISIS_HOTLINE,
+  WellnessCheckIn,
 } from '@reprieve/shared';
 import { where, orderBy, limit } from 'firebase/firestore';
 import { setDocument } from '@reprieve/shared/services/firebase/firestore';
@@ -247,6 +248,9 @@ export default function StepHome() {
     <PageContainer title={`Welcome back, ${firstName}`} subtitle="Your recovery journey">
       {/* Crisis Alert */}
       {showCrisis && <CrisisAlert />}
+
+      {/* Wellness Check-in */}
+      <WellnessCheckIn />
 
       {/* Sobriety Counter + Streak */}
       <div className="grid grid-cols-2 gap-3">

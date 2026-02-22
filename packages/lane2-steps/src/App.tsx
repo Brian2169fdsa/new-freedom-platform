@@ -25,7 +25,7 @@ function App() {
         path="/*"
         element={
           <ProtectedRoute>
-            <AppShell navItems={navItems} title="Step Experience">
+            <AppShell navItems={navItems} title="Step Experience" currentLane="lane2">
               <Routes>
                 <Route path="/" element={<StepHome />} />
                 <Route path="/steps" element={<Steps />} />

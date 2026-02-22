@@ -5,3 +5,4 @@ export { PageContainer } from './PageContainer';
 export { LoadingScreen } from './LoadingScreen';
 export { CrisisButton } from './CrisisButton';
 export { NotificationBell } from './NotificationBell';
+export { LaneSwitcher } from './LaneSwitcher';

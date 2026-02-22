@@ -2,12 +2,14 @@ import React from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { Avatar } from '../ui/avatar';
 import { NotificationBell } from './NotificationBell';
+import { LaneSwitcher } from './LaneSwitcher';
 
 interface HeaderProps {
   title?: string;
+  currentLane?: string;
 }
 
-export function Header({ title }: HeaderProps) {
+export function Header({ title, currentLane }: HeaderProps) {
   const { user } = useAuth();
 
   return (
@@ -17,6 +19,7 @@ export function Header({ title }: HeaderProps) {
           <h1 className="text-lg font-semibold text-stone-800">
             {title || 'REPrieve'}
           </h1>
+          <LaneSwitcher currentLane={currentLane} />
         </div>
         <div className="flex items-center gap-3">
           <NotificationBell />
