@@ -24,3 +24,18 @@ export type { GeolocationState } from './useGeolocation';
 
 // Online status
 export { useOnlineStatus } from './useOnlineStatus';
+
+// Accessibility
+export { useFocusTrap } from './useFocusTrap';
+export { useReducedMotion } from './useReducedMotion';
+
+// Privacy & GDPR
+export { usePrivacy } from './usePrivacy';
+export type {
+  PrivacySettings,
+  PrivacySettingsUpdate,
+  ProfileVisibility,
+  AllowMessages,
+  DataRetentionDays,
+  UsePrivacyResult,
+} from './usePrivacy';

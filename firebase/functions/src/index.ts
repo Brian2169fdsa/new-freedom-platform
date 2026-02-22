@@ -54,5 +54,21 @@ export {
   getDonationHistory,
 } from "./stripe";
 
+// Privacy & GDPR compliance.
+export {
+  exportUserData,
+  deleteAllUserData,
+  getPrivacySettings,
+  updatePrivacySettings,
+} from "./privacy";
+
 // Public endpoints.
 export {me} from "./public/me";
+
+// Lane 3: My Struggle -- Content Moderation System.
+export {
+  moderateContent,
+  autoModeratePost,
+  getModerationQueue,
+  reviewModeration,
+} from "./moderation";

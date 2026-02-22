@@ -74,3 +74,55 @@ export const getDonationHistory = callFunction<
     }>;
   }
 >('getDonationHistory');
+
+// Privacy & GDPR callable functions
+export const exportUserData = callFunction<
+  void,
+  {
+    exportMetadata: {
+      exportedAt: string;
+      userId: string;
+      platform: string;
+      dataCategories: string[];
+    };
+    userProfile: Record<string, unknown> | null;
+    privacySettings: Record<string, unknown>;
+    [collection: string]: unknown;
+  }
+>('exportUserData');
+
+export const deleteAllUserData = callFunction<
+  { confirmationText: string },
+  { success: boolean; deletedCollections: string[]; totalDocumentsDeleted: number }
+>('deleteAllUserData');
+
+export const getPrivacySettings = callFunction<
+  void,
+  {
+    profileVisibility: 'public' | 'connections' | 'private';
+    showSobrietyDate: boolean;
+    showActivityStatus: boolean;
+    allowMessages: 'everyone' | 'connections' | 'none';
+    dataRetentionDays: 90 | 180 | 365 | -1;
+  }
+>('getPrivacySettings');
+
+export const updatePrivacySettings = callFunction<
+  {
+    profileVisibility?: 'public' | 'connections' | 'private';
+    showSobrietyDate?: boolean;
+    showActivityStatus?: boolean;
+    allowMessages?: 'everyone' | 'connections' | 'none';
+    dataRetentionDays?: 90 | 180 | 365 | -1;
+  },
+  {
+    success: boolean;
+    settings: {
+      profileVisibility: 'public' | 'connections' | 'private';
+      showSobrietyDate: boolean;
+      showActivityStatus: boolean;
+      allowMessages: 'everyone' | 'connections' | 'none';
+      dataRetentionDays: 90 | 180 | 365 | -1;
+    };
+  }
+>('updatePrivacySettings');
