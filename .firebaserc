@@ -1,0 +1,23 @@
+{
+  "projects": {
+    "default": "newfreedom-637b5"
+  },
+  "targets": {
+    "newfreedom-637b5": {
+      "hosting": {
+        "reentry": [
+          "newfreedom-637b5"
+        ],
+        "steps": [
+          "reprieve-steps"
+        ],
+        "mystuggle": [
+          "reprieve-mystuggle"
+        ],
+        "admin": [
+          "reprieve-admin"
+        ]
+      }
+    }
+  }
+}

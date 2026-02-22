@@ -25,19 +25,19 @@
   ],
   "hosting": [
     {
-      "target": "lane1",
+      "target": "reentry",
       "public": "../packages/lane1-reentry/dist",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [{ "source": "**", "destination": "/index.html" }]
     },
     {
-      "target": "lane2",
+      "target": "steps",
       "public": "../packages/lane2-steps/dist",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [{ "source": "**", "destination": "/index.html" }]
     },
     {
-      "target": "lane3",
+      "target": "mystuggle",
       "public": "../packages/lane3-mystuggle/dist",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [{ "source": "**", "destination": "/index.html" }]

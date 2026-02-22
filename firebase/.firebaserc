@@ -5,9 +5,9 @@
   "targets": {
     "newfreedom-637b5": {
       "hosting": {
-        "lane1": ["reprieve-reentry"],
-        "lane2": ["reprieve-steps"],
-        "lane3": ["reprieve-mystuggle"],
+        "reentry": ["reprieve-reentry"],
+        "steps": ["reprieve-steps"],
+        "mystuggle": ["reprieve-mystuggle"],
         "admin": ["reprieve-admin"]
       }
     }

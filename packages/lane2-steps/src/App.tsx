@@ -1,13 +1,15 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { ProtectedRoute, LoginForm, AppShell } from '@reprieve/shared';
+import { ProtectedRoute, LoginForm, LoadingScreen, AppShell } from '@reprieve/shared';
 import type { NavItem } from '@reprieve/shared/components/layout/BottomNav';
 import { Home, BookOpen, PenSquare, Users, UserCircle } from 'lucide-react';
-import StepHome from './pages/StepHome';
-import Steps from './pages/Steps';
-import Journal from './pages/Journal';
-import Community from './pages/Community';
-import Profile from './pages/Profile';
-import Achievements from './pages/Achievements';
+
+const StepHome = lazy(() => import('./pages/StepHome'));
+const Steps = lazy(() => import('./pages/Steps'));
+const Journal = lazy(() => import('./pages/Journal'));
+const Community = lazy(() => import('./pages/Community'));
+const Profile = lazy(() => import('./pages/Profile'));
+const Achievements = lazy(() => import('./pages/Achievements'));
 
 const navItems: NavItem[] = [
   { label: 'Home', path: '/', icon: Home },
@@ -19,27 +21,29 @@ const navItems: NavItem[] = [
 
 function App() {
   return (
-    <Routes>
-      <Route path="/login" element={<LoginForm />} />
-      <Route
-        path="/*"
-        element={
-          <ProtectedRoute>
-            <AppShell navItems={navItems} title="Step Experience" currentLane="lane2">
-              <Routes>
-                <Route path="/" element={<StepHome />} />
-                <Route path="/steps" element={<Steps />} />
-                <Route path="/journal" element={<Journal />} />
-                <Route path="/community" element={<Community />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/achievements" element={<Achievements />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </AppShell>
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+    <Suspense fallback={<LoadingScreen />}>
+      <Routes>
+        <Route path="/login" element={<LoginForm />} />
+        <Route
+          path="/*"
+          element={
+            <ProtectedRoute>
+              <AppShell navItems={navItems} title="Step Experience" currentLane="lane2">
+                <Routes>
+                  <Route path="/" element={<StepHome />} />
+                  <Route path="/steps" element={<Steps />} />
+                  <Route path="/journal" element={<Journal />} />
+                  <Route path="/community" element={<Community />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/achievements" element={<Achievements />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </AppShell>
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Suspense>
   );
 }
 
