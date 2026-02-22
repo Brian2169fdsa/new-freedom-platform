@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   PageContainer,
   Card,
@@ -11,6 +11,10 @@ import {
   Badge,
   useAuth,
 } from '@reprieve/shared';
+import {
+  createCheckoutSession,
+  createPortalSession,
+} from '@reprieve/shared/services/firebase/functions';
 import {
   Heart,
   DollarSign,
@@ -32,6 +36,9 @@ import {
   Building2,
   Wifi,
   Sparkles,
+  AlertCircle,
+  CreditCard,
+  Settings,
 } from 'lucide-react';
 
 // --- Constants & Mock Data ---
@@ -301,10 +308,12 @@ function DonationForm({
   finalAmount,
   isMonthly,
   onSuccess,
+  onError,
 }: {
   readonly finalAmount: number;
   readonly isMonthly: boolean;
   readonly onSuccess: () => void;
+  readonly onError: (message: string) => void;
 }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -312,15 +321,43 @@ function DonationForm({
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [processing, setProcessing] = useState(false);
 
-  const handleDonate = () => {
+  const handleDonate = useCallback(async () => {
     if (finalAmount <= 0) return;
+    if (finalAmount < 1) {
+      onError('Minimum donation amount is $1.00.');
+      return;
+    }
+
     setProcessing(true);
-    // Simulate a short delay for UX
-    setTimeout(() => {
+
+    try {
+      const result = await createCheckoutSession({
+        amount: finalAmount,
+        currency: 'usd',
+        donorName: isAnonymous ? undefined : (name || undefined),
+        email: email || undefined,
+        isRecurring: isMonthly,
+        metadata: dedication ? { dedication } : undefined,
+      });
+
+      const { url } = result.data;
+
+      if (url) {
+        // Redirect to Stripe Checkout
+        window.location.href = url;
+      } else {
+        onError('Unable to create checkout session. Please try again.');
+      }
+    } catch (err) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : 'Something went wrong. Please try again.';
+      onError(message);
+    } finally {
       setProcessing(false);
-      onSuccess();
-    }, 1200);
-  };
+    }
+  }, [finalAmount, isMonthly, name, email, dedication, isAnonymous, onError]);
 
   return (
     <Card>
@@ -415,11 +452,11 @@ function DonationForm({
           {processing ? (
             <span className="flex items-center gap-2">
               <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              Processing...
+              Connecting to Stripe...
             </span>
           ) : (
             <span className="flex items-center gap-2">
-              <Heart className="h-5 w-5" />
+              <CreditCard className="h-5 w-5" />
               Donate ${finalAmount > 0 ? finalAmount.toFixed(2) : '0.00'}
               {isMonthly ? '/month' : ''}
             </span>
@@ -458,10 +495,12 @@ function SuccessModal({ amount, isMonthly, onClose }: {
 
         <div className="bg-purple-50 border border-purple-100 rounded-lg p-3 mb-5">
           <p className="text-xs text-purple-700 font-medium">
-            Stripe integration coming soon. Thank you for your support!
+            A receipt has been sent to your email address.
           </p>
           <p className="text-xs text-purple-500 mt-1">
-            Payment processing will be activated shortly. No charges have been made.
+            {isMonthly
+              ? 'Your monthly donation will be processed automatically. You can manage it anytime.'
+              : 'Your donation is tax-deductible. Thank you for your generosity!'}
           </p>
         </div>
 
@@ -688,6 +727,135 @@ function TestimonialsSection() {
   );
 }
 
+// --- Manage Donations Button ---
+
+function ManageDonationsButton() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleManageDonations = useCallback(async (customerId: string) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const result = await createPortalSession({ customerId });
+      const { url } = result.data;
+
+      if (url) {
+        window.location.href = url;
+      } else {
+        setError('Unable to open billing portal. Please try again.');
+      }
+    } catch (err) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : 'Failed to open billing portal.';
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // The customerId would come from user profile/donation history.
+  // For now, we prompt the user or retrieve from stored data.
+  const [customerIdInput, setCustomerIdInput] = useState('');
+  const [showInput, setShowInput] = useState(false);
+
+  return (
+    <Card>
+      <CardContent className="p-4 space-y-3">
+        <div className="flex items-center gap-2">
+          <Settings className="h-5 w-5 text-purple-600" />
+          <h3 className="font-semibold text-stone-800">Manage Recurring Donations</h3>
+        </div>
+        <p className="text-sm text-stone-500">
+          Update payment methods, change donation amounts, or cancel recurring donations
+          through the Stripe billing portal.
+        </p>
+
+        {error && (
+          <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <AlertCircle className="h-4 w-4 text-red-500 flex-shrink-0" />
+            <span className="text-sm text-red-700">{error}</span>
+          </div>
+        )}
+
+        {showInput ? (
+          <div className="space-y-2">
+            <Input
+              value={customerIdInput}
+              onChange={(e) => setCustomerIdInput(e.target.value)}
+              placeholder="Enter your Stripe customer ID (from donation receipt)"
+              className="text-sm"
+            />
+            <div className="flex gap-2">
+              <Button
+                onClick={() => handleManageDonations(customerIdInput)}
+                disabled={!customerIdInput.trim() || loading}
+                className="flex-1 bg-purple-600 hover:bg-purple-700 text-white"
+                size="sm"
+              >
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <div className="h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Opening...
+                  </span>
+                ) : (
+                  'Open Billing Portal'
+                )}
+              </Button>
+              <Button
+                onClick={() => {
+                  setShowInput(false);
+                  setError(null);
+                }}
+                variant="outline"
+                size="sm"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <Button
+            onClick={() => setShowInput(true)}
+            variant="outline"
+            className="w-full border-purple-200 text-purple-700 hover:bg-purple-50"
+            size="sm"
+          >
+            <Settings className="h-4 w-4 mr-1.5" />
+            Manage My Donations
+          </Button>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+// --- Error Banner ---
+
+function ErrorBanner({
+  message,
+  onDismiss,
+}: {
+  readonly message: string;
+  readonly onDismiss: () => void;
+}) {
+  return (
+    <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
+      <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
+      <div className="flex-1">
+        <p className="text-sm font-medium text-red-800">Donation Error</p>
+        <p className="text-sm text-red-600 mt-0.5">{message}</p>
+      </div>
+      <button onClick={onDismiss} className="text-red-400 hover:text-red-600">
+        <X className="h-4 w-4" />
+      </button>
+    </div>
+  );
+}
+
 // --- Main Page Component ---
 
 export default function Donate() {
@@ -696,12 +864,38 @@ export default function Donate() {
   const [customAmount, setCustomAmount] = useState('');
   const [isMonthly, setIsMonthly] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const finalAmount = selectedAmount ?? (parseFloat(customAmount) || 0);
+
+  // Check URL params for Stripe redirect status
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get('status');
+
+    if (status === 'success') {
+      setShowSuccess(true);
+      // Clean up URL params without reload
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, '', cleanUrl);
+    } else if (status === 'cancelled') {
+      setErrorMessage('Donation was cancelled. No charges were made.');
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, '', cleanUrl);
+    }
+  }, []);
 
   const handleSuccess = () => {
     setShowSuccess(true);
   };
+
+  const handleError = useCallback((message: string) => {
+    setErrorMessage(message);
+  }, []);
+
+  const handleDismissError = useCallback(() => {
+    setErrorMessage(null);
+  }, []);
 
   const handleCloseSuccess = () => {
     setShowSuccess(false);
@@ -713,6 +907,11 @@ export default function Donate() {
   return (
     <PageContainer>
       <div className="space-y-6">
+        {/* Error Banner */}
+        {errorMessage && (
+          <ErrorBanner message={errorMessage} onDismiss={handleDismissError} />
+        )}
+
         {/* 1. Hero Section */}
         <HeroSection />
 
@@ -731,15 +930,19 @@ export default function Donate() {
           finalAmount={finalAmount}
           isMonthly={isMonthly}
           onSuccess={handleSuccess}
+          onError={handleError}
         />
 
-        {/* 4. Active Campaigns */}
+        {/* 4. Manage Recurring Donations */}
+        {firebaseUser && <ManageDonationsButton />}
+
+        {/* 5. Active Campaigns */}
         <ActiveCampaigns />
 
-        {/* 5. Transparency Section */}
+        {/* 6. Transparency Section */}
         <TransparencySection />
 
-        {/* 6. Testimonials / Impact Stories */}
+        {/* 7. Testimonials / Impact Stories */}
         <TestimonialsSection />
 
         {/* Bottom CTA */}

@@ -17,3 +17,10 @@ export type { CrossLaneProgress, UseCrossLaneProgressResult } from './useCrossLa
 
 export { useActivityFeed } from './useActivityFeed';
 export type { ActivityFeedItem, ActivityType, UseActivityFeedResult } from './useActivityFeed';
+
+// Geolocation
+export { useGeolocation } from './useGeolocation';
+export type { GeolocationState } from './useGeolocation';
+
+// Online status
+export { useOnlineStatus } from './useOnlineStatus';

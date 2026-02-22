@@ -1,23 +1,57 @@
-import React, { useState } from 'react';
-import { useCollection, type Resource, type ResourceType } from '@reprieve/shared';
+import React, { useState, useMemo } from 'react';
+import {
+  useCollection,
+  useGeolocation,
+  haversineDistance,
+  formatDistance,
+  type Resource,
+  type ResourceType,
+} from '@reprieve/shared';
 import { where, orderBy } from 'firebase/firestore';
 import {
   MapPin, Phone, Clock, ExternalLink, Navigation, Search, AlertTriangle, Bed,
   Utensils, Stethoscope, Brain, Scale, Briefcase, Bus, Droplets, Wifi, HelpCircle,
+  List, Map as MapIcon, Locate,
 } from 'lucide-react';
 
-const RESOURCE_CATEGORIES: { type: ResourceType; label: string; icon: React.ReactNode; color: string }[] = [
-  { type: 'shelter', label: 'Shelters', icon: <Bed className="h-5 w-5" />, color: 'bg-blue-50 text-blue-600' },
-  { type: 'food', label: 'Food', icon: <Utensils className="h-5 w-5" />, color: 'bg-green-50 text-green-600' },
-  { type: 'medical', label: 'Medical', icon: <Stethoscope className="h-5 w-5" />, color: 'bg-red-50 text-red-600' },
-  { type: 'mental_health', label: 'Mental Health', icon: <Brain className="h-5 w-5" />, color: 'bg-purple-50 text-purple-600' },
-  { type: 'legal', label: 'Legal Aid', icon: <Scale className="h-5 w-5" />, color: 'bg-amber-50 text-amber-600' },
-  { type: 'employment', label: 'Jobs', icon: <Briefcase className="h-5 w-5" />, color: 'bg-emerald-50 text-emerald-600' },
-  { type: 'transportation', label: 'Transport', icon: <Bus className="h-5 w-5" />, color: 'bg-sky-50 text-sky-600' },
-  { type: 'showers', label: 'Showers', icon: <Droplets className="h-5 w-5" />, color: 'bg-cyan-50 text-cyan-600' },
-  { type: 'phone_internet', label: 'Phone/WiFi', icon: <Wifi className="h-5 w-5" />, color: 'bg-indigo-50 text-indigo-600' },
-  { type: 'other', label: 'Other', icon: <HelpCircle className="h-5 w-5" />, color: 'bg-stone-50 text-stone-600' },
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+type ViewMode = 'list' | 'map';
+
+const RESOURCE_CATEGORIES: { type: ResourceType; label: string; icon: React.ReactNode; color: string; markerColor: string }[] = [
+  { type: 'shelter', label: 'Shelters', icon: <Bed className="h-5 w-5" />, color: 'bg-blue-50 text-blue-600', markerColor: '#3b82f6' },
+  { type: 'food', label: 'Food', icon: <Utensils className="h-5 w-5" />, color: 'bg-green-50 text-green-600', markerColor: '#22c55e' },
+  { type: 'medical', label: 'Medical', icon: <Stethoscope className="h-5 w-5" />, color: 'bg-red-50 text-red-600', markerColor: '#ef4444' },
+  { type: 'mental_health', label: 'Mental Health', icon: <Brain className="h-5 w-5" />, color: 'bg-purple-50 text-purple-600', markerColor: '#a855f7' },
+  { type: 'legal', label: 'Legal Aid', icon: <Scale className="h-5 w-5" />, color: 'bg-amber-50 text-amber-600', markerColor: '#f59e0b' },
+  { type: 'employment', label: 'Jobs', icon: <Briefcase className="h-5 w-5" />, color: 'bg-emerald-50 text-emerald-600', markerColor: '#10b981' },
+  { type: 'transportation', label: 'Transport', icon: <Bus className="h-5 w-5" />, color: 'bg-sky-50 text-sky-600', markerColor: '#0ea5e9' },
+  { type: 'showers', label: 'Showers', icon: <Droplets className="h-5 w-5" />, color: 'bg-cyan-50 text-cyan-600', markerColor: '#06b6d4' },
+  { type: 'phone_internet', label: 'Phone/WiFi', icon: <Wifi className="h-5 w-5" />, color: 'bg-indigo-50 text-indigo-600', markerColor: '#6366f1' },
+  { type: 'other', label: 'Other', icon: <HelpCircle className="h-5 w-5" />, color: 'bg-stone-50 text-stone-600', markerColor: '#78716c' },
 ];
+
+function getCategoryInfo(type: ResourceType) {
+  return RESOURCE_CATEGORIES.find((c) => c.type === type) ?? RESOURCE_CATEGORIES[RESOURCE_CATEGORIES.length - 1];
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function getDirectionsUrl(address: string): string {
+  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`;
+}
+
+function getSearchUrl(address: string): string {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+}
+
+// ---------------------------------------------------------------------------
+// Sub-components
+// ---------------------------------------------------------------------------
 
 function EmergencyBanner() {
   return (
@@ -43,18 +77,34 @@ function EmergencyBanner() {
   );
 }
 
-function ResourceCard({ resource }: { resource: Resource }) {
-  const category = RESOURCE_CATEGORIES.find((c) => c.type === resource.type);
-  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(resource.address)}`;
+function DistanceBadge({ miles }: { miles: number }) {
+  return (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">
+      <Locate className="h-3 w-3" />
+      {formatDistance(miles)}
+    </span>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Resource Card (used in list view)
+// ---------------------------------------------------------------------------
+
+function ResourceCard({ resource, distance }: { resource: Resource; distance: number | null }) {
+  const category = getCategoryInfo(resource.type);
+  const mapsUrl = getSearchUrl(resource.address);
 
   return (
     <div className="bg-white rounded-xl border border-stone-200 p-4">
       <div className="flex items-start gap-3">
-        <div className={`p-2 rounded-lg flex-shrink-0 ${category?.color || 'bg-stone-50 text-stone-600'}`}>
-          {category?.icon || <HelpCircle className="h-5 w-5" />}
+        <div className={`p-2 rounded-lg flex-shrink-0 ${category.color}`}>
+          {category.icon}
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-stone-800 text-sm">{resource.name}</h3>
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="font-semibold text-stone-800 text-sm">{resource.name}</h3>
+            {distance !== null && <DistanceBadge miles={distance} />}
+          </div>
           <p className="text-xs text-stone-500 mt-0.5">{resource.description}</p>
 
           <div className="mt-3 space-y-1.5">
@@ -139,6 +189,235 @@ function ResourceCard({ resource }: { resource: Resource }) {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Map View
+// ---------------------------------------------------------------------------
+
+function MapPlaceholderSvg() {
+  return (
+    <svg
+      viewBox="0 0 400 300"
+      className="w-full h-full"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="Map placeholder"
+    >
+      {/* Background */}
+      <rect width="400" height="300" fill="#e8e4de" />
+
+      {/* Grid lines representing streets */}
+      <g stroke="#d6d3cd" strokeWidth="1.5">
+        {/* Horizontal streets */}
+        <line x1="0" y1="50" x2="400" y2="50" />
+        <line x1="0" y1="100" x2="400" y2="100" />
+        <line x1="0" y1="150" x2="400" y2="150" />
+        <line x1="0" y1="200" x2="400" y2="200" />
+        <line x1="0" y1="250" x2="400" y2="250" />
+
+        {/* Vertical streets */}
+        <line x1="60" y1="0" x2="60" y2="300" />
+        <line x1="130" y1="0" x2="130" y2="300" />
+        <line x1="200" y1="0" x2="200" y2="300" />
+        <line x1="270" y1="0" x2="270" y2="300" />
+        <line x1="340" y1="0" x2="340" y2="300" />
+      </g>
+
+      {/* Main roads (wider) */}
+      <g stroke="#cbc7c0" strokeWidth="3">
+        <line x1="0" y1="150" x2="400" y2="150" />
+        <line x1="200" y1="0" x2="200" y2="300" />
+      </g>
+
+      {/* Green areas */}
+      <rect x="65" y="55" width="60" height="40" rx="4" fill="#c8dfc0" opacity="0.6" />
+      <rect x="275" y="205" width="60" height="40" rx="4" fill="#c8dfc0" opacity="0.6" />
+
+      {/* Center label */}
+      <text x="200" y="155" textAnchor="middle" fill="#9ca3af" fontSize="12" fontFamily="system-ui">
+        Phoenix, AZ
+      </text>
+
+      {/* Map pin icon in center */}
+      <g transform="translate(192, 115)">
+        <path
+          d="M8 0C3.6 0 0 3.6 0 8c0 5.4 8 14 8 14s8-8.6 8-14c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"
+          fill="#f59e0b"
+          opacity="0.7"
+        />
+      </g>
+    </svg>
+  );
+}
+
+function MapSidebarItem({
+  resource,
+  distance,
+}: {
+  resource: Resource;
+  distance: number | null;
+}) {
+  const category = getCategoryInfo(resource.type);
+  const directionsUrl = getDirectionsUrl(resource.address);
+
+  return (
+    <div className="border-b border-stone-100 last:border-b-0 p-3">
+      <div className="flex items-start gap-2.5">
+        {/* Category color dot */}
+        <div
+          className="w-3 h-3 rounded-full flex-shrink-0 mt-1"
+          style={{ backgroundColor: category.markerColor }}
+          title={category.label}
+        />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-2">
+            <h4 className="font-semibold text-stone-800 text-xs leading-tight">
+              {resource.name}
+            </h4>
+            {distance !== null && <DistanceBadge miles={distance} />}
+          </div>
+
+          <p className="text-xs text-stone-500 mt-0.5 truncate">{resource.address}</p>
+
+          <div className="flex items-center gap-1.5 mt-2">
+            <a
+              href={directionsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 px-2.5 py-1 bg-amber-500 text-white rounded-md text-xs font-medium hover:bg-amber-600 transition-colors"
+            >
+              <Navigation className="h-3 w-3" />
+              Get Directions
+            </a>
+            {resource.phone && (
+              <a
+                href={`tel:${resource.phone}`}
+                className="flex items-center gap-1 px-2.5 py-1 bg-green-500 text-white rounded-md text-xs font-medium hover:bg-green-600 transition-colors"
+              >
+                <Phone className="h-3 w-3" />
+                Call
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MapView({
+  resources,
+  distances,
+}: {
+  resources: Resource[];
+  distances: Map<string, number>;
+}) {
+  return (
+    <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
+      {/* Legend */}
+      <div className="border-b border-stone-200 px-4 py-2.5 bg-stone-50">
+        <div className="flex flex-wrap gap-x-4 gap-y-1">
+          {RESOURCE_CATEGORIES.slice(0, -1).map((cat) => (
+            <div key={cat.type} className="flex items-center gap-1.5">
+              <div
+                className="w-2.5 h-2.5 rounded-full"
+                style={{ backgroundColor: cat.markerColor }}
+              />
+              <span className="text-xs text-stone-600">{cat.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex flex-col md:flex-row">
+        {/* Map placeholder area */}
+        <div className="md:w-1/2 relative bg-stone-100">
+          <div className="aspect-[4/3] md:aspect-auto md:h-full min-h-[240px] flex items-center justify-center relative overflow-hidden">
+            <MapPlaceholderSvg />
+
+            {/* Overlay with resource count markers */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/5">
+              <div className="bg-white/90 backdrop-blur-sm rounded-xl px-5 py-4 shadow-lg text-center">
+                <MapIcon className="h-8 w-8 text-amber-500 mx-auto mb-2" />
+                <p className="text-sm font-semibold text-stone-800">
+                  {resources.length} Resources in Phoenix
+                </p>
+                <p className="text-xs text-stone-500 mt-1">
+                  Use "Get Directions" to navigate
+                </p>
+                <p className="text-xs text-stone-400 mt-0.5">
+                  Full map requires Google Maps API key
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Sidebar with resource list */}
+        <div className="md:w-1/2 max-h-[500px] overflow-y-auto divide-y divide-stone-100">
+          {resources.length === 0 ? (
+            <div className="p-6 text-center">
+              <MapPin className="h-6 w-6 text-stone-300 mx-auto" />
+              <p className="text-sm text-stone-500 mt-2">No resources match your filters</p>
+            </div>
+          ) : (
+            resources.map((resource) => (
+              <MapSidebarItem
+                key={resource.id}
+                resource={resource}
+                distance={distances.get(resource.id) ?? null}
+              />
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// View Toggle
+// ---------------------------------------------------------------------------
+
+function ViewToggle({
+  view,
+  onViewChange,
+}: {
+  view: ViewMode;
+  onViewChange: (v: ViewMode) => void;
+}) {
+  return (
+    <div className="inline-flex bg-stone-100 rounded-lg p-0.5">
+      <button
+        onClick={() => onViewChange('list')}
+        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+          view === 'list'
+            ? 'bg-white text-stone-800 shadow-sm'
+            : 'text-stone-500 hover:text-stone-700'
+        }`}
+        aria-pressed={view === 'list'}
+      >
+        <List className="h-3.5 w-3.5" />
+        List View
+      </button>
+      <button
+        onClick={() => onViewChange('map')}
+        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+          view === 'map'
+            ? 'bg-white text-stone-800 shadow-sm'
+            : 'text-stone-500 hover:text-stone-700'
+        }`}
+        aria-pressed={view === 'map'}
+      >
+        <MapIcon className="h-3.5 w-3.5" />
+        Map View
+      </button>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Loading skeleton
+// ---------------------------------------------------------------------------
+
 function LoadingSkeleton() {
   return (
     <div className="space-y-3">
@@ -158,9 +437,16 @@ function LoadingSkeleton() {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Main component
+// ---------------------------------------------------------------------------
+
 export default function Resources() {
   const [selectedType, setSelectedType] = useState<ResourceType | 'all'>('all');
   const [search, setSearch] = useState('');
+  const [view, setView] = useState<ViewMode>('list');
+
+  const geo = useGeolocation();
 
   const constraints = selectedType === 'all'
     ? [orderBy('name')]
@@ -168,21 +454,66 @@ export default function Resources() {
 
   const { data: resources, loading } = useCollection<Resource>('resources', ...constraints);
 
-  const filtered = search
-    ? resources.filter((r) =>
-        r.name.toLowerCase().includes(search.toLowerCase()) ||
-        r.description.toLowerCase().includes(search.toLowerCase())
-      )
-    : resources;
+  // Calculate distances for all resources that have coordinates
+  const distances = useMemo<Map<string, number>>(() => {
+    const map = new Map<string, number>();
+    if (geo.latitude === null || geo.longitude === null) {
+      return map;
+    }
+    for (const r of resources) {
+      if (r.location?.latitude != null && r.location?.longitude != null) {
+        const d = haversineDistance(
+          geo.latitude,
+          geo.longitude,
+          r.location.latitude,
+          r.location.longitude,
+        );
+        map.set(r.id, d);
+      }
+    }
+    return map;
+  }, [resources, geo.latitude, geo.longitude]);
+
+  // Filter by search text
+  const searched = useMemo(() => {
+    if (!search) return resources;
+    const term = search.toLowerCase();
+    return resources.filter((r) =>
+      r.name.toLowerCase().includes(term) ||
+      r.description.toLowerCase().includes(term),
+    );
+  }, [resources, search]);
+
+  // Sort by distance when location is available, otherwise keep original order
+  const sorted = useMemo(() => {
+    if (distances.size === 0) return searched;
+    return [...searched].sort((a, b) => {
+      const da = distances.get(a.id) ?? Infinity;
+      const db = distances.get(b.id) ?? Infinity;
+      return da - db;
+    });
+  }, [searched, distances]);
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-xl font-bold text-stone-800">Resources</h1>
-        <p className="text-sm text-stone-500 mt-0.5">Find help near you in Phoenix</p>
+      {/* Header with view toggle */}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-bold text-stone-800">Resources</h1>
+          <p className="text-sm text-stone-500 mt-0.5">Find help near you in Phoenix</p>
+        </div>
+        <ViewToggle view={view} onViewChange={setView} />
       </div>
 
       <EmergencyBanner />
+
+      {/* Location status */}
+      {!geo.loading && geo.latitude !== null && (
+        <div className="flex items-center gap-2 text-xs text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+          <Locate className="h-3.5 w-3.5" />
+          <span>Location enabled — resources sorted by distance</span>
+        </div>
+      )}
 
       {/* Search */}
       <div className="relative">
@@ -226,7 +557,9 @@ export default function Resources() {
       {/* Results */}
       {loading ? (
         <LoadingSkeleton />
-      ) : filtered.length === 0 ? (
+      ) : view === 'map' ? (
+        <MapView resources={sorted} distances={distances} />
+      ) : sorted.length === 0 ? (
         <div className="bg-white rounded-xl border border-stone-200 p-8 text-center">
           <MapPin className="h-8 w-8 text-stone-300 mx-auto" />
           <h3 className="font-medium text-stone-800 mt-3">No resources found</h3>
@@ -236,9 +569,13 @@ export default function Resources() {
         </div>
       ) : (
         <div className="space-y-3">
-          <p className="text-xs text-stone-400">{filtered.length} resources found</p>
-          {filtered.map((resource) => (
-            <ResourceCard key={resource.id} resource={resource} />
+          <p className="text-xs text-stone-400">{sorted.length} resources found</p>
+          {sorted.map((resource) => (
+            <ResourceCard
+              key={resource.id}
+              resource={resource}
+              distance={distances.get(resource.id) ?? null}
+            />
           ))}
         </div>
       )}

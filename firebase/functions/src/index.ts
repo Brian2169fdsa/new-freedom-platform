@@ -46,5 +46,13 @@ export {
   weeklyProgressReport,
 } from "./scheduled";
 
+// Stripe donation functions.
+export {
+  createCheckoutSession,
+  createPortalSession,
+  stripeWebhook,
+  getDonationHistory,
+} from "./stripe";
+
 // Public endpoints.
 export {me} from "./public/me";
