@@ -9,6 +9,8 @@ export interface UserProfile {
   lastName: string;
   dateOfBirth?: Timestamp;
   gender?: string;
+  city?: string;
+  state?: string;
   preferredLanguage: 'en' | 'es';
   bio?: string;
   sobrietyDate?: Timestamp;
