@@ -16,7 +16,6 @@ export {blockUser} from "./callable/blockUser";
 export {unblockUser} from "./callable/unblockUser";
 export {deleteUser} from "./callable/deleteUser";
 export {suspendUser} from "./callable/suspendUser";
-export {getInviteCode} from "./callable/getInviteCode";
 export {
   getPendingModerationReportId,
 } from "./callable/getPendingModerationReportId";
@@ -41,5 +40,3 @@ export {
 
 // Public endpoints.
 export {me} from "./public/me";
-export {verifyInviteCode} from "./public/verifyInviteCode";
-export {saveInviteRequest} from "./public/saveInviteRequest";

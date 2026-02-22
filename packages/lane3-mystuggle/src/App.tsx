@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { InviteGate, ProtectedRoute, LoginForm, AppShell } from '@reprieve/shared';
+import { ProtectedRoute, LoginForm, AppShell } from '@reprieve/shared';
 import type { NavItem } from '@reprieve/shared/components/layout/BottomNav';
 import { Newspaper, MapPin, BookHeart, Users, UserCircle } from 'lucide-react';
 import Feed from './pages/Feed';
@@ -20,30 +20,28 @@ const navItems: NavItem[] = [
 
 function App() {
   return (
-    <InviteGate>
-      <Routes>
-        <Route path="/login" element={<LoginForm />} />
-        <Route
-          path="/*"
-          element={
-            <ProtectedRoute>
-              <AppShell navItems={navItems} title="My Struggle">
-                <Routes>
-                  <Route path="/" element={<Feed />} />
-                  <Route path="/resources" element={<Resources />} />
-                  <Route path="/stories" element={<Stories />} />
-                  <Route path="/connect" element={<Connect />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/donate" element={<Donate />} />
-                  <Route path="/events" element={<Events />} />
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-              </AppShell>
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </InviteGate>
+    <Routes>
+      <Route path="/login" element={<LoginForm />} />
+      <Route
+        path="/*"
+        element={
+          <ProtectedRoute>
+            <AppShell navItems={navItems} title="My Struggle">
+              <Routes>
+                <Route path="/" element={<Feed />} />
+                <Route path="/resources" element={<Resources />} />
+                <Route path="/stories" element={<Stories />} />
+                <Route path="/connect" element={<Connect />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/donate" element={<Donate />} />
+                <Route path="/events" element={<Events />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </AppShell>
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   );
 }
 

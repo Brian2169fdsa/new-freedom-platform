@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { InviteGate, ProtectedRoute, LoginForm, LoadingScreen, AppShell } from '@reprieve/shared';
+import { ProtectedRoute, LoginForm, LoadingScreen, AppShell } from '@reprieve/shared';
 import type { NavItem } from '@reprieve/shared/components/layout/BottomNav';
 import { Home, Target, MessageSquare, Wrench, UserCircle } from 'lucide-react';
 import Dashboard from './pages/Dashboard';
@@ -23,33 +23,31 @@ const navItems: NavItem[] = [
 
 function App() {
   return (
-    <InviteGate>
-      <Routes>
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
-        <Route
-          path="/*"
-          element={
-            <ProtectedRoute>
-              <AppShell navItems={navItems} title="Re-Entry">
-                <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/goals" element={<Goals />} />
-                  <Route path="/messages" element={<Messages />} />
-                  <Route path="/tools" element={<Tools />} />
-                  <Route path="/tools/documents" element={<DocumentVault />} />
-                  <Route path="/tools/budget" element={<BudgetTracker />} />
-                  <Route path="/tools/calendar" element={<CalendarView />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/ai-chat" element={<AIChat />} />
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-              </AppShell>
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </InviteGate>
+    <Routes>
+      <Route path="/login" element={<LoginForm />} />
+      <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
+      <Route
+        path="/*"
+        element={
+          <ProtectedRoute>
+            <AppShell navItems={navItems} title="Re-Entry">
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/goals" element={<Goals />} />
+                <Route path="/messages" element={<Messages />} />
+                <Route path="/tools" element={<Tools />} />
+                <Route path="/tools/documents" element={<DocumentVault />} />
+                <Route path="/tools/budget" element={<BudgetTracker />} />
+                <Route path="/tools/calendar" element={<CalendarView />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/ai-chat" element={<AIChat />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </AppShell>
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   );
 }
 

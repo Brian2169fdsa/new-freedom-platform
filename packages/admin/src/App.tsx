@@ -9,7 +9,6 @@ import Courses from './pages/Courses';
 import Resources from './pages/Resources';
 import Employment from './pages/Employment';
 import Reports from './pages/Reports';
-import InviteCodes from './pages/InviteCodes';
 import Donations from './pages/Donations';
 import AdminSettings from './pages/AdminSettings';
 
@@ -40,7 +39,6 @@ function App() {
                 <Route path="/resources" element={<Resources />} />
                 <Route path="/employment" element={<Employment />} />
                 <Route path="/reports" element={<Reports />} />
-                <Route path="/invite-codes" element={<InviteCodes />} />
                 <Route path="/donations" element={<Donations />} />
                 <Route path="/settings" element={<AdminSettings />} />
                 <Route path="*" element={<Navigate to="/" replace />} />

@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { InviteGate, ProtectedRoute, LoginForm, AppShell } from '@reprieve/shared';
+import { ProtectedRoute, LoginForm, AppShell } from '@reprieve/shared';
 import type { NavItem } from '@reprieve/shared/components/layout/BottomNav';
 import { Home, BookOpen, PenSquare, Users, UserCircle } from 'lucide-react';
 import StepHome from './pages/StepHome';
@@ -19,29 +19,27 @@ const navItems: NavItem[] = [
 
 function App() {
   return (
-    <InviteGate>
-      <Routes>
-        <Route path="/login" element={<LoginForm />} />
-        <Route
-          path="/*"
-          element={
-            <ProtectedRoute>
-              <AppShell navItems={navItems} title="Step Experience">
-                <Routes>
-                  <Route path="/" element={<StepHome />} />
-                  <Route path="/steps" element={<Steps />} />
-                  <Route path="/journal" element={<Journal />} />
-                  <Route path="/community" element={<Community />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/achievements" element={<Achievements />} />
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-              </AppShell>
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </InviteGate>
+    <Routes>
+      <Route path="/login" element={<LoginForm />} />
+      <Route
+        path="/*"
+        element={
+          <ProtectedRoute>
+            <AppShell navItems={navItems} title="Step Experience">
+              <Routes>
+                <Route path="/" element={<StepHome />} />
+                <Route path="/steps" element={<Steps />} />
+                <Route path="/journal" element={<Journal />} />
+                <Route path="/community" element={<Community />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/achievements" element={<Achievements />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </AppShell>
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   );
 }
 

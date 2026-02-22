@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { cn } from '@reprieve/shared/utils/cn';
 import {
   LayoutDashboard, Users, UserCog, Shield, BookOpen,
-  MapPin, Briefcase, BarChart3, Ticket, Heart, Settings,
+  MapPin, Briefcase, BarChart3, Heart, Settings,
 } from 'lucide-react';
 
 const sidebarItems = [
@@ -14,7 +14,6 @@ const sidebarItems = [
   { label: 'Resources', path: '/resources', icon: MapPin },
   { label: 'Employment', path: '/employment', icon: Briefcase },
   { label: 'Reports', path: '/reports', icon: BarChart3 },
-  { label: 'Invite Codes', path: '/invite-codes', icon: Ticket },
   { label: 'Donations', path: '/donations', icon: Heart },
   { label: 'Settings', path: '/settings', icon: Settings },
 ];

@@ -185,18 +185,6 @@ service cloud.firestore {
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
     }
 
-    // ── Admin: Invite Codes ───────────────────────────────────────────
-    match /invites/{inviteId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-
-    match /inviteRequests/{requestId} {
-      allow read: if isSignedIn();
-      allow create: if true;
-      allow update: if isAdmin();
-    }
-
     // ── Admin: Moderation ─────────────────────────────────────────────
     match /moderationReports/{reportId} {
       allow read: if isStaff();

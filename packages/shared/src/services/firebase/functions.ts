@@ -5,8 +5,6 @@ export const callFunction = <T = unknown, R = unknown>(name: string) =>
   httpsCallable<T, R>(functions, name);
 
 // Pre-defined callable functions matching existing backend
-export const verifyInviteCode = callFunction<{ code: string }, { success: boolean }>('verifyInviteCode');
-export const getInviteCode = callFunction<void, { code: string }>('getInviteCode');
 export const savePost = callFunction('savePost');
 export const saveMessage = callFunction('saveMessage');
 export const likePost = callFunction('likePost');
