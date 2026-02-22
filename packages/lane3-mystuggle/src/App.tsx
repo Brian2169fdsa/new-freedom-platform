@@ -8,6 +8,7 @@ const Feed = lazy(() => import('./pages/Feed'));
 const Resources = lazy(() => import('./pages/Resources'));
 const Stories = lazy(() => import('./pages/Stories'));
 const Connect = lazy(() => import('./pages/Connect'));
+const Groups = lazy(() => import('./pages/Groups'));
 const Profile = lazy(() => import('./pages/Profile'));
 const Donate = lazy(() => import('./pages/Donate'));
 const Events = lazy(() => import('./pages/Events'));
@@ -38,6 +39,7 @@ function App() {
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/donate" element={<Donate />} />
                   <Route path="/events" element={<Events />} />
+                  <Route path="/groups" element={<Groups />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </AppShell>

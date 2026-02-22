@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { useAuth, useCollection, type MentorMatch, type Conversation, type Message } from '@reprieve/shared';
 import { where, orderBy, limit } from 'firebase/firestore';
 import { addDocument, updateDocument } from '@reprieve/shared/services/firebase/firestore';
+import { Link } from 'react-router-dom';
 import {
   Users, MessageSquare, Search, Send, Heart, Shield, Clock,
-  UserPlus, ChevronRight, Star, CheckCircle2, ArrowLeft,
+  UserPlus, ChevronRight, Star, CheckCircle2, ArrowLeft, UsersRound,
 } from 'lucide-react';
 
 type Tab = 'find' | 'matches' | 'messages';
@@ -222,6 +223,23 @@ export default function Connect() {
           </p>
         </div>
       </div>
+
+      {/* Support Groups Link */}
+      <Link
+        to="/groups"
+        className="flex items-center gap-3 bg-gradient-to-r from-amber-50 to-stone-50 rounded-xl border border-amber-200 p-4 hover:border-amber-300 transition-colors"
+      >
+        <div className="h-10 w-10 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+          <UsersRound className="h-5 w-5 text-amber-700" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-stone-800 text-sm">Support Groups</h3>
+          <p className="text-xs text-stone-500 mt-0.5">
+            Find groups for recovery, housing, employment, and more
+          </p>
+        </div>
+        <ChevronRight className="h-5 w-5 text-stone-400 flex-shrink-0" />
+      </Link>
 
       {/* Tabs */}
       <div className="flex gap-1 bg-stone-100 rounded-lg p-1">

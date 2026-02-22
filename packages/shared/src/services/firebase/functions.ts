@@ -75,6 +75,77 @@ export const getDonationHistory = callFunction<
   }
 >('getDonationHistory');
 
+// Audit log callable functions
+export interface AuditLogFilters {
+  dateFrom?: string;
+  dateTo?: string;
+  actionCategory?: string;
+  actorSearch?: string;
+  severity?: string;
+}
+
+export interface AuditLogActor {
+  uid: string;
+  email: string;
+  displayName: string;
+}
+
+export interface AuditLogTarget {
+  type: string;
+  id: string;
+  name?: string;
+}
+
+export interface AuditLogEntry {
+  id: string;
+  actor: AuditLogActor;
+  action: string;
+  category: string;
+  target?: AuditLogTarget;
+  severity: 'info' | 'warning' | 'critical';
+  details?: Record<string, unknown>;
+  ip?: string;
+  createdAt: unknown;
+}
+
+export const getAuditLogFn = callFunction<
+  {
+    pageSize?: number;
+    startAfterTimestamp?: string;
+    filters?: AuditLogFilters;
+  },
+  {
+    entries: AuditLogEntry[];
+    hasMore: boolean;
+    totalEstimate: number;
+  }
+>('getAuditLog');
+
+export interface ExportAuditLogEntry {
+  id: string;
+  timestamp: string;
+  actorUid: string;
+  actorEmail: string;
+  actorName: string;
+  action: string;
+  category: string;
+  severity: string;
+  targetType?: string;
+  targetId?: string;
+  targetName?: string;
+  details?: string;
+  ip?: string;
+}
+
+export const exportAuditLogFn = callFunction<
+  { filters?: AuditLogFilters },
+  {
+    entries: ExportAuditLogEntry[];
+    exportedAt: string;
+    totalCount: number;
+  }
+>('exportAuditLog');
+
 // Privacy & GDPR callable functions
 export const exportUserData = callFunction<
   void,

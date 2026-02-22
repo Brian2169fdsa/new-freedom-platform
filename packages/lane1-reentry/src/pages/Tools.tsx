@@ -10,6 +10,7 @@ import {
   FolderOpen,
   ChevronRight,
   Mic,
+  Home,
   FileCheck,
   Send,
   Clock,
@@ -62,6 +63,13 @@ const tools = [
     description: 'Practice with AI-powered interviews',
     path: '/tools/interview',
     color: 'bg-teal-100 text-teal-700',
+  },
+  {
+    icon: Home,
+    label: 'Housing Search',
+    description: 'Sober living, shelters & affordable housing',
+    path: '/tools/housing',
+    color: 'bg-orange-100 text-orange-700',
   },
 ];
 

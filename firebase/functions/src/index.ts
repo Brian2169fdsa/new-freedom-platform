@@ -62,6 +62,9 @@ export {
   updatePrivacySettings,
 } from "./privacy";
 
+// Audit log.
+export {getAuditLog, exportAuditLog} from "./auditLog";
+
 // Public endpoints.
 export {me} from "./public/me";
 

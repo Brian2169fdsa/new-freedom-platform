@@ -47,6 +47,9 @@ const MODERATION_QUEUE_COLLECTION = "moderation_queue";
 // Agent infrastructure collections
 const AGENT_SESSIONS_COLLECTION = "agent_sessions";
 
+// Admin audit collections
+const AUDIT_LOG_COLLECTION = "audit_log";
+
 // Firestore prod collection names
 const ProdCollections = [
   POSTS_COLLECTION,
@@ -79,6 +82,7 @@ const ProdCollections = [
   WELLNESS_CHECKINS_COLLECTION,
   MODERATION_QUEUE_COLLECTION,
   AGENT_SESSIONS_COLLECTION,
+  AUDIT_LOG_COLLECTION,
 ];
 
 // Firestore data types
@@ -115,6 +119,7 @@ export {
   WELLNESS_CHECKINS_COLLECTION,
   MODERATION_QUEUE_COLLECTION,
   AGENT_SESSIONS_COLLECTION,
+  AUDIT_LOG_COLLECTION,
   ProdCollections,
   FirestoreTypes,
   ProjectConfig,

@@ -10,6 +10,7 @@ const Journal = lazy(() => import('./pages/Journal'));
 const Community = lazy(() => import('./pages/Community'));
 const Profile = lazy(() => import('./pages/Profile'));
 const Achievements = lazy(() => import('./pages/Achievements'));
+const StepDetail = lazy(() => import('./pages/StepDetail'));
 
 const navItems: NavItem[] = [
   { label: 'Home', path: '/', icon: Home },
@@ -32,6 +33,7 @@ function App() {
                 <Routes>
                   <Route path="/" element={<StepHome />} />
                   <Route path="/steps" element={<Steps />} />
+                  <Route path="/steps/:stepId" element={<StepDetail />} />
                   <Route path="/journal" element={<Journal />} />
                   <Route path="/community" element={<Community />} />
                   <Route path="/profile" element={<Profile />} />

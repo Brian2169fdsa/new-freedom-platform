@@ -17,6 +17,7 @@ const Profile = lazy(() => import('./pages/Profile'));
 const AIChat = lazy(() => import('./pages/AIChat'));
 const Onboarding = lazy(() => import('./pages/Onboarding'));
 const MockInterview = lazy(() => import('./pages/MockInterview'));
+const Housing = lazy(() => import('./pages/Housing'));
 
 const navItems: NavItem[] = [
   { label: 'Home', path: '/', icon: Home },
@@ -48,6 +49,7 @@ function App() {
                   <Route path="/tools/calendar" element={<CalendarView />} />
                   <Route path="/tools/jobs" element={<JobBoard />} />
                   <Route path="/tools/interview" element={<MockInterview />} />
+                  <Route path="/tools/housing" element={<Housing />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/ai-chat" element={<AIChat />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
