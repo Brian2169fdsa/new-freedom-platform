@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
   getDocument,
-  getDocuments,
   subscribeToDocument,
   subscribeToCollection,
 } from '../services/firebase/firestore';
@@ -23,10 +22,19 @@ export function useDocument<T extends DocumentData>(
     }
 
     setLoading(true);
-    const unsubscribe = subscribeToDocument<T>(collectionName, docId, (doc) => {
-      setData(doc);
-      setLoading(false);
-    });
+    setError(null);
+    const unsubscribe = subscribeToDocument<T>(
+      collectionName,
+      docId,
+      (doc) => {
+        setData(doc);
+        setLoading(false);
+      },
+      (err) => {
+        setError(err);
+        setLoading(false);
+      }
+    );
 
     return () => unsubscribe();
   }, [collectionName, docId]);
@@ -44,6 +52,7 @@ export function useCollection<T extends DocumentData>(
 
   useEffect(() => {
     setLoading(true);
+    setError(null);
     const unsubscribe = subscribeToCollection<T>(
       collectionName,
       (docs) => {

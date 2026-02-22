@@ -68,11 +68,20 @@ export const deleteDocument = async (
 export const subscribeToDocument = <T extends DocumentData>(
   collectionName: string,
   docId: string,
-  callback: (data: T | null) => void
+  callback: (data: T | null) => void,
+  onError?: (error: Error) => void
 ) => {
-  return onSnapshot(doc(db, collectionName, docId), (docSnap) => {
-    callback(docSnap.exists() ? ({ id: docSnap.id, ...docSnap.data() } as unknown as T) : null);
-  });
+  return onSnapshot(
+    doc(db, collectionName, docId),
+    (docSnap) => {
+      callback(docSnap.exists() ? ({ id: docSnap.id, ...docSnap.data() } as unknown as T) : null);
+    },
+    (error) => {
+      console.warn(`Firestore subscription error (${collectionName}/${docId}):`, error.message);
+      callback(null);
+      onError?.(error);
+    }
+  );
 };
 
 export const subscribeToCollection = <T extends DocumentData>(
@@ -81,9 +90,16 @@ export const subscribeToCollection = <T extends DocumentData>(
   ...constraints: QueryConstraint[]
 ) => {
   const q = query(collection(db, collectionName), ...constraints);
-  return onSnapshot(q, (snapshot) => {
-    callback(snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as unknown as T)));
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      callback(snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as unknown as T)));
+    },
+    (error) => {
+      console.warn(`Firestore subscription error (${collectionName}):`, error.message);
+      callback([]);
+    }
+  );
 };
 
 export const addDocument = async (
