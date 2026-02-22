@@ -21,7 +21,7 @@ export function LoginForm() {
     setLoading(true);
     try {
       if (tab === 'signup') {
-        await signUpWithEmail(email, password);
+        await signUpWithEmail(email, password, displayName);
       } else {
         await signInWithEmail(email, password);
       }

@@ -9,16 +9,77 @@ import {
   type User as FirebaseUser,
 } from 'firebase/auth';
 import { auth } from './config';
+import { createDocument, getDocument } from './firestore';
 
 const googleProvider = new GoogleAuthProvider();
 
-export const signUpWithEmail = (email: string, password: string) =>
-  createUserWithEmailAndPassword(auth, email, password);
+const DEFAULT_USER_DATA = (uid: string, email: string, displayName: string, photoURL?: string) => {
+  const firstName = displayName?.split(' ')[0] || '';
+  const lastName = displayName?.split(' ').slice(1).join(' ') || '';
+  return {
+    uid,
+    email,
+    displayName,
+    photoURL: photoURL || '',
+    role: 'member',
+    lanes: ['lane1', 'lane2', 'lane3'],
+    profile: {
+      firstName,
+      lastName,
+      preferredLanguage: 'en',
+    },
+    settings: {
+      notifications: { push: true, email: true, sms: false },
+      privacy: { profileVisible: true, showSobrietyDate: false, shareProgressWithMentor: true },
+    },
+  };
+};
+
+export const signUpWithEmail = async (
+  email: string,
+  password: string,
+  displayName?: string
+) => {
+  const cred = await createUserWithEmailAndPassword(auth, email, password);
+
+  // Set displayName on Firebase Auth profile
+  if (displayName) {
+    await updateProfile(cred.user, { displayName });
+  }
+
+  // Create Firestore user document (graceful failure if rules not yet deployed)
+  try {
+    await createDocument('users', cred.user.uid, DEFAULT_USER_DATA(cred.user.uid, email, displayName || ''));
+  } catch (err) {
+    console.warn('Could not create user document — Firestore rules may not be deployed yet:', err);
+  }
+
+  return cred;
+};
 
 export const signInWithEmail = (email: string, password: string) =>
   signInWithEmailAndPassword(auth, email, password);
 
-export const signInWithGoogle = () => signInWithPopup(auth, googleProvider);
+export const signInWithGoogle = async () => {
+  const cred = await signInWithPopup(auth, googleProvider);
+
+  // Create Firestore user doc if it doesn't exist (first Google sign-in)
+  try {
+    const existing = await getDocument('users', cred.user.uid);
+    if (!existing) {
+      await createDocument('users', cred.user.uid, DEFAULT_USER_DATA(
+        cred.user.uid,
+        cred.user.email || '',
+        cred.user.displayName || '',
+        cred.user.photoURL || ''
+      ));
+    }
+  } catch (err) {
+    console.warn('Could not create user document — Firestore rules may not be deployed yet:', err);
+  }
+
+  return cred;
+};
 
 export const signOut = () => firebaseSignOut(auth);
 
