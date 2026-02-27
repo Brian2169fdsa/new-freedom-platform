@@ -11,6 +11,7 @@ export {onUserUpdated} from "./triggers/onUserUpdated";
 
 // Callable.
 export {chatWithAI} from "./callable/chatWithAI";
+export {getInviteCode} from "./callable/getInviteCode";
 export {archivePost} from "./callable/archivePost";
 export {blockUser} from "./callable/blockUser";
 export {unblockUser} from "./callable/unblockUser";

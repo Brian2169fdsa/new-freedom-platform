@@ -5,12 +5,27 @@ import {z} from "zod";
 import {run, InputGuardrailTripwireTriggered} from "@openai/agents";
 import type {AgentInputItem} from "@openai/agents";
 import {initializeAgents, triageAgent, crisisAgent} from "../agents/registry";
+import {MissingApiKeyError} from "../agents/config";
 import {createInitialContext, AgentSessionContext} from "../agents/context";
 import {
   getOrCreateSession,
   loadSessionHistory,
   saveSessionHistory,
 } from "../agents/sessions";
+
+// ---------------------------------------------------------------------------
+// Crisis fallback — used when the API is unavailable or crisis agent fails
+// ---------------------------------------------------------------------------
+const CRISIS_FALLBACK_MESSAGE = [
+  "I want you to know that you matter and help is available right now.",
+  "",
+  "Please contact one of these resources immediately:",
+  "- **988 Suicide & Crisis Lifeline:** Call or text 988",
+  "- **Crisis Text Line:** Text HOME to 741741",
+  "- **SAMHSA Helpline:** 1-800-662-4357",
+  "- **Arizona Crisis Line:** 1-844-534-4673",
+  "- **Emergency:** Call 911",
+].join("\n");
 
 // ---------------------------------------------------------------------------
 // Request / Response schemas
@@ -114,18 +129,7 @@ export const chatWithAI = callHandler(config, async (request, ctx) => {
         reply =
           typeof crisisResult.finalOutput === "string"
             ? crisisResult.finalOutput
-            : [
-              "I can see you're going through something really difficult right now.",
-              "",
-              "Please reach out to one of these resources:",
-              "- **988 Suicide & Crisis Lifeline:** Call or text 988",
-              "- **Crisis Text Line:** Text HOME to 741741",
-              "- **SAMHSA Helpline:** 1-800-662-4357",
-              "- **Arizona Crisis Line:** 1-844-534-4673",
-              "- **Emergency:** Call 911",
-              "",
-              "You are not alone. Someone is ready to help right now.",
-            ].join("\n");
+            : CRISIS_FALLBACK_MESSAGE;
 
         agentName = "Crisis Agent";
 
@@ -136,18 +140,20 @@ export const chatWithAI = callHandler(config, async (request, ctx) => {
           agentName
         );
       } catch (_crisisError) {
-        // Fallback if even crisis agent fails
-        reply = [
-          "I want you to know that you matter and help is available right now.",
-          "",
-          "Please contact one of these resources immediately:",
-          "- **988 Suicide & Crisis Lifeline:** Call or text 988",
-          "- **Crisis Text Line:** Text HOME to 741741",
-          "- **SAMHSA Helpline:** 1-800-662-4357",
-          "- **Emergency:** Call 911",
-        ].join("\n");
+        // Fallback if even crisis agent fails (e.g. API key missing)
+        reply = CRISIS_FALLBACK_MESSAGE;
         agentName = "Crisis Agent";
       }
+    } else if (error instanceof MissingApiKeyError) {
+      // API key not configured — crisis detection still works via keyword
+      // guardrail above, but normal chat requires the API
+      reply =
+        "I'm sorry, the AI assistant is temporarily unavailable. " +
+        "If you need immediate help, please contact:\n" +
+        "- **988 Suicide & Crisis Lifeline:** Call or text 988\n" +
+        "- **SAMHSA Helpline:** 1-800-662-4357\n\n" +
+        "Please try again later or reach out to your case manager.";
+      agentName = "System";
     } else {
       // Unexpected error — return a safe fallback
       reply =

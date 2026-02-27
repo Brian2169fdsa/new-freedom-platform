@@ -12,9 +12,9 @@
     "preDeployTest": "cross-env GOOGLE_APPLICATION_CREDENTIALS=src/tests/newfreedom_service_account_key.json vitest run --retry=10 --coverage --testTimeout=20000",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
-    "test": "cross-env GOOGLE_APPLICATION_CREDENTIALS=src\\tests\\newfreedom_service_account_key.json vitest run --retry=10",
-    "coverage": "cross-env GOOGLE_APPLICATION_CREDENTIALS=src\\tests\\newfreedom_service_account_key.json vitest run --retry=10 --coverage",
-    "test:watch": "cross-env GOOGLE_APPLICATION_CREDENTIALS=src\\tests\\newfreedom_service_account_key.json vitest --retry=10"
+    "test": "cross-env GOOGLE_APPLICATION_CREDENTIALS=src/tests/newfreedom_service_account_key.json vitest run --retry=10",
+    "coverage": "cross-env GOOGLE_APPLICATION_CREDENTIALS=src/tests/newfreedom_service_account_key.json vitest run --retry=10 --coverage",
+    "test:watch": "cross-env GOOGLE_APPLICATION_CREDENTIALS=src/tests/newfreedom_service_account_key.json vitest --retry=10"
   },
   "engines": {
     "node": "18"

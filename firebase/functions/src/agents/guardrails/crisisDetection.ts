@@ -54,24 +54,34 @@ export const crisisDetectionGuardrail: InputGuardrail = {
   name: 'crisis_detection',
 
   async execute({ input, context }) {
-    // Normalise input to a single string
-    const text =
-      typeof input === 'string'
-        ? input
-        : Array.isArray(input)
-          ? input
-              .map((msg: any) => {
-                if (typeof msg === 'string') return msg;
-                if (typeof msg.content === 'string') return msg.content;
-                if (Array.isArray(msg.content)) {
-                  return msg.content
-                    .map((part: any) => (typeof part === 'string' ? part : part.text || ''))
-                    .join(' ');
-                }
-                return '';
-              })
-              .join(' ')
-          : '';
+    // Only scan the LATEST user message, not the full history.
+    // This prevents re-triggering on crisis language from prior turns
+    // that was already handled by the Crisis Agent.
+    let text: string;
+    if (typeof input === 'string') {
+      text = input;
+    } else if (Array.isArray(input)) {
+      // Find the last user message in the array
+      const lastUserMsg = [...input].reverse().find(
+        (msg: any) => msg.role === 'user'
+      );
+      if (lastUserMsg) {
+        const msg = lastUserMsg as any;
+        if (typeof msg.content === 'string') {
+          text = msg.content;
+        } else if (Array.isArray(msg.content)) {
+          text = msg.content
+            .map((part: any) => (typeof part === 'string' ? part : part.text || ''))
+            .join(' ');
+        } else {
+          text = '';
+        }
+      } else {
+        text = '';
+      }
+    } else {
+      text = '';
+    }
 
     const matched = CRISIS_REGEX.test(text);
 

@@ -20,7 +20,7 @@ function getStripeClient(): Stripe {
     );
   }
 
-  return new Stripe(secretKey, {apiVersion: "2024-12-18.acacia"});
+  return new Stripe(secretKey, {apiVersion: "2026-01-28.clover"});
 }
 
 // ---------------------------------------------------------------------------
@@ -478,21 +478,20 @@ async function handleInvoicePaid(
   invoice: Stripe.Invoice
 ): Promise<void> {
   const db = getFirestore();
+  const subDetails = invoice.parent?.subscription_details;
   const subscriptionId =
-    typeof invoice.subscription === "string"
-      ? invoice.subscription
-      : invoice.subscription?.id || null;
+    typeof subDetails?.subscription === "string"
+      ? subDetails.subscription
+      : subDetails?.subscription?.id || null;
 
   const customerId =
     typeof invoice.customer === "string"
       ? invoice.customer
       : invoice.customer?.id || null;
 
-  // Look up original donation metadata from the subscription's first payment
-  const metadata = (invoice as Record<string, unknown>).subscription_details
-    ? ((invoice as Record<string, unknown>).subscription_details as
-        Record<string, unknown>).metadata as Record<string, string> || {}
-    : {};
+  // Look up original donation metadata from the subscription details
+  const metadata =
+    (subDetails?.metadata as Record<string, string> | null) ?? {};
 
   const donation: Donation = {
     id: invoice.id || `invoice_${Date.now()}`,
