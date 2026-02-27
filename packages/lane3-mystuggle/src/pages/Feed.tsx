@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth, useCollection, type Post, type Comment } from '@reprieve/shared';
 import { where, orderBy, collection, addDoc, onSnapshot, query, serverTimestamp, increment, doc, updateDoc } from 'firebase/firestore';
 import { db } from '@reprieve/shared/services/firebase/config';
 import { addDocument } from '@reprieve/shared/services/firebase/firestore';
 import { likePost, unlikePost, reportPost } from '@reprieve/shared/services/firebase/functions';
+import { uploadFile } from '@reprieve/shared/services/firebase/storage';
 import { Heart, MessageCircle, Share2, MoreHorizontal, Send, Eye, EyeOff, Image, Flag, Check, Copy } from 'lucide-react';
 
 const MOOD_EMOJI: Record<string, string> = {
@@ -275,17 +276,46 @@ function PostCard({ post, currentUserId }: { post: Post; currentUserId: string }
   );
 }
 
-function PostComposerFull({ onPost }: { onPost: (content: string, isAnonymous: boolean) => void }) {
+function PostComposerFull({ onPost, userId }: { onPost: (content: string, isAnonymous: boolean, mediaURLs: string[]) => Promise<void>; userId: string }) {
   const [content, setContent] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [posting, setPosting] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const imageFiles = files.filter(f => f.type.startsWith('image/'));
+    if (imageFiles.length === 0) return;
+    setSelectedFiles(prev => [...prev, ...imageFiles].slice(0, 4));
+    setPreviews(prev => [...prev, ...imageFiles.map(f => URL.createObjectURL(f))].slice(0, 4));
+    e.target.value = '';
+  };
+
+  const removeImage = (index: number) => {
+    URL.revokeObjectURL(previews[index]);
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+    setPreviews(prev => prev.filter((_, i) => i !== index));
+  };
 
   const handleSubmit = async () => {
-    if (!content.trim()) return;
+    if (!content.trim() && selectedFiles.length === 0) return;
     setPosting(true);
-    await onPost(content.trim(), isAnonymous);
-    setContent('');
-    setPosting(false);
+    try {
+      const mediaURLs: string[] = [];
+      for (const file of selectedFiles) {
+        const url = await uploadFile(`posts/${userId}/${Date.now()}_${file.name}`, file);
+        mediaURLs.push(url);
+      }
+      await onPost(content.trim(), isAnonymous, mediaURLs);
+      setContent('');
+      previews.forEach(u => URL.revokeObjectURL(u));
+      setSelectedFiles([]);
+      setPreviews([]);
+    } finally {
+      setPosting(false);
+    }
   };
 
   return (
@@ -297,9 +327,38 @@ function PostComposerFull({ onPost }: { onPost: (content: string, isAnonymous: b
         className="w-full resize-none bg-transparent text-sm text-stone-700 placeholder:text-stone-400 focus:outline-none min-h-[80px]"
         rows={3}
       />
+
+      {previews.length > 0 && (
+        <div className="flex gap-2 mt-2 flex-wrap">
+          {previews.map((src, i) => (
+            <div key={i} className="relative">
+              <img src={src} alt="" className="h-20 w-20 object-cover rounded-lg" />
+              <button
+                onClick={() => removeImage(i)}
+                className="absolute -top-1.5 -right-1.5 h-5 w-5 bg-stone-800 text-white rounded-full flex items-center justify-center text-xs hover:bg-stone-900"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        className="hidden"
+        onChange={handleFileSelect}
+      />
+
       <div className="flex items-center justify-between mt-3 pt-3 border-t border-stone-100">
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-1.5 text-stone-400 hover:text-stone-600 text-xs">
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="flex items-center gap-1.5 text-stone-400 hover:text-stone-600 text-xs"
+          >
             <Image className="h-4 w-4" />
             Photo
           </button>
@@ -315,7 +374,7 @@ function PostComposerFull({ onPost }: { onPost: (content: string, isAnonymous: b
         </div>
         <button
           onClick={handleSubmit}
-          disabled={!content.trim() || posting}
+          disabled={(!content.trim() && selectedFiles.length === 0) || posting}
           className="px-4 py-1.5 bg-amber-500 text-white text-sm font-medium rounded-lg hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {posting ? 'Posting...' : 'Share'}
@@ -369,13 +428,13 @@ export default function Feed() {
     orderBy('createdAt', 'desc')
   );
 
-  const handleNewPost = async (content: string, isAnonymous: boolean) => {
+  const handleNewPost = async (content: string, isAnonymous: boolean, mediaURLs: string[]) => {
     if (!uid) return;
     await addDocument('posts', {
       authorId: uid,
       type: 'text' as const,
       content,
-      mediaURLs: [],
+      mediaURLs,
       likes: [],
       commentCount: 0,
       isAnonymous,
@@ -390,7 +449,7 @@ export default function Feed() {
         <p className="text-sm text-stone-500 mt-0.5">Share, support, and connect</p>
       </div>
 
-      <PostComposerFull onPost={handleNewPost} />
+      <PostComposerFull onPost={handleNewPost} userId={uid} />
 
       {loading ? (
         <LoadingSkeleton />

@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useAuth, useCollection, type Post } from '@reprieve/shared';
 import { where, orderBy } from 'firebase/firestore';
 import { addDocument } from '@reprieve/shared/services/firebase/firestore';
+import { uploadFile } from '@reprieve/shared/services/firebase/storage';
 import { likePost, unlikePost } from '@reprieve/shared/services/firebase/functions';
 import {
-  BookHeart, Clock, Heart, MessageCircle, PenSquare, Send,
+  BookHeart, Clock, Heart, Image, MessageCircle, PenSquare, Send,
   ChevronRight, Eye, EyeOff, Bookmark, X,
 } from 'lucide-react';
 
@@ -102,6 +103,13 @@ function StoryCard({ story, currentUserId }: { story: Post; currentUserId: strin
         )}
       </div>
 
+      {/* Story Image */}
+      {story.mediaURLs && story.mediaURLs.length > 0 && (
+        <div className="px-4 pb-3">
+          <img src={story.mediaURLs[0]} alt="" className="w-full rounded-lg object-cover max-h-64" />
+        </div>
+      )}
+
       {/* Moderation */}
       {story.moderationStatus === 'pending' && (
         <div className="mx-4 mb-3 px-3 py-1.5 bg-yellow-50 border border-yellow-200 rounded-lg text-xs text-yellow-700">
@@ -133,20 +141,47 @@ function StoryCard({ story, currentUserId }: { story: Post; currentUserId: strin
   );
 }
 
-function StoryComposer({ onSubmit }: { onSubmit: (content: string, isAnonymous: boolean) => Promise<void> }) {
+function StoryComposer({ onSubmit, userId }: { onSubmit: (content: string, isAnonymous: boolean, mediaURLs: string[]) => Promise<void>; userId: string }) {
   const [open, setOpen] = useState(false);
   const [content, setContent] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [posting, setPosting] = useState(false);
   const [activePrompt, setActivePrompt] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    setSelectedFile(file);
+    setPreview(URL.createObjectURL(file));
+    e.target.value = '';
+  };
+
+  const removeImage = () => {
+    if (preview) URL.revokeObjectURL(preview);
+    setSelectedFile(null);
+    setPreview(null);
+  };
 
   const handleSubmit = async () => {
     if (!content.trim()) return;
     setPosting(true);
-    await onSubmit(content.trim(), isAnonymous);
-    setContent('');
-    setPosting(false);
-    setOpen(false);
+    try {
+      const mediaURLs: string[] = [];
+      if (selectedFile) {
+        const url = await uploadFile(`stories/${userId}/${Date.now()}_${selectedFile.name}`, selectedFile);
+        mediaURLs.push(url);
+      }
+      await onSubmit(content.trim(), isAnonymous, mediaURLs);
+      setContent('');
+      removeImage();
+      setPosting(false);
+      setOpen(false);
+    } catch {
+      setPosting(false);
+    }
   };
 
   if (!open) {
@@ -203,16 +238,45 @@ function StoryComposer({ onSubmit }: { onSubmit: (content: string, isAnonymous: 
         rows={6}
       />
 
+      {preview && (
+        <div className="relative mt-2 inline-block">
+          <img src={preview} alt="" className="h-24 rounded-lg object-cover" />
+          <button
+            onClick={removeImage}
+            className="absolute -top-1.5 -right-1.5 h-5 w-5 bg-stone-800 text-white rounded-full flex items-center justify-center text-xs hover:bg-stone-900"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileSelect}
+      />
+
       <div className="flex items-center justify-between mt-3">
-        <button
-          onClick={() => setIsAnonymous(!isAnonymous)}
-          className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-colors ${
-            isAnonymous ? 'bg-amber-100 text-amber-700' : 'text-stone-400 hover:text-stone-600 bg-stone-100'
-          }`}
-        >
-          {isAnonymous ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-          {isAnonymous ? 'Anonymous' : 'Public'}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsAnonymous(!isAnonymous)}
+            className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-colors ${
+              isAnonymous ? 'bg-amber-100 text-amber-700' : 'text-stone-400 hover:text-stone-600 bg-stone-100'
+            }`}
+          >
+            {isAnonymous ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            {isAnonymous ? 'Anonymous' : 'Public'}
+          </button>
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg text-stone-400 hover:text-stone-600 bg-stone-100"
+          >
+            <Image className="h-4 w-4" />
+            Photo
+          </button>
+        </div>
         <button
           onClick={handleSubmit}
           disabled={!content.trim() || posting}
@@ -264,13 +328,13 @@ export default function Stories() {
     orderBy('createdAt', 'desc')
   );
 
-  const handleNewStory = async (content: string, isAnonymous: boolean) => {
+  const handleNewStory = async (content: string, isAnonymous: boolean, mediaURLs: string[]) => {
     if (!uid) return;
     await addDocument('posts', {
       authorId: uid,
       type: 'story' as const,
       content,
-      mediaURLs: [],
+      mediaURLs,
       likes: [],
       commentCount: 0,
       isAnonymous,
@@ -285,7 +349,7 @@ export default function Stories() {
         <p className="text-sm text-stone-500 mt-0.5">Real stories from real people. You are not alone.</p>
       </div>
 
-      <StoryComposer onSubmit={handleNewStory} />
+      <StoryComposer onSubmit={handleNewStory} userId={uid} />
 
       {loading ? (
         <LoadingSkeleton />
