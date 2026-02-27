@@ -3,14 +3,17 @@ import {
   Card, CardContent, CardHeader, CardTitle,
   Badge, Avatar, Button, Input,
   Sheet, SheetHeader, SheetTitle, SheetContent,
+  Dialog, DialogHeader, DialogTitle, DialogContent, DialogFooter,
   useCollection,
   formatDate,
   cn, LANE_NAMES,
 } from '@reprieve/shared';
+import { suspendUser } from '@reprieve/shared/services/firebase/functions';
+import { updateDocument } from '@reprieve/shared/services/firebase/firestore';
 import type { User, Lane, UserRole } from '@reprieve/shared';
 import {
   Search, Filter, Download, ChevronDown, ChevronUp,
-  UserCog, MoreHorizontal, X,
+  UserCog, MoreHorizontal, X, ShieldOff,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -203,6 +206,95 @@ function SortHeader({
 }
 
 // ---------------------------------------------------------------------------
+// Assign Case Manager Dialog
+// ---------------------------------------------------------------------------
+
+function AssignCaseManagerDialog({
+  open,
+  onClose,
+  caseManagers,
+  selectedCount,
+  onAssign,
+  loading,
+}: {
+  readonly open: boolean;
+  readonly onClose: () => void;
+  readonly caseManagers: readonly User[];
+  readonly selectedCount: number;
+  readonly onAssign: (caseManagerId: string) => Promise<void>;
+  readonly loading: boolean;
+}) {
+  const [cmSearch, setCmSearch] = useState('');
+  const [selectedCmId, setSelectedCmId] = useState('');
+
+  const filteredCMs = useMemo(() => {
+    const q = cmSearch.toLowerCase();
+    return caseManagers.filter(
+      (cm) => cm.displayName.toLowerCase().includes(q) || cm.email.toLowerCase().includes(q),
+    );
+  }, [caseManagers, cmSearch]);
+
+  return (
+    <Dialog open={open} onOpenChange={() => onClose()}>
+      <DialogHeader>
+        <DialogTitle>Assign Case Manager to {selectedCount} Member{selectedCount !== 1 ? 's' : ''}</DialogTitle>
+      </DialogHeader>
+      <DialogContent>
+        <div className="space-y-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+            <Input
+              placeholder="Search case managers..."
+              value={cmSearch}
+              onChange={(e) => setCmSearch(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+          <div className="max-h-64 overflow-y-auto space-y-1">
+            {filteredCMs.length === 0 ? (
+              <p className="text-sm text-stone-400 text-center py-4">No case managers found.</p>
+            ) : (
+              filteredCMs.map((cm) => (
+                <label
+                  key={cm.uid}
+                  className={cn(
+                    'flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors',
+                    selectedCmId === cm.uid ? 'bg-amber-50 border border-amber-200' : 'hover:bg-stone-50 border border-transparent',
+                  )}
+                >
+                  <input
+                    type="radio"
+                    name="caseManager"
+                    value={cm.uid}
+                    checked={selectedCmId === cm.uid}
+                    onChange={() => setSelectedCmId(cm.uid)}
+                    className="rounded-full border-stone-300"
+                  />
+                  <Avatar src={cm.photoURL} alt={cm.displayName} size="sm" />
+                  <div>
+                    <p className="text-sm font-medium text-stone-700">{cm.displayName}</p>
+                    <p className="text-xs text-stone-500">{cm.email}</p>
+                  </div>
+                </label>
+              ))
+            )}
+          </div>
+        </div>
+      </DialogContent>
+      <DialogFooter>
+        <Button variant="outline" onClick={onClose}>Cancel</Button>
+        <Button
+          onClick={() => onAssign(selectedCmId)}
+          disabled={loading || !selectedCmId}
+        >
+          {loading ? 'Assigning...' : 'Assign'}
+        </Button>
+      </DialogFooter>
+    </Dialog>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -217,6 +309,11 @@ export default function Members() {
   const [sortDir, setSortDir] = useState<SortDir>('desc');
   const [selectedMember, setSelectedMember] = useState<User | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  // Bulk action state
+  const [bulkActionLoading, setBulkActionLoading] = useState(false);
+  const [assignCMDialogOpen, setAssignCMDialogOpen] = useState(false);
+  const [bulkError, setBulkError] = useState<string | null>(null);
 
   const handleSort = useCallback((field: SortField) => {
     setSortField((prev) => {
@@ -265,6 +362,80 @@ export default function Members() {
     if (!selectedMember?.reentry?.caseManagerId) return null;
     return allUsers.find((u) => u.uid === selectedMember.reentry?.caseManagerId) ?? null;
   }, [selectedMember, allUsers]);
+
+  const caseManagers = useMemo(
+    () => allUsers.filter((u) => u.role === 'case_manager'),
+    [allUsers],
+  );
+
+  // Bulk action handlers
+  const handleBulkSuspend = useCallback(async () => {
+    setBulkActionLoading(true);
+    setBulkError(null);
+    try {
+      const results = await Promise.allSettled(
+        Array.from(selectedIds).map((id) => suspendUser({ id })),
+      );
+      const failures = results.filter((r) => r.status === 'rejected');
+      if (failures.length > 0) {
+        setBulkError(`Failed to suspend ${failures.length} of ${selectedIds.size} users.`);
+      }
+      setSelectedIds(new Set());
+    } catch (err) {
+      console.error('Bulk suspend failed:', err);
+      setBulkError('Failed to suspend users. Please try again.');
+    } finally {
+      setBulkActionLoading(false);
+    }
+  }, [selectedIds]);
+
+  const handleBulkAssignCM = useCallback(async (caseManagerId: string) => {
+    setBulkActionLoading(true);
+    setBulkError(null);
+    try {
+      const results = await Promise.allSettled(
+        Array.from(selectedIds).map((uid) =>
+          updateDocument('users', uid, { 'reentry.caseManagerId': caseManagerId }),
+        ),
+      );
+      const failures = results.filter((r) => r.status === 'rejected');
+      if (failures.length > 0) {
+        setBulkError(`Failed to assign case manager to ${failures.length} of ${selectedIds.size} users.`);
+      }
+      setSelectedIds(new Set());
+      setAssignCMDialogOpen(false);
+    } catch (err) {
+      console.error('Bulk assign failed:', err);
+      setBulkError('Failed to assign case manager. Please try again.');
+    } finally {
+      setBulkActionLoading(false);
+    }
+  }, [selectedIds]);
+
+  const handleExportSelected = useCallback(() => {
+    const selectedUsers = filtered.filter((u) => selectedIds.has(u.uid));
+    const headers = ['Name', 'Email', 'Role', 'Lanes', 'Status', 'Joined'];
+    const rows = selectedUsers.map((u) => [
+      u.displayName,
+      u.email,
+      u.role,
+      u.lanes.map((l) => LANE_NAMES[l]).join('; '),
+      u.reentry?.enrollmentStatus ?? 'active',
+      u.createdAt?.toDate?.()?.toLocaleDateString?.() ?? '',
+    ]);
+    const csv = [headers, ...rows]
+      .map((row) =>
+        row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','),
+      )
+      .join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `members-export-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }, [filtered, selectedIds]);
 
   if (loading) {
     return (
@@ -335,25 +506,45 @@ export default function Members() {
 
       {/* Bulk Actions */}
       {selectedIds.size > 0 && (
-        <div className="flex items-center gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-          <span className="text-sm font-medium text-amber-800">
-            {selectedIds.size} selected
-          </span>
-          <Button size="sm" variant="outline">
-            <UserCog className="h-3.5 w-3.5 mr-1" />
-            Assign Case Manager
-          </Button>
-          <Button size="sm" variant="outline">Change Status</Button>
-          <Button size="sm" variant="outline">
-            <Download className="h-3.5 w-3.5 mr-1" />
-            Export Selected
-          </Button>
-          <button
-            className="ml-auto text-stone-500 hover:text-stone-700"
-            onClick={() => setSelectedIds(new Set())}
-          >
-            <X className="h-4 w-4" />
-          </button>
+        <div className="space-y-2">
+          <div className="flex items-center gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+            <span className="text-sm font-medium text-amber-800">
+              {selectedIds.size} selected
+            </span>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setAssignCMDialogOpen(true)}
+              disabled={bulkActionLoading}
+            >
+              <UserCog className="h-3.5 w-3.5 mr-1" />
+              Assign Case Manager
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleBulkSuspend}
+              disabled={bulkActionLoading}
+            >
+              <ShieldOff className="h-3.5 w-3.5 mr-1" />
+              {bulkActionLoading ? 'Processing...' : 'Suspend Selected'}
+            </Button>
+            <Button size="sm" variant="outline" onClick={handleExportSelected}>
+              <Download className="h-3.5 w-3.5 mr-1" />
+              Export Selected
+            </Button>
+            <button
+              className="ml-auto text-stone-500 hover:text-stone-700"
+              onClick={() => setSelectedIds(new Set())}
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          {bulkError && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-700">{bulkError}</p>
+            </div>
+          )}
         </div>
       )}
 
@@ -466,6 +657,16 @@ export default function Members() {
           onClose={() => setSelectedMember(null)}
         />
       )}
+
+      {/* Assign Case Manager Dialog */}
+      <AssignCaseManagerDialog
+        open={assignCMDialogOpen}
+        onClose={() => setAssignCMDialogOpen(false)}
+        caseManagers={caseManagers}
+        selectedCount={selectedIds.size}
+        onAssign={handleBulkAssignCM}
+        loading={bulkActionLoading}
+      />
     </div>
   );
 }

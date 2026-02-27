@@ -1,16 +1,17 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import {
   Card, CardContent, CardHeader, CardTitle, CardDescription,
-  Badge, Button, Input,
+  Badge, Button, Input, Textarea,
   Dialog, DialogHeader, DialogTitle, DialogContent, DialogFooter,
   useCollection,
   cn,
 } from '@reprieve/shared';
+import { addDocument, updateDocument, deleteDocument } from '@reprieve/shared/services/firebase/firestore';
 import type { Course, CourseModule, UserProgress } from '@reprieve/shared';
 import {
   BookOpen, Play, FileText, MessageSquare, CheckSquare,
   Edit, ChevronRight, ChevronLeft, Upload, Users,
-  Clock, Award, TrendingUp, BarChart3,
+  Clock, Award, TrendingUp, BarChart3, Plus, Trash2,
 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -28,6 +29,238 @@ const MODULE_ICONS: Record<string, React.ElementType> = {
   discussion: MessageSquare,
 };
 
+const MODULE_TYPES: CourseModule['type'][] = ['video', 'reading', 'assessment', 'reflection', 'discussion'];
+
+// ---------------------------------------------------------------------------
+// Course Form Dialog (Create + Edit)
+// ---------------------------------------------------------------------------
+
+function CourseFormDialog({
+  open,
+  course,
+  onClose,
+  onSave,
+  saving,
+}: {
+  readonly open: boolean;
+  readonly course: Course | null;
+  readonly onClose: () => void;
+  readonly onSave: (data: Omit<Course, 'id'>) => Promise<void>;
+  readonly saving: boolean;
+}) {
+  const isEdit = course !== null;
+
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [stepNumber, setStepNumber] = useState(1);
+  const [order, setOrder] = useState(0);
+  const [isPublished, setIsPublished] = useState(false);
+  const [modules, setModules] = useState<CourseModule[]>([]);
+
+  useEffect(() => {
+    setTitle(course?.title ?? '');
+    setDescription(course?.description ?? '');
+    setStepNumber(course?.stepNumber ?? 1);
+    setOrder(course?.order ?? 0);
+    setIsPublished(course?.isPublished ?? false);
+    setModules(course?.modules ?? []);
+  }, [course]);
+
+  const addModule = () => {
+    setModules((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        courseId: course?.id ?? '',
+        title: '',
+        type: 'reading',
+        content: {},
+        duration: 15,
+        order: prev.length + 1,
+      },
+    ]);
+  };
+
+  const updateModule = (index: number, updates: Partial<CourseModule>) => {
+    setModules((prev) => prev.map((m, i) => (i === index ? { ...m, ...updates } : m)));
+  };
+
+  const removeModule = (index: number) => {
+    setModules((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = () => {
+    const totalDuration = modules.reduce((sum, m) => sum + (m.duration || 0), 0);
+    onSave({
+      title,
+      description,
+      stepNumber,
+      order,
+      isPublished,
+      modules: modules.map((m, i) => ({ ...m, order: i + 1 })),
+      totalDuration,
+    });
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={() => onClose()}>
+      <DialogHeader>
+        <DialogTitle>{isEdit ? 'Edit Course' : 'Add Course'}</DialogTitle>
+      </DialogHeader>
+      <DialogContent>
+        <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
+          <div>
+            <label className="text-sm font-medium text-stone-700">Title</label>
+            <Input
+              placeholder="Course title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-stone-700">Description</label>
+            <Textarea
+              placeholder="Course description..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="mt-1"
+              rows={3}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium text-stone-700">Step Number (1-12)</label>
+              <Input
+                type="number"
+                min={1}
+                max={12}
+                value={stepNumber}
+                onChange={(e) => setStepNumber(Number(e.target.value) || 1)}
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-stone-700">Order</label>
+              <Input
+                type="number"
+                min={0}
+                value={order}
+                onChange={(e) => setOrder(Number(e.target.value) || 0)}
+                className="mt-1"
+              />
+            </div>
+          </div>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={isPublished}
+              onChange={(e) => setIsPublished(e.target.checked)}
+              className="rounded border-stone-300"
+            />
+            <span className="text-sm text-stone-700">Published</span>
+          </label>
+
+          {/* Module Management */}
+          <div className="border-t border-stone-200 pt-4">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-sm font-semibold text-stone-700">Modules ({modules.length})</p>
+              <Button size="sm" variant="outline" onClick={addModule}>
+                <Plus className="h-3.5 w-3.5 mr-1" />
+                Add Module
+              </Button>
+            </div>
+            <div className="space-y-3">
+              {modules.map((mod, index) => (
+                <div key={mod.id} className="flex items-start gap-2 p-3 border border-stone-200 rounded-lg bg-stone-50">
+                  <div className="flex-1 space-y-2">
+                    <Input
+                      placeholder="Module title"
+                      value={mod.title}
+                      onChange={(e) => updateModule(index, { title: e.target.value })}
+                    />
+                    <div className="flex gap-2">
+                      <select
+                        value={mod.type}
+                        onChange={(e) => updateModule(index, { type: e.target.value as CourseModule['type'] })}
+                        className="h-9 rounded-lg border border-stone-300 bg-white px-3 text-sm flex-1"
+                      >
+                        {MODULE_TYPES.map((t) => (
+                          <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>
+                        ))}
+                      </select>
+                      <Input
+                        type="number"
+                        min={1}
+                        value={mod.duration}
+                        onChange={(e) => updateModule(index, { duration: Number(e.target.value) || 1 })}
+                        className="w-24"
+                        placeholder="min"
+                      />
+                    </div>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="text-red-500 hover:text-red-700 mt-1"
+                    onClick={() => removeModule(index)}
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              ))}
+              {modules.length === 0 && (
+                <p className="text-xs text-stone-400 text-center py-4">
+                  No modules yet. Click "Add Module" to create one.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+      <DialogFooter>
+        <Button variant="outline" onClick={onClose}>Cancel</Button>
+        <Button onClick={handleSubmit} disabled={saving || !title.trim()}>
+          {saving ? 'Saving...' : isEdit ? 'Save Changes' : 'Create Course'}
+        </Button>
+      </DialogFooter>
+    </Dialog>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Delete Confirm Dialog
+// ---------------------------------------------------------------------------
+
+function DeleteCourseDialog({
+  open,
+  courseName,
+  onConfirm,
+  onCancel,
+}: {
+  readonly open: boolean;
+  readonly courseName: string;
+  readonly onConfirm: () => void;
+  readonly onCancel: () => void;
+}) {
+  return (
+    <Dialog open={open} onOpenChange={() => onCancel()}>
+      <DialogHeader>
+        <DialogTitle>Delete Course</DialogTitle>
+      </DialogHeader>
+      <DialogContent>
+        <p className="text-sm text-stone-600">
+          Are you sure you want to delete <strong>{courseName}</strong>? This will remove the course and all its modules. This action cannot be undone.
+        </p>
+      </DialogContent>
+      <DialogFooter>
+        <Button variant="outline" onClick={onCancel}>Cancel</Button>
+        <Button variant="destructive" onClick={onConfirm}>Delete</Button>
+      </DialogFooter>
+    </Dialog>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Course Card
 // ---------------------------------------------------------------------------
@@ -37,9 +270,12 @@ interface CourseCardProps {
   readonly completionRate: number;
   readonly enrolledCount: number;
   readonly onClick: () => void;
+  readonly onEdit: () => void;
+  readonly onDelete: () => void;
+  readonly onTogglePublish: () => void;
 }
 
-function CourseCard({ course, completionRate, enrolledCount, onClick }: CourseCardProps) {
+function CourseCard({ course, completionRate, enrolledCount, onClick, onEdit, onDelete, onTogglePublish }: CourseCardProps) {
   return (
     <Card
       className="hover:border-amber-300 transition-colors cursor-pointer"
@@ -54,14 +290,26 @@ function CourseCard({ course, completionRate, enrolledCount, onClick }: CourseCa
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <h3 className="font-semibold text-stone-800 truncate">{course.title}</h3>
-                <Badge variant={course.isPublished ? 'success' : 'secondary'}>
-                  {course.isPublished ? 'Published' : 'Draft'}
-                </Badge>
+                <button
+                  onClick={(e) => { e.stopPropagation(); onTogglePublish(); }}
+                  className="shrink-0"
+                >
+                  <Badge variant={course.isPublished ? 'success' : 'secondary'} className="cursor-pointer hover:opacity-80">
+                    {course.isPublished ? 'Published' : 'Draft'}
+                  </Badge>
+                </button>
               </div>
               <p className="text-sm text-stone-500 mt-0.5 line-clamp-1">{course.description}</p>
             </div>
           </div>
-          <ChevronRight className="h-5 w-5 text-stone-300 shrink-0 ml-2" />
+          <div className="flex items-center gap-1 shrink-0 ml-2">
+            <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); onEdit(); }}>
+              <Edit className="h-3.5 w-3.5" />
+            </Button>
+            <Button size="sm" variant="ghost" className="text-red-500 hover:text-red-700" onClick={(e) => { e.stopPropagation(); onDelete(); }}>
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-3 gap-4 mt-4">
@@ -99,10 +347,41 @@ interface CourseDetailProps {
   readonly course: Course;
   readonly progressData: readonly UserProgress[];
   readonly onBack: () => void;
+  readonly onEdit: () => void;
+  readonly onSaveModule: (moduleId: string, updates: Partial<CourseModule>) => Promise<void>;
 }
 
-function CourseDetail({ course, progressData, onBack }: CourseDetailProps) {
+function CourseDetail({ course, progressData, onBack, onEdit, onSaveModule }: CourseDetailProps) {
   const [editingModule, setEditingModule] = useState<CourseModule | null>(null);
+  const [moduleTitle, setModuleTitle] = useState('');
+  const [moduleType, setModuleType] = useState<CourseModule['type']>('reading');
+  const [moduleDuration, setModuleDuration] = useState(15);
+  const [moduleSaving, setModuleSaving] = useState(false);
+
+  useEffect(() => {
+    if (editingModule) {
+      setModuleTitle(editingModule.title);
+      setModuleType(editingModule.type);
+      setModuleDuration(editingModule.duration);
+    }
+  }, [editingModule]);
+
+  const handleSaveModule = async () => {
+    if (!editingModule) return;
+    setModuleSaving(true);
+    try {
+      await onSaveModule(editingModule.id, {
+        title: moduleTitle,
+        type: moduleType,
+        duration: moduleDuration,
+      });
+      setEditingModule(null);
+    } catch (err) {
+      console.error('Failed to save module:', err);
+    } finally {
+      setModuleSaving(false);
+    }
+  };
 
   const moduleStats = useMemo(() => {
     return course.modules.map((mod) => {
@@ -157,7 +436,7 @@ function CourseDetail({ course, progressData, onBack }: CourseDetailProps) {
             {Math.round(course.totalDuration / 60)} min total
           </p>
         </div>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={onEdit}>
           <Edit className="h-4 w-4 mr-1.5" />
           Edit Course
         </Button>
@@ -260,30 +539,40 @@ function CourseDetail({ course, progressData, onBack }: CourseDetailProps) {
             <div className="space-y-4">
               <div>
                 <label className="text-sm font-medium text-stone-700">Title</label>
-                <Input defaultValue={editingModule.title} className="mt-1" />
+                <Input
+                  value={moduleTitle}
+                  onChange={(e) => setModuleTitle(e.target.value)}
+                  className="mt-1"
+                />
               </div>
               <div>
                 <label className="text-sm font-medium text-stone-700">Type</label>
                 <select
-                  defaultValue={editingModule.type}
+                  value={moduleType}
+                  onChange={(e) => setModuleType(e.target.value as CourseModule['type'])}
                   className="mt-1 w-full h-10 rounded-lg border border-stone-300 bg-white px-3 text-sm"
                 >
-                  <option value="video">Video</option>
-                  <option value="reading">Reading</option>
-                  <option value="assessment">Assessment</option>
-                  <option value="reflection">Reflection</option>
-                  <option value="discussion">Discussion</option>
+                  {MODULE_TYPES.map((t) => (
+                    <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>
+                  ))}
                 </select>
               </div>
               <div>
                 <label className="text-sm font-medium text-stone-700">Duration (minutes)</label>
-                <Input type="number" defaultValue={editingModule.duration} className="mt-1" />
+                <Input
+                  type="number"
+                  value={moduleDuration}
+                  onChange={(e) => setModuleDuration(Number(e.target.value) || 1)}
+                  className="mt-1"
+                />
               </div>
             </div>
           </DialogContent>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditingModule(null)}>Cancel</Button>
-            <Button onClick={() => setEditingModule(null)}>Save Changes</Button>
+            <Button onClick={handleSaveModule} disabled={moduleSaving}>
+              {moduleSaving ? 'Saving...' : 'Save Changes'}
+            </Button>
           </DialogFooter>
         </Dialog>
       )}
@@ -300,6 +589,16 @@ export default function Courses() {
   const { data: progress } = useCollection<UserProgress>('userProgress');
 
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [formOpen, setFormOpen] = useState(false);
+  const [editingCourse, setEditingCourse] = useState<Course | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Course | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  // Keep selectedCourse in sync with real-time data
+  const currentSelectedCourse = useMemo(() => {
+    if (!selectedCourse) return null;
+    return courses.find((c) => c.id === selectedCourse.id) ?? null;
+  }, [selectedCourse, courses]);
 
   const coursesWithStats = useMemo(() => {
     return courses
@@ -318,6 +617,67 @@ export default function Courses() {
       });
   }, [courses, progress]);
 
+  // CRUD handlers
+  const handleSaveCourse = async (data: Omit<Course, 'id'>) => {
+    setSaving(true);
+    try {
+      if (editingCourse) {
+        await updateDocument('courses', editingCourse.id, data);
+      } else {
+        await addDocument('courses', data);
+      }
+      setFormOpen(false);
+      setEditingCourse(null);
+    } catch (err) {
+      console.error('Failed to save course:', err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteCourse = async () => {
+    if (!deleteTarget) return;
+    try {
+      await deleteDocument('courses', deleteTarget.id);
+      if (selectedCourse?.id === deleteTarget.id) {
+        setSelectedCourse(null);
+      }
+      setDeleteTarget(null);
+    } catch (err) {
+      console.error('Failed to delete course:', err);
+    }
+  };
+
+  const handleTogglePublish = async (course: Course) => {
+    try {
+      await updateDocument('courses', course.id, {
+        isPublished: !course.isPublished,
+      });
+    } catch (err) {
+      console.error('Failed to toggle publish:', err);
+    }
+  };
+
+  const handleSaveModule = async (courseId: string, moduleId: string, updates: Partial<CourseModule>) => {
+    const course = courses.find((c) => c.id === courseId);
+    if (!course) return;
+    const updatedModules = course.modules.map((m) =>
+      m.id === moduleId ? { ...m, ...updates } : m,
+    );
+    const totalDuration = updatedModules.reduce((sum, m) => sum + (m.duration || 0), 0);
+    await updateDocument('courses', courseId, { modules: updatedModules, totalDuration });
+  };
+
+  const openAdd = () => {
+    setEditingCourse(null);
+    setFormOpen(true);
+  };
+
+  const openEdit = (course: Course) => {
+    setEditingCourse(course);
+    setFormOpen(true);
+  };
+
   if (coursesLoading) {
     return (
       <div className="space-y-6">
@@ -331,14 +691,25 @@ export default function Courses() {
     );
   }
 
-  if (selectedCourse) {
-    const courseProgress = progress.filter((p) => p.courseId === selectedCourse.id);
+  if (currentSelectedCourse) {
+    const courseProgress = progress.filter((p) => p.courseId === currentSelectedCourse.id);
     return (
-      <CourseDetail
-        course={selectedCourse}
-        progressData={courseProgress}
-        onBack={() => setSelectedCourse(null)}
-      />
+      <>
+        <CourseDetail
+          course={currentSelectedCourse}
+          progressData={courseProgress}
+          onBack={() => setSelectedCourse(null)}
+          onEdit={() => openEdit(currentSelectedCourse)}
+          onSaveModule={(moduleId, updates) => handleSaveModule(currentSelectedCourse.id, moduleId, updates)}
+        />
+        <CourseFormDialog
+          open={formOpen}
+          course={editingCourse}
+          onClose={() => { setFormOpen(false); setEditingCourse(null); }}
+          onSave={handleSaveCourse}
+          saving={saving}
+        />
+      </>
     );
   }
 
@@ -352,7 +723,7 @@ export default function Courses() {
             12-Step curriculum management &middot; {courses.length} courses
           </p>
         </div>
-        <Button size="sm">
+        <Button size="sm" onClick={openAdd}>
           <BookOpen className="h-4 w-4 mr-1.5" />
           Add Course
         </Button>
@@ -429,10 +800,32 @@ export default function Courses() {
               enrolledCount={enrolled}
               completionRate={completionRate}
               onClick={() => setSelectedCourse(course)}
+              onEdit={() => openEdit(course)}
+              onDelete={() => setDeleteTarget(course)}
+              onTogglePublish={() => handleTogglePublish(course)}
             />
           ))
         )}
       </div>
+
+      {/* Course Form Dialog */}
+      <CourseFormDialog
+        open={formOpen}
+        course={editingCourse}
+        onClose={() => { setFormOpen(false); setEditingCourse(null); }}
+        onSave={handleSaveCourse}
+        saving={saving}
+      />
+
+      {/* Delete Confirm Dialog */}
+      {deleteTarget && (
+        <DeleteCourseDialog
+          open
+          courseName={deleteTarget.title}
+          onConfirm={handleDeleteCourse}
+          onCancel={() => setDeleteTarget(null)}
+        />
+      )}
     </div>
   );
 }

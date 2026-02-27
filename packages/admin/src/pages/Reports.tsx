@@ -6,7 +6,7 @@ import {
   useCollection,
   cn, LANE_NAMES,
 } from '@reprieve/shared';
-import type { User, Lane } from '@reprieve/shared';
+import type { User, Lane, Goal, Post, JournalEntry } from '@reprieve/shared';
 import {
   FileBarChart, Download, FileText, Calendar,
   Filter, Clock, Repeat, Plus, Trash2,
@@ -122,9 +122,17 @@ const MOCK_SCHEDULED: readonly ScheduledReport[] = [
 function ReportBuilder({
   selectedType,
   onClose,
+  users,
+  goals,
+  posts,
+  journalEntries,
 }: {
   readonly selectedType: ReportType;
   readonly onClose: () => void;
+  readonly users: readonly User[];
+  readonly goals: readonly Goal[];
+  readonly posts: readonly Post[];
+  readonly journalEntries: readonly JournalEntry[];
 }) {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
@@ -132,13 +140,44 @@ function ReportBuilder({
   const [generating, setGenerating] = useState(false);
   const [previewReady, setPreviewReady] = useState(false);
 
+  const filteredStats = useMemo(() => {
+    let filteredUsers = [...users];
+
+    if (laneFilter) {
+      filteredUsers = filteredUsers.filter((u) => u.lanes.includes(laneFilter));
+    }
+    if (dateFrom) {
+      const from = new Date(dateFrom);
+      filteredUsers = filteredUsers.filter((u) => {
+        const d = u.createdAt?.toDate?.();
+        return d && d >= from;
+      });
+    }
+    if (dateTo) {
+      const to = new Date(dateTo);
+      to.setHours(23, 59, 59, 999);
+      filteredUsers = filteredUsers.filter((u) => {
+        const d = u.createdAt?.toDate?.();
+        return d && d <= to;
+      });
+    }
+
+    const members = filteredUsers.filter((u) => u.role === 'member');
+    const totalMembers = members.length;
+    const active = members.filter((u) => u.reentry?.enrollmentStatus === 'active').length;
+    const graduated = members.filter((u) => u.reentry?.enrollmentStatus === 'graduated').length;
+    const successRate = totalMembers > 0 ? Math.round((graduated / totalMembers) * 100) : 0;
+
+    return { totalMembers, active, graduated, successRate };
+  }, [users, dateFrom, dateTo, laneFilter]);
+
   const handleGenerate = () => {
     setGenerating(true);
-    // Simulate report generation
+    // Data is already loaded reactively; brief delay for UX feedback
     setTimeout(() => {
       setGenerating(false);
       setPreviewReady(true);
-    }, 1500);
+    }, 300);
   };
 
   return (
@@ -272,25 +311,40 @@ function ReportBuilder({
               {/* Summary Stats */}
               <div className="grid grid-cols-4 gap-4">
                 <div className="text-center p-3 bg-stone-50 rounded-lg">
-                  <p className="text-xl font-bold text-stone-800">142</p>
+                  <p className="text-xl font-bold text-stone-800">{filteredStats.totalMembers}</p>
                   <p className="text-xs text-stone-500">Total Members</p>
                 </div>
                 <div className="text-center p-3 bg-stone-50 rounded-lg">
-                  <p className="text-xl font-bold text-stone-800">89</p>
+                  <p className="text-xl font-bold text-stone-800">{filteredStats.active}</p>
                   <p className="text-xs text-stone-500">Active</p>
                 </div>
                 <div className="text-center p-3 bg-stone-50 rounded-lg">
-                  <p className="text-xl font-bold text-stone-800">32</p>
+                  <p className="text-xl font-bold text-stone-800">{filteredStats.graduated}</p>
                   <p className="text-xs text-stone-500">Graduated</p>
                 </div>
                 <div className="text-center p-3 bg-stone-50 rounded-lg">
-                  <p className="text-xl font-bold text-stone-800">73%</p>
+                  <p className="text-xl font-bold text-stone-800">{filteredStats.successRate}%</p>
                   <p className="text-xs text-stone-500">Success Rate</p>
                 </div>
               </div>
 
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center p-3 bg-stone-50 rounded-lg">
+                  <p className="text-xl font-bold text-stone-800">{goals.length}</p>
+                  <p className="text-xs text-stone-500">Total Goals</p>
+                </div>
+                <div className="text-center p-3 bg-stone-50 rounded-lg">
+                  <p className="text-xl font-bold text-stone-800">{journalEntries.length}</p>
+                  <p className="text-xs text-stone-500">Check-ins</p>
+                </div>
+                <div className="text-center p-3 bg-stone-50 rounded-lg">
+                  <p className="text-xl font-bold text-stone-800">{posts.length}</p>
+                  <p className="text-xs text-stone-500">Posts</p>
+                </div>
+              </div>
+
               <p className="text-xs text-stone-400 text-center">
-                Report generated {new Date().toLocaleDateString()} - Data is illustrative
+                Report generated {new Date().toLocaleDateString()}
               </p>
             </div>
           </CardContent>
@@ -358,6 +412,11 @@ function ScheduleReportDialog({
 // ---------------------------------------------------------------------------
 
 export default function Reports() {
+  const { data: users } = useCollection<User>('users');
+  const { data: goals } = useCollection<Goal>('goals');
+  const { data: posts } = useCollection<Post>('posts');
+  const { data: journalEntries } = useCollection<JournalEntry>('journalEntries');
+
   const [selectedType, setSelectedType] = useState<ReportType | null>(null);
   const [scheduleOpen, setScheduleOpen] = useState(false);
 
@@ -366,6 +425,10 @@ export default function Reports() {
       <ReportBuilder
         selectedType={selectedType}
         onClose={() => setSelectedType(null)}
+        users={users}
+        goals={goals}
+        posts={posts}
+        journalEntries={journalEntries}
       />
     );
   }
