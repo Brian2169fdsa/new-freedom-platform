@@ -13,8 +13,14 @@ function PostCard({ post, currentUserId }: { post: Post; currentUserId: string }
   const [showComments, setShowComments] = useState(false);
   const [likeLoading, setLikeLoading] = useState(false);
   const isLiked = post.likes.includes(currentUserId);
-  const timeAgo = post.createdAt?.toDate
-    ? formatTimeAgo(post.createdAt.toDate())
+  const timeAgo = post.createdAt
+    ? formatTimeAgo(
+        post.createdAt instanceof Date
+          ? post.createdAt
+          : typeof (post.createdAt as any).toDate === 'function'
+          ? (post.createdAt as any).toDate()
+          : new Date(post.createdAt as any)
+      )
     : '';
 
   const handleLike = async () => {
@@ -43,31 +49,31 @@ function PostCard({ post, currentUserId }: { post: Post; currentUserId: string }
   };
 
   return (
-    <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
+    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
       {/* Post Header */}
       <div className="flex items-center gap-3 p-4 pb-2">
-        <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-sm font-medium text-amber-800">
+        <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-sm font-medium text-blue-800">
           {post.isAnonymous ? '🙈' : (post.authorId?.substring(0, 2).toUpperCase() || '??')}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-medium text-stone-800 text-sm">
+          <p className="font-medium text-slate-800 text-sm">
             {post.isAnonymous ? 'Anonymous' : 'Community Member'}
           </p>
-          <p className="text-xs text-stone-400">{timeAgo}</p>
+          <p className="text-xs text-slate-400">{timeAgo}</p>
         </div>
         {post.type === 'milestone' && (
-          <span className="px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">
+          <span className="px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
             🏆 Milestone
           </span>
         )}
-        <button className="text-stone-400 hover:text-stone-600">
+        <button className="text-slate-400 hover:text-slate-600">
           <MoreHorizontal className="h-4 w-4" />
         </button>
       </div>
 
       {/* Post Content */}
       <div className="px-4 pb-3">
-        <p className="text-stone-700 text-sm whitespace-pre-wrap leading-relaxed">{post.content}</p>
+        <p className="text-slate-700 text-sm whitespace-pre-wrap leading-relaxed">{post.content}</p>
       </div>
 
       {/* Media */}
@@ -89,42 +95,42 @@ function PostCard({ post, currentUserId }: { post: Post; currentUserId: string }
       )}
 
       {/* Engagement Bar */}
-      <div className="flex items-center gap-1 px-4 py-2 border-t border-stone-100">
+      <div className="flex items-center gap-1 px-4 py-2 border-t border-slate-100">
         <button
           onClick={handleLike}
           disabled={likeLoading}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
-          isLiked ? 'text-red-500 bg-red-50' : 'text-stone-500 hover:bg-stone-100'
+          isLiked ? 'text-red-500 bg-red-50' : 'text-slate-500 hover:bg-slate-100'
         }`}>
           <Heart className={`h-4 w-4 ${isLiked ? 'fill-current' : ''}`} />
           {post.likes.length > 0 && <span>{post.likes.length}</span>}
         </button>
         <button
           onClick={() => setShowComments(!showComments)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-stone-500 hover:bg-stone-100"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-slate-500 hover:bg-slate-100"
         >
           <MessageCircle className="h-4 w-4" />
           {post.commentCount > 0 && <span>{post.commentCount}</span>}
         </button>
-        <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-stone-500 hover:bg-stone-100">
+        <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-slate-500 hover:bg-slate-100">
           <Share2 className="h-4 w-4" />
         </button>
         <div className="flex-1" />
-        <button onClick={handleReport} className="text-stone-400 hover:text-stone-600 p-1.5">
+        <button onClick={handleReport} className="text-slate-400 hover:text-slate-600 p-1.5">
           <Flag className="h-3.5 w-3.5" />
         </button>
       </div>
 
       {/* Comment Section */}
       {showComments && (
-        <div className="border-t border-stone-100 p-4">
+        <div className="border-t border-slate-100 p-4">
           <div className="flex gap-2">
             <input
               type="text"
               placeholder="Write a supportive comment..."
-              className="flex-1 px-3 py-2 bg-stone-50 rounded-lg text-sm border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-300"
+              className="flex-1 px-3 py-2 bg-slate-50 rounded-lg text-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
-            <button className="p-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600">
+            <button className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
               <Send className="h-4 w-4" />
             </button>
           </div>
@@ -148,24 +154,24 @@ function PostComposerFull({ onPost }: { onPost: (content: string, isAnonymous: b
   };
 
   return (
-    <div className="bg-white rounded-xl border border-stone-200 p-4">
+    <div className="bg-white rounded-xl border border-slate-200 p-4">
       <textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
         placeholder="Share your story, ask for help, or celebrate a win..."
-        className="w-full resize-none bg-transparent text-sm text-stone-700 placeholder:text-stone-400 focus:outline-none min-h-[80px]"
+        className="w-full resize-none bg-transparent text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none min-h-[80px]"
         rows={3}
       />
-      <div className="flex items-center justify-between mt-3 pt-3 border-t border-stone-100">
+      <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-1.5 text-stone-400 hover:text-stone-600 text-xs">
+          <button className="flex items-center gap-1.5 text-slate-400 hover:text-slate-600 text-xs">
             <Image className="h-4 w-4" />
             Photo
           </button>
           <button
             onClick={() => setIsAnonymous(!isAnonymous)}
             className={`flex items-center gap-1.5 text-xs px-2 py-1 rounded-lg transition-colors ${
-              isAnonymous ? 'bg-amber-100 text-amber-700' : 'text-stone-400 hover:text-stone-600'
+              isAnonymous ? 'bg-blue-100 text-blue-700' : 'text-slate-400 hover:text-slate-600'
             }`}
           >
             {isAnonymous ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -175,7 +181,7 @@ function PostComposerFull({ onPost }: { onPost: (content: string, isAnonymous: b
         <button
           onClick={handleSubmit}
           disabled={!content.trim() || posting}
-          className="px-4 py-1.5 bg-amber-500 text-white text-sm font-medium rounded-lg hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-1.5 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {posting ? 'Posting...' : 'Share'}
         </button>
@@ -188,17 +194,17 @@ function LoadingSkeleton() {
   return (
     <div className="space-y-4">
       {[1, 2, 3].map((i) => (
-        <div key={i} className="bg-white rounded-xl border border-stone-200 p-4 animate-pulse">
+        <div key={i} className="bg-white rounded-xl border border-slate-200 p-4 animate-pulse">
           <div className="flex items-center gap-3 mb-3">
-            <div className="h-10 w-10 rounded-full bg-stone-200" />
+            <div className="h-10 w-10 rounded-full bg-slate-200" />
             <div className="space-y-1.5">
-              <div className="h-3 w-24 bg-stone-200 rounded" />
-              <div className="h-2.5 w-16 bg-stone-100 rounded" />
+              <div className="h-3 w-24 bg-slate-200 rounded" />
+              <div className="h-2.5 w-16 bg-slate-100 rounded" />
             </div>
           </div>
           <div className="space-y-2">
-            <div className="h-3 w-full bg-stone-200 rounded" />
-            <div className="h-3 w-3/4 bg-stone-200 rounded" />
+            <div className="h-3 w-full bg-slate-200 rounded" />
+            <div className="h-3 w-3/4 bg-slate-200 rounded" />
           </div>
         </div>
       ))}
@@ -245,8 +251,8 @@ export default function Feed() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-xl font-bold text-stone-800">Community Feed</h1>
-        <p className="text-sm text-stone-500 mt-0.5">Share, support, and connect</p>
+        <h1 className="text-xl font-bold text-slate-800">Community Feed</h1>
+        <p className="text-sm text-slate-500 mt-0.5">Share, support, and connect</p>
       </div>
 
       <PostComposerFull onPost={handleNewPost} />
@@ -254,10 +260,10 @@ export default function Feed() {
       {loading ? (
         <LoadingSkeleton />
       ) : posts.length === 0 ? (
-        <div className="bg-white rounded-xl border border-stone-200 p-8 text-center">
+        <div className="bg-white rounded-xl border border-slate-200 p-8 text-center">
           <span className="text-4xl">🌱</span>
-          <h3 className="font-medium text-stone-800 mt-3">Be the first to share</h3>
-          <p className="text-sm text-stone-500 mt-1">
+          <h3 className="font-medium text-slate-800 mt-3">Be the first to share</h3>
+          <p className="text-sm text-slate-500 mt-1">
             This is a safe space to share your story, ask for help, or celebrate your wins.
           </p>
         </div>

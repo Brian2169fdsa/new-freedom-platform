@@ -49,13 +49,13 @@ const FILTER_TABS: readonly { readonly value: FilterTab; readonly label: string 
 function LoadingSkeleton() {
   return (
     <div className="space-y-4 animate-pulse">
-      <div className="h-24 bg-stone-100 rounded-xl" />
-      <div className="h-10 bg-stone-100 rounded-lg" />
+      <div className="h-24 bg-slate-100 rounded-xl" />
+      <div className="h-10 bg-slate-100 rounded-lg" />
       <div className="grid grid-cols-3 gap-4">
         {Array.from({ length: 9 }).map((_, i) => (
           <div key={i} className="flex flex-col items-center gap-2">
-            <div className="h-16 w-16 bg-stone-100 rounded-full" />
-            <div className="h-3 w-14 bg-stone-100 rounded" />
+            <div className="h-16 w-16 bg-slate-100 rounded-full" />
+            <div className="h-3 w-14 bg-slate-100 rounded" />
           </div>
         ))}
       </div>
@@ -87,10 +87,10 @@ function BadgeDetailModal({ badge, earned, earnedAchievement, onClose, onShare }
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="relative bg-gradient-to-br from-amber-50 to-amber-100 p-6 text-center">
+        <div className="relative bg-gradient-to-br from-blue-50 to-blue-100 p-6 text-center">
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 p-1.5 rounded-full bg-white/80 hover:bg-white text-stone-500"
+            className="absolute top-3 right-3 p-1.5 rounded-full bg-white/80 hover:bg-white text-slate-500"
             aria-label="Close"
           >
             <X className="h-4 w-4" />
@@ -99,25 +99,25 @@ function BadgeDetailModal({ badge, earned, earnedAchievement, onClose, onShare }
           <div
             className={`h-20 w-20 mx-auto rounded-full flex items-center justify-center mb-3 ${
               earned
-                ? 'bg-amber-100 border-2 border-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.3)]'
-                : 'bg-stone-100 border-2 border-stone-200 grayscale'
+                ? 'bg-blue-100 border-2 border-blue-300 shadow-[0_0_20px_rgba(245,158,11,0.3)]'
+                : 'bg-slate-100 border-2 border-slate-200 grayscale'
             }`}
           >
             {earned ? (
               <span className="text-4xl">{badge.icon}</span>
             ) : (
-              <Lock className="h-8 w-8 text-stone-300" />
+              <Lock className="h-8 w-8 text-slate-300" />
             )}
           </div>
 
-          <h3 className="text-lg font-bold text-stone-800">{badge.title}</h3>
-          <p className="text-sm text-stone-500 mt-1">{badge.description}</p>
+          <h3 className="text-lg font-bold text-slate-800">{badge.title}</h3>
+          <p className="text-sm text-slate-500 mt-1">{badge.description}</p>
         </div>
 
         {/* Body */}
         <div className="p-5 space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-stone-500 uppercase tracking-wide">
+            <span className="text-xs font-medium text-slate-500 uppercase tracking-wide">
               Category
             </span>
             <Badge variant="secondary">
@@ -127,19 +127,19 @@ function BadgeDetailModal({ badge, earned, earnedAchievement, onClose, onShare }
 
           {earned && earnedAchievement && (
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-stone-500 uppercase tracking-wide">
+              <span className="text-xs font-medium text-slate-500 uppercase tracking-wide">
                 Earned
               </span>
-              <span className="text-sm font-medium text-amber-700">
+              <span className="text-sm font-medium text-blue-700">
                 {formatDate(earnedAchievement.earnedAt)}
               </span>
             </div>
           )}
 
           {!earned && (
-            <div className="bg-stone-50 rounded-lg p-3 text-center">
-              <Lock className="h-5 w-5 text-stone-300 mx-auto mb-1" />
-              <p className="text-xs text-stone-500">
+            <div className="bg-slate-50 rounded-lg p-3 text-center">
+              <Lock className="h-5 w-5 text-slate-300 mx-auto mb-1" />
+              <p className="text-xs text-slate-500">
                 Keep making progress to unlock this achievement!
               </p>
             </div>
@@ -244,38 +244,38 @@ export default function Achievements() {
   return (
     <PageContainer title="Achievements" subtitle="Celebrate your milestones">
       {/* Progress Summary Card */}
-      <Card className="border-amber-200 bg-gradient-to-br from-amber-50 to-stone-50 border-0">
+      <Card className="border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50 border-0">
         <CardContent className="p-5">
           <div className="flex items-center gap-4">
-            <div className="h-14 w-14 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
-              <Trophy className="h-7 w-7 text-amber-600" />
+            <div className="h-14 w-14 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+              <Trophy className="h-7 w-7 text-blue-600" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm text-stone-500 font-medium">Your Progress</p>
-              <p className="text-2xl font-bold text-stone-800">
+              <p className="text-sm text-slate-500 font-medium">Your Progress</p>
+              <p className="text-2xl font-bold text-slate-800">
                 {earnedCount}{' '}
-                <span className="text-base font-normal text-stone-500">
+                <span className="text-base font-normal text-slate-500">
                   of {totalCount} achievements
                 </span>
               </p>
             </div>
             <div className="text-right shrink-0">
               <div className="flex items-center gap-1">
-                <Sparkles className="h-4 w-4 text-amber-500" />
-                <span className="text-lg font-bold text-amber-700">{progressPercent}%</span>
+                <Sparkles className="h-4 w-4 text-blue-500" />
+                <span className="text-lg font-bold text-blue-700">{progressPercent}%</span>
               </div>
             </div>
           </div>
 
           {/* Progress Bar */}
           <div className="mt-4">
-            <div className="h-3 bg-stone-200/60 rounded-full overflow-hidden">
+            <div className="h-3 bg-slate-200/60 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-amber-400 to-amber-600 rounded-full transition-all duration-700 ease-out"
+                className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full transition-all duration-700 ease-out"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
-            <div className="flex justify-between mt-1.5 text-[10px] text-stone-400">
+            <div className="flex justify-between mt-1.5 text-[10px] text-slate-400">
               <span>Getting started</span>
               <span>Journey complete</span>
             </div>
@@ -306,14 +306,14 @@ export default function Achievements() {
                 onClick={() => setActiveFilter(tab.value)}
                 className={`shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-colors flex items-center gap-1.5 ${
                   isActive
-                    ? 'bg-amber-700 text-white shadow-sm'
-                    : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                    ? 'bg-blue-700 text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
                 {tab.label}
                 <span
                   className={`text-[10px] ${
-                    isActive ? 'text-amber-200' : 'text-stone-400'
+                    isActive ? 'text-blue-200' : 'text-slate-400'
                   }`}
                 >
                   {catCount}/{catTotal}
@@ -340,10 +340,10 @@ export default function Achievements() {
 
       {/* Empty State */}
       {filteredDefinitions.length === 0 && (
-        <Card className="border-dashed border-stone-300">
+        <Card className="border-dashed border-slate-300">
           <CardContent className="p-8 text-center">
-            <Filter className="h-8 w-8 text-stone-300 mx-auto mb-2" />
-            <p className="text-sm text-stone-500">
+            <Filter className="h-8 w-8 text-slate-300 mx-auto mb-2" />
+            <p className="text-sm text-slate-500">
               No achievements in this category yet.
             </p>
           </CardContent>
@@ -352,13 +352,13 @@ export default function Achievements() {
 
       {/* Motivational Footer */}
       {earnedCount === 0 && (
-        <Card className="bg-gradient-to-br from-stone-50 to-amber-50 border-0">
+        <Card className="bg-gradient-to-br from-slate-50 to-blue-50 border-0">
           <CardContent className="p-5 text-center">
-            <Star className="h-8 w-8 text-amber-400 mx-auto mb-2" />
-            <h4 className="text-sm font-semibold text-stone-700 mb-1">
+            <Star className="h-8 w-8 text-blue-400 mx-auto mb-2" />
+            <h4 className="text-sm font-semibold text-slate-700 mb-1">
               Your journey starts here
             </h4>
-            <p className="text-xs text-stone-500 leading-relaxed max-w-xs mx-auto">
+            <p className="text-xs text-slate-500 leading-relaxed max-w-xs mx-auto">
               Complete daily check-ins, work through the steps, and engage with the community
               to earn achievements and celebrate your progress.
             </p>

@@ -45,9 +45,9 @@ const STEP_TITLES: Record<number, string> = {
 function LoadingSkeleton() {
   return (
     <div className="space-y-4 animate-pulse">
-      <div className="h-32 bg-stone-100 rounded-xl" />
-      <div className="h-10 bg-stone-100 rounded-lg" />
-      <div className="h-48 bg-stone-100 rounded-xl" />
+      <div className="h-32 bg-slate-100 rounded-xl" />
+      <div className="h-10 bg-slate-100 rounded-lg" />
+      <div className="h-48 bg-slate-100 rounded-xl" />
     </div>
   );
 }
@@ -192,7 +192,7 @@ export default function Profile() {
   return (
     <PageContainer title="Profile">
       {/* Profile Header */}
-      <Card className="bg-gradient-to-br from-amber-50 to-stone-50">
+      <Card className="bg-gradient-to-br from-blue-50 to-slate-50">
         <CardContent className="p-6">
           <div className="flex items-center gap-4">
             <Avatar
@@ -214,15 +214,15 @@ export default function Profile() {
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <h3 className="font-semibold text-stone-800 text-lg">
+                  <h3 className="font-semibold text-slate-800 text-lg">
                     {user.displayName || 'Member'}
                   </h3>
                   <button onClick={() => { setEditing(true); setEditName(user.displayName ?? ''); }}>
-                    <Edit3 className="h-3.5 w-3.5 text-stone-400 hover:text-stone-600" />
+                    <Edit3 className="h-3.5 w-3.5 text-slate-400 hover:text-slate-600" />
                   </button>
                 </div>
               )}
-              <p className="text-sm text-stone-500">
+              <p className="text-sm text-slate-500">
                 Step {currentStep}: {STEP_TITLES[currentStep] ?? `Step ${currentStep}`}
               </p>
             </div>
@@ -232,34 +232,34 @@ export default function Profile() {
           <div className="grid grid-cols-3 gap-3 mt-5">
             {sobrietyDays !== null && (
               <div className="text-center">
-                <Calendar className="h-4 w-4 text-amber-600 mx-auto mb-1" />
-                <p className="text-xl font-bold text-stone-800">{sobrietyDays}</p>
-                <p className="text-[10px] text-stone-500">Days Sober</p>
+                <Calendar className="h-4 w-4 text-blue-600 mx-auto mb-1" />
+                <p className="text-xl font-bold text-slate-800">{sobrietyDays}</p>
+                <p className="text-[10px] text-slate-500">Days Sober</p>
               </div>
             )}
             <div className="text-center">
               <Flame className="h-4 w-4 text-orange-500 mx-auto mb-1" />
-              <p className="text-xl font-bold text-stone-800">{streakDays}</p>
-              <p className="text-[10px] text-stone-500">Day Streak</p>
+              <p className="text-xl font-bold text-slate-800">{streakDays}</p>
+              <p className="text-[10px] text-slate-500">Day Streak</p>
             </div>
             <div className="text-center">
               <Trophy className="h-4 w-4 text-yellow-500 mx-auto mb-1" />
-              <p className="text-xl font-bold text-stone-800">{achievements?.length ?? 0}</p>
-              <p className="text-[10px] text-stone-500">Badges</p>
+              <p className="text-xl font-bold text-slate-800">{achievements?.length ?? 0}</p>
+              <p className="text-[10px] text-slate-500">Badges</p>
             </div>
           </div>
 
           {/* Step Progress Bar */}
           <div className="mt-5">
             <div className="flex justify-between text-xs mb-1.5">
-              <span className="text-stone-500">{stepsCompleted} of 12 steps</span>
-              <span className="font-medium text-amber-700">
+              <span className="text-slate-500">{stepsCompleted} of 12 steps</span>
+              <span className="font-medium text-blue-700">
                 {Math.round((stepsCompleted / 12) * 100)}%
               </span>
             </div>
-            <div className="h-2 bg-stone-200 rounded-full overflow-hidden">
+            <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-amber-400 to-amber-600 rounded-full transition-all"
+                className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full transition-all"
                 style={{ width: `${Math.round((stepsCompleted / 12) * 100)}%` }}
               />
             </div>
@@ -299,20 +299,20 @@ export default function Profile() {
                           isComplete
                             ? 'bg-green-100 text-green-700'
                             : isCurrent
-                              ? 'bg-amber-100 text-amber-700'
-                              : 'bg-stone-100 text-stone-400'
+                              ? 'bg-blue-100 text-blue-700'
+                              : 'bg-slate-100 text-slate-400'
                         }`}
                       >
                         {stepNum}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className={`text-xs font-medium ${isComplete ? 'text-stone-400' : 'text-stone-700'}`}>
+                        <p className={`text-xs font-medium ${isComplete ? 'text-slate-400' : 'text-slate-700'}`}>
                           {STEP_TITLES[stepNum]}
                         </p>
-                        <div className="h-1.5 bg-stone-100 rounded-full overflow-hidden mt-1">
+                        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden mt-1">
                           <div
                             className={`h-full rounded-full transition-all ${
-                              isComplete ? 'bg-green-400' : isCurrent ? 'bg-amber-400' : 'bg-stone-200'
+                              isComplete ? 'bg-green-400' : isCurrent ? 'bg-blue-400' : 'bg-slate-200'
                             }`}
                             style={{ width: isComplete ? '100%' : isCurrent ? '50%' : '0%' }}
                           />
@@ -355,18 +355,18 @@ export default function Profile() {
                           badge.rank === 'platinum'
                             ? 'bg-gradient-to-br from-violet-100 to-purple-200'
                             : badge.rank === 'gold'
-                              ? 'bg-gradient-to-br from-yellow-100 to-amber-200'
+                              ? 'bg-gradient-to-br from-yellow-100 to-blue-200'
                               : badge.rank === 'silver'
-                                ? 'bg-gradient-to-br from-stone-100 to-stone-200'
-                                : 'bg-gradient-to-br from-orange-100 to-amber-100'
+                                ? 'bg-gradient-to-br from-slate-100 to-slate-200'
+                                : 'bg-gradient-to-br from-orange-100 to-blue-100'
                         }`}
                       >
                         <span className="text-2xl">{badge.icon || '\u{1F3C6}'}</span>
                       </div>
-                      <p className="text-[10px] font-medium text-stone-700 line-clamp-2">
+                      <p className="text-[10px] font-medium text-slate-700 line-clamp-2">
                         {badge.title}
                       </p>
-                      <p className="text-[9px] text-stone-400">
+                      <p className="text-[9px] text-slate-400">
                         {formatDate(badge.earnedAt)}
                       </p>
                     </div>
@@ -374,9 +374,9 @@ export default function Profile() {
                 </div>
               ) : (
                 <div className="text-center py-6">
-                  <Star className="h-8 w-8 text-stone-300 mx-auto mb-2" />
-                  <p className="text-sm text-stone-500">No badges earned yet.</p>
-                  <p className="text-xs text-stone-400">Complete steps and maintain streaks!</p>
+                  <Star className="h-8 w-8 text-slate-300 mx-auto mb-2" />
+                  <p className="text-sm text-slate-500">No badges earned yet.</p>
+                  <p className="text-xs text-slate-400">Complete steps and maintain streaks!</p>
                 </div>
               )}
             </CardContent>
@@ -391,25 +391,25 @@ export default function Profile() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-3 gap-4 mb-4">
-                <div className="text-center bg-stone-50 rounded-lg p-3">
-                  <p className="text-2xl font-bold text-stone-800">{journalStats.total}</p>
-                  <p className="text-[10px] text-stone-500">Total Entries</p>
+                <div className="text-center bg-slate-50 rounded-lg p-3">
+                  <p className="text-2xl font-bold text-slate-800">{journalStats.total}</p>
+                  <p className="text-[10px] text-slate-500">Total Entries</p>
                 </div>
-                <div className="text-center bg-stone-50 rounded-lg p-3">
+                <div className="text-center bg-slate-50 rounded-lg p-3">
                   <p className="text-2xl">{avgMoodEmoji}</p>
-                  <p className="text-[10px] text-stone-500">
+                  <p className="text-[10px] text-slate-500">
                     Avg Mood ({journalStats.avgMood.toFixed(1)})
                   </p>
                 </div>
-                <div className="text-center bg-stone-50 rounded-lg p-3">
-                  <p className="text-2xl font-bold text-stone-800">{journalStats.longestStreak}</p>
-                  <p className="text-[10px] text-stone-500">Best Streak</p>
+                <div className="text-center bg-slate-50 rounded-lg p-3">
+                  <p className="text-2xl font-bold text-slate-800">{journalStats.longestStreak}</p>
+                  <p className="text-[10px] text-slate-500">Best Streak</p>
                 </div>
               </div>
 
               {journalEntries && journalEntries.length > 0 && (
                 <div>
-                  <p className="text-xs font-medium text-stone-600 mb-2">Recent Mood Trend</p>
+                  <p className="text-xs font-medium text-slate-600 mb-2">Recent Mood Trend</p>
                   <div className="flex items-end gap-1 h-16">
                     {journalEntries
                       .slice(0, 14)
@@ -421,14 +421,14 @@ export default function Profile() {
                         return (
                           <div
                             key={i}
-                            className={`flex-1 rounded-t-sm ${colors[score - 1] ?? 'bg-stone-300'}`}
+                            className={`flex-1 rounded-t-sm ${colors[score - 1] ?? 'bg-slate-300'}`}
                             style={{ height: `${height}%` }}
                             title={`${formatDate(entry.date)}: ${score}/5`}
                           />
                         );
                       })}
                   </div>
-                  <div className="flex justify-between text-[9px] text-stone-400 mt-1">
+                  <div className="flex justify-between text-[9px] text-slate-400 mt-1">
                     <span>14 entries ago</span>
                     <span>Latest</span>
                   </div>
@@ -456,8 +456,8 @@ export default function Profile() {
               return (
                 <div key={pref.key} className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-stone-700">{pref.label}</p>
-                    <p className="text-xs text-stone-400">{pref.desc}</p>
+                    <p className="text-sm font-medium text-slate-700">{pref.label}</p>
+                    <p className="text-xs text-slate-400">{pref.desc}</p>
                   </div>
                   <button
                     onClick={async () => {
@@ -467,7 +467,7 @@ export default function Profile() {
                       });
                     }}
                     className={`relative h-6 w-11 rounded-full transition-colors ${
-                      isEnabled ? 'bg-amber-600' : 'bg-stone-300'
+                      isEnabled ? 'bg-blue-600' : 'bg-slate-300'
                     }`}
                   >
                     <div

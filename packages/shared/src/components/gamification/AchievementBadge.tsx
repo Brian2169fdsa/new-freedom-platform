@@ -26,7 +26,7 @@ interface AchievementBadgeProps {
 // ── Confetti Particles ──────────────────────────────────────────────────────
 
 const CONFETTI_COLORS = [
-  '#f59e0b', // amber-500
+  '#3b82f6', // blue-500
   '#10b981', // emerald-500
   '#6366f1', // indigo-500
   '#ef4444', // red-500
@@ -100,8 +100,8 @@ function ensureKeyframes(): void {
     }
 
     @keyframes achievement-glow-pulse {
-      0%, 100% { box-shadow: 0 0 8px 2px rgba(245, 158, 11, 0.25); }
-      50%      { box-shadow: 0 0 16px 4px rgba(245, 158, 11, 0.45); }
+      0%, 100% { box-shadow: 0 0 8px 2px rgba(37, 99, 235, 0.25); }
+      50%      { box-shadow: 0 0 16px 4px rgba(37, 99, 235, 0.45); }
     }
 
     @keyframes achievement-pop-in {
@@ -166,7 +166,7 @@ export function AchievementBadge({
       onKeyDown={handleKeyDown}
       className={cn(
         'relative flex flex-col items-center text-center select-none outline-none',
-        'focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 rounded-xl',
+        'focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 rounded-xl',
         'transition-transform duration-200',
         isEarned && 'cursor-pointer hover:scale-105',
         isLocked && 'cursor-default',
@@ -178,8 +178,8 @@ export function AchievementBadge({
         className={cn(
           'relative h-16 w-16 rounded-full flex items-center justify-center',
           'transition-all duration-300',
-          isEarned && 'bg-amber-50 border-2 border-amber-300',
-          isLocked && 'bg-stone-100 border-2 border-stone-200 grayscale',
+          isEarned && 'bg-blue-50 border-2 border-blue-300',
+          isLocked && 'bg-slate-100 border-2 border-slate-200 grayscale',
           isEarned && !animating && 'animate-[achievement-glow-pulse_3s_ease-in-out_infinite]',
           animating && 'animate-[achievement-pop-in_0.5s_ease-out]'
         )}
@@ -208,7 +208,7 @@ export function AchievementBadge({
       <p
         className={cn(
           'mt-2 text-xs font-medium leading-tight max-w-[80px] line-clamp-2',
-          isEarned ? 'text-stone-800' : 'text-stone-400'
+          isEarned ? 'text-slate-800' : 'text-slate-400'
         )}
       >
         {badge.title}
@@ -220,7 +220,7 @@ export function AchievementBadge({
           className={cn(
             'absolute -bottom-1 translate-y-full z-10',
             'w-48 p-3 rounded-lg shadow-lg border',
-            'bg-white border-stone-200',
+            'bg-white border-slate-200',
             'text-left'
           )}
         >
@@ -228,16 +228,16 @@ export function AchievementBadge({
             <span className="text-lg" aria-hidden="true">
               {badge.icon}
             </span>
-            <h4 className="text-sm font-semibold text-stone-800">{badge.title}</h4>
+            <h4 className="text-sm font-semibold text-slate-800">{badge.title}</h4>
           </div>
-          <p className="text-xs text-stone-500 leading-relaxed">{badge.description}</p>
+          <p className="text-xs text-slate-500 leading-relaxed">{badge.description}</p>
           {isEarned && badge.earnedAt && (
-            <p className="text-[10px] text-amber-600 mt-1.5 font-medium">
+            <p className="text-[10px] text-blue-600 mt-1.5 font-medium">
               Earned {badge.earnedAt.toLocaleDateString()}
             </p>
           )}
           {isLocked && (
-            <p className="text-[10px] text-stone-400 mt-1.5 italic">
+            <p className="text-[10px] text-slate-400 mt-1.5 italic">
               Keep going — you will unlock this!
             </p>
           )}

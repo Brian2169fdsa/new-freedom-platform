@@ -42,47 +42,47 @@ interface CourseCardProps {
 function CourseCard({ course, completionRate, enrolledCount, onClick }: CourseCardProps) {
   return (
     <Card
-      className="hover:border-amber-300 transition-colors cursor-pointer"
+      className="hover:border-blue-300 transition-colors cursor-pointer"
       onClick={onClick}
     >
       <CardContent className="p-5">
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-3 flex-1 min-w-0">
-            <div className="h-10 w-10 rounded-lg bg-amber-100 flex items-center justify-center shrink-0">
-              <BookOpen className="h-5 w-5 text-amber-700" />
+            <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center shrink-0">
+              <BookOpen className="h-5 w-5 text-blue-700" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-stone-800 truncate">{course.title}</h3>
+                <h3 className="font-semibold text-slate-800 truncate">{course.title}</h3>
                 <Badge variant={course.isPublished ? 'success' : 'secondary'}>
                   {course.isPublished ? 'Published' : 'Draft'}
                 </Badge>
               </div>
-              <p className="text-sm text-stone-500 mt-0.5 line-clamp-1">{course.description}</p>
+              <p className="text-sm text-slate-500 mt-0.5 line-clamp-1">{course.description}</p>
             </div>
           </div>
-          <ChevronRight className="h-5 w-5 text-stone-300 shrink-0 ml-2" />
+          <ChevronRight className="h-5 w-5 text-slate-300 shrink-0 ml-2" />
         </div>
 
         <div className="grid grid-cols-3 gap-4 mt-4">
           <div className="text-center">
-            <p className="text-lg font-bold text-stone-800">{course.modules.length}</p>
-            <p className="text-xs text-stone-500">Modules</p>
+            <p className="text-lg font-bold text-slate-800">{course.modules.length}</p>
+            <p className="text-xs text-slate-500">Modules</p>
           </div>
           <div className="text-center">
-            <p className="text-lg font-bold text-stone-800">{enrolledCount}</p>
-            <p className="text-xs text-stone-500">Enrolled</p>
+            <p className="text-lg font-bold text-slate-800">{enrolledCount}</p>
+            <p className="text-xs text-slate-500">Enrolled</p>
           </div>
           <div className="text-center">
-            <p className="text-lg font-bold text-stone-800">{completionRate}%</p>
-            <p className="text-xs text-stone-500">Completion</p>
+            <p className="text-lg font-bold text-slate-800">{completionRate}%</p>
+            <p className="text-xs text-slate-500">Completion</p>
           </div>
         </div>
 
         {/* Completion bar */}
-        <div className="mt-3 h-1.5 bg-stone-100 rounded-full overflow-hidden">
+        <div className="mt-3 h-1.5 bg-slate-100 rounded-full overflow-hidden">
           <div
-            className="h-full bg-amber-600 rounded-full transition-all"
+            className="h-full bg-blue-600 rounded-full transition-all"
             style={{ width: `${completionRate}%` }}
           />
         </div>
@@ -136,7 +136,7 @@ function CourseDetail({ course, progressData, onBack }: CourseDetailProps) {
     <div className="space-y-6">
       <button
         onClick={onBack}
-        className="text-sm text-stone-500 hover:text-stone-700 flex items-center gap-1"
+        className="text-sm text-slate-500 hover:text-slate-700 flex items-center gap-1"
       >
         <ChevronLeft className="h-4 w-4" />
         Back to courses
@@ -146,13 +146,13 @@ function CourseDetail({ course, progressData, onBack }: CourseDetailProps) {
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h2 className="text-xl font-bold text-stone-800">{course.title}</h2>
+            <h2 className="text-xl font-bold text-slate-800">{course.title}</h2>
             <Badge variant={course.isPublished ? 'success' : 'secondary'}>
               {course.isPublished ? 'Published' : 'Draft'}
             </Badge>
           </div>
-          <p className="text-sm text-stone-500 mt-1">{course.description}</p>
-          <p className="text-xs text-stone-400 mt-1">
+          <p className="text-sm text-slate-500 mt-1">{course.description}</p>
+          <p className="text-xs text-slate-400 mt-1">
             Step {course.stepNumber} &middot; {course.modules.length} modules &middot;{' '}
             {Math.round(course.totalDuration / 60)} min total
           </p>
@@ -167,7 +167,7 @@ function CourseDetail({ course, progressData, onBack }: CourseDetailProps) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <BarChart3 className="h-5 w-5 text-stone-400" />
+            <BarChart3 className="h-5 w-5 text-slate-400" />
             Module Engagement
           </CardTitle>
           <CardDescription>Users started vs. completed per module</CardDescription>
@@ -188,7 +188,7 @@ function CourseDetail({ course, progressData, onBack }: CourseDetailProps) {
                   }}
                 />
                 <Bar dataKey="started" fill="#d6d3d1" name="Started" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="completed" fill="#b45309" name="Completed" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="completed" fill="#2563eb" name="Completed" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -213,16 +213,16 @@ function CourseDetail({ course, progressData, onBack }: CourseDetailProps) {
               return (
                 <div
                   key={mod.id}
-                  className="flex items-center gap-4 p-3 rounded-lg border border-stone-100 hover:bg-stone-50 transition-colors"
+                  className="flex items-center gap-4 p-3 rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors"
                 >
-                  <div className="h-9 w-9 rounded-lg bg-stone-100 flex items-center justify-center shrink-0">
-                    <Icon className="h-4 w-4 text-stone-600" />
+                  <div className="h-9 w-9 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                    <Icon className="h-4 w-4 text-slate-600" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-stone-700">{mod.title}</p>
-                    <p className="text-xs text-stone-500 capitalize">{mod.type} &middot; {mod.duration} min</p>
+                    <p className="text-sm font-medium text-slate-700">{mod.title}</p>
+                    <p className="text-xs text-slate-500 capitalize">{mod.type} &middot; {mod.duration} min</p>
                   </div>
-                  <div className="flex items-center gap-6 text-xs text-stone-500">
+                  <div className="flex items-center gap-6 text-xs text-slate-500">
                     <div className="flex items-center gap-1">
                       <Clock className="h-3.5 w-3.5" />
                       <span>{mod.avgTime}m avg</span>
@@ -259,14 +259,14 @@ function CourseDetail({ course, progressData, onBack }: CourseDetailProps) {
           <DialogContent>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-stone-700">Title</label>
+                <label className="text-sm font-medium text-slate-700">Title</label>
                 <Input defaultValue={editingModule.title} className="mt-1" />
               </div>
               <div>
-                <label className="text-sm font-medium text-stone-700">Type</label>
+                <label className="text-sm font-medium text-slate-700">Type</label>
                 <select
                   defaultValue={editingModule.type}
-                  className="mt-1 w-full h-10 rounded-lg border border-stone-300 bg-white px-3 text-sm"
+                  className="mt-1 w-full h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm"
                 >
                   <option value="video">Video</option>
                   <option value="reading">Reading</option>
@@ -276,7 +276,7 @@ function CourseDetail({ course, progressData, onBack }: CourseDetailProps) {
                 </select>
               </div>
               <div>
-                <label className="text-sm font-medium text-stone-700">Duration (minutes)</label>
+                <label className="text-sm font-medium text-slate-700">Duration (minutes)</label>
                 <Input type="number" defaultValue={editingModule.duration} className="mt-1" />
               </div>
             </div>
@@ -321,10 +321,10 @@ export default function Courses() {
   if (coursesLoading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-36 bg-stone-200 rounded animate-pulse" />
+        <div className="h-8 w-36 bg-slate-200 rounded animate-pulse" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-44 bg-stone-100 rounded-xl animate-pulse" />
+            <div key={i} className="h-44 bg-slate-100 rounded-xl animate-pulse" />
           ))}
         </div>
       </div>
@@ -347,8 +347,8 @@ export default function Courses() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-stone-800">Courses</h1>
-          <p className="text-sm text-stone-500">
+          <h1 className="text-2xl font-bold text-slate-800">Courses</h1>
+          <p className="text-sm text-slate-500">
             12-Step curriculum management &middot; {courses.length} courses
           </p>
         </div>
@@ -362,12 +362,12 @@ export default function Courses() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-5 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-amber-100 flex items-center justify-center">
-              <BookOpen className="h-5 w-5 text-amber-700" />
+            <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
+              <BookOpen className="h-5 w-5 text-blue-700" />
             </div>
             <div>
-              <p className="text-xl font-bold text-stone-800">{courses.length}</p>
-              <p className="text-xs text-stone-500">Total Courses</p>
+              <p className="text-xl font-bold text-slate-800">{courses.length}</p>
+              <p className="text-xs text-slate-500">Total Courses</p>
             </div>
           </CardContent>
         </Card>
@@ -377,10 +377,10 @@ export default function Courses() {
               <CheckSquare className="h-5 w-5 text-green-700" />
             </div>
             <div>
-              <p className="text-xl font-bold text-stone-800">
+              <p className="text-xl font-bold text-slate-800">
                 {courses.filter((c) => c.isPublished).length}
               </p>
-              <p className="text-xs text-stone-500">Published</p>
+              <p className="text-xs text-slate-500">Published</p>
             </div>
           </CardContent>
         </Card>
@@ -390,10 +390,10 @@ export default function Courses() {
               <Users className="h-5 w-5 text-blue-700" />
             </div>
             <div>
-              <p className="text-xl font-bold text-stone-800">
+              <p className="text-xl font-bold text-slate-800">
                 {new Set(progress.map((p) => p.userId)).size}
               </p>
-              <p className="text-xs text-stone-500">Total Enrolled</p>
+              <p className="text-xs text-slate-500">Total Enrolled</p>
             </div>
           </CardContent>
         </Card>
@@ -403,10 +403,10 @@ export default function Courses() {
               <TrendingUp className="h-5 w-5 text-purple-700" />
             </div>
             <div>
-              <p className="text-xl font-bold text-stone-800">
+              <p className="text-xl font-bold text-slate-800">
                 {progress.filter((p) => p.status === 'completed').length}
               </p>
-              <p className="text-xs text-stone-500">Completions</p>
+              <p className="text-xs text-slate-500">Completions</p>
             </div>
           </CardContent>
         </Card>
@@ -417,8 +417,8 @@ export default function Courses() {
         {coursesWithStats.length === 0 ? (
           <Card className="col-span-full">
             <CardContent className="p-12 text-center">
-              <BookOpen className="h-12 w-12 text-stone-300 mx-auto mb-3" />
-              <p className="text-stone-500">No courses yet. Create your first course to get started.</p>
+              <BookOpen className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+              <p className="text-slate-500">No courses yet. Create your first course to get started.</p>
             </CardContent>
           </Card>
         ) : (

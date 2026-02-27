@@ -87,12 +87,12 @@ export function NotificationPrompt() {
   return (
     <div
       role="alert"
-      className="mx-4 mt-4 flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 p-4 shadow-sm dark:border-amber-700 dark:bg-amber-950"
+      className="mx-4 mt-4 flex items-start gap-3 rounded-lg border border-blue-300 bg-blue-50 p-4 shadow-sm dark:border-blue-700 dark:bg-blue-950"
     >
       {/* Bell icon */}
       <div className="flex-shrink-0 pt-0.5">
         <svg
-          className="h-5 w-5 text-amber-600 dark:text-amber-400"
+          className="h-5 w-5 text-blue-600 dark:text-blue-400"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="none"
@@ -109,10 +109,10 @@ export function NotificationPrompt() {
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+        <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
           Stay updated with push notifications
         </p>
-        <p className="mt-1 text-sm text-amber-700 dark:text-amber-300">
+        <p className="mt-1 text-sm text-blue-700 dark:text-blue-300">
           Get real-time alerts for messages, appointments, and important updates.
         </p>
 
@@ -127,7 +127,7 @@ export function NotificationPrompt() {
             type="button"
             onClick={handleEnable}
             disabled={loading}
-            className="inline-flex items-center rounded-md bg-amber-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-amber-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-amber-500 dark:hover:bg-amber-400"
+            className="inline-flex items-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-400"
           >
             {loading ? 'Enabling...' : 'Enable Notifications'}
           </button>
@@ -135,7 +135,7 @@ export function NotificationPrompt() {
           <button
             type="button"
             onClick={handleDismiss}
-            className="text-sm font-medium text-amber-700 hover:text-amber-600 dark:text-amber-300 dark:hover:text-amber-200"
+            className="text-sm font-medium text-blue-700 hover:text-blue-600 dark:text-blue-300 dark:hover:text-blue-200"
           >
             Not now
           </button>
@@ -146,7 +146,7 @@ export function NotificationPrompt() {
       <button
         type="button"
         onClick={handleDismiss}
-        className="flex-shrink-0 rounded-md p-1 text-amber-500 hover:bg-amber-100 hover:text-amber-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 dark:text-amber-400 dark:hover:bg-amber-900 dark:hover:text-amber-200"
+        className="flex-shrink-0 rounded-md p-1 text-blue-500 hover:bg-blue-100 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:text-blue-400 dark:hover:bg-blue-900 dark:hover:text-blue-200"
         aria-label="Dismiss notification prompt"
       >
         <svg

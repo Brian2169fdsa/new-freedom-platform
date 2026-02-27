@@ -49,8 +49,8 @@ function StatCard({ label, value, icon: Icon, iconBg, subtext }: StatProps) {
           <Icon className="h-6 w-6" />
         </div>
         <div>
-          <p className="text-2xl font-bold text-stone-800">{value}</p>
-          <p className="text-xs text-stone-500">{label}</p>
+          <p className="text-2xl font-bold text-slate-800">{value}</p>
+          <p className="text-xs text-slate-500">{label}</p>
           {subtext && <p className="text-xs text-green-600 mt-0.5">{subtext}</p>}
         </div>
       </CardContent>
@@ -73,22 +73,22 @@ interface Employer {
 
 function EmployerCard({ employer }: { readonly employer: Employer }) {
   return (
-    <div className="flex items-center gap-4 p-4 rounded-lg border border-stone-100 hover:bg-stone-50 transition-colors">
-      <div className="h-10 w-10 rounded-lg bg-stone-100 flex items-center justify-center shrink-0">
-        <Building2 className="h-5 w-5 text-stone-500" />
+    <div className="flex items-center gap-4 p-4 rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors">
+      <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+        <Building2 className="h-5 w-5 text-slate-500" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <p className="text-sm font-medium text-stone-700">{employer.name}</p>
+          <p className="text-sm font-medium text-slate-700">{employer.name}</p>
           {employer.fairChance && (
             <Badge variant="success">Fair Chance</Badge>
           )}
         </div>
-        <p className="text-xs text-stone-500">{employer.industry}</p>
+        <p className="text-xs text-slate-500">{employer.industry}</p>
       </div>
       <div className="text-right">
-        <p className="text-sm font-medium text-stone-700">{employer.openPositions} open</p>
-        <p className="text-xs text-stone-500">{employer.placements} placed</p>
+        <p className="text-sm font-medium text-slate-700">{employer.openPositions} open</p>
+        <p className="text-xs text-slate-500">{employer.placements} placed</p>
       </div>
       <Button size="sm" variant="ghost">
         <Edit className="h-3.5 w-3.5" />
@@ -114,10 +114,10 @@ function MemberTimeline({ member, applications }: TimelineItemProps) {
   });
 
   return (
-    <div className="flex items-start gap-3 p-3 border-b border-stone-100 last:border-0">
+    <div className="flex items-start gap-3 p-3 border-b border-slate-100 last:border-0">
       <Avatar src={member.photoURL} alt={member.displayName} size="sm" />
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-stone-700">{member.displayName}</p>
+        <p className="text-sm font-medium text-slate-700">{member.displayName}</p>
         <div className="flex items-center gap-2 mt-1">
           {sorted.slice(0, 3).map((app) => (
             <Badge
@@ -134,7 +134,7 @@ function MemberTimeline({ member, applications }: TimelineItemProps) {
             </Badge>
           ))}
           {sorted.length > 3 && (
-            <span className="text-xs text-stone-400">+{sorted.length - 3} more</span>
+            <span className="text-xs text-slate-400">+{sorted.length - 3} more</span>
           )}
         </div>
       </div>
@@ -161,24 +161,24 @@ function AddEmployerDialog({
       <DialogContent>
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium text-stone-700">Company Name</label>
+            <label className="text-sm font-medium text-slate-700">Company Name</label>
             <Input placeholder="Company name" className="mt-1" />
           </div>
           <div>
-            <label className="text-sm font-medium text-stone-700">Industry</label>
+            <label className="text-sm font-medium text-slate-700">Industry</label>
             <Input placeholder="e.g., Construction, Food Service" className="mt-1" />
           </div>
           <div>
-            <label className="text-sm font-medium text-stone-700">Contact Name</label>
+            <label className="text-sm font-medium text-slate-700">Contact Name</label>
             <Input placeholder="Primary contact" className="mt-1" />
           </div>
           <div>
-            <label className="text-sm font-medium text-stone-700">Contact Email</label>
+            <label className="text-sm font-medium text-slate-700">Contact Email</label>
             <Input type="email" placeholder="email@company.com" className="mt-1" />
           </div>
           <label className="flex items-center gap-2">
-            <input type="checkbox" className="rounded border-stone-300" />
-            <span className="text-sm text-stone-700">Fair Chance Employer (hires individuals with criminal records)</span>
+            <input type="checkbox" className="rounded border-slate-300" />
+            <span className="text-sm text-slate-700">Fair Chance Employer (hires individuals with criminal records)</span>
           </label>
         </div>
       </DialogContent>
@@ -256,10 +256,10 @@ export default function Employment() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-40 bg-stone-200 rounded animate-pulse" />
+        <div className="h-8 w-40 bg-slate-200 rounded animate-pulse" />
         <div className="grid grid-cols-3 gap-4">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-24 bg-stone-100 rounded-xl animate-pulse" />
+            <div key={i} className="h-24 bg-slate-100 rounded-xl animate-pulse" />
           ))}
         </div>
       </div>
@@ -270,8 +270,8 @@ export default function Employment() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-stone-800">Employment</h1>
-        <p className="text-sm text-stone-500">Job placement tracking and employer partnerships</p>
+        <h1 className="text-2xl font-bold text-slate-800">Employment</h1>
+        <p className="text-sm text-slate-500">Job placement tracking and employer partnerships</p>
       </div>
 
       {/* Stats */}
@@ -294,7 +294,7 @@ export default function Employment() {
           label="Avg Starting Wage"
           value="$16.50/hr"
           icon={DollarSign}
-          iconBg="bg-amber-100 text-amber-700"
+          iconBg="bg-blue-100 text-blue-700"
         />
       </div>
 
@@ -307,7 +307,7 @@ export default function Employment() {
           </CardHeader>
           <CardContent>
             {applications.length === 0 ? (
-              <p className="text-sm text-stone-400 text-center py-8">
+              <p className="text-sm text-slate-400 text-center py-8">
                 No job applications tracked yet.
               </p>
             ) : (
@@ -324,8 +324,8 @@ export default function Employment() {
 
                   return (
                     <div key={stage.status} className="flex items-center gap-3">
-                      <span className="text-xs text-stone-500 w-24 text-right">{stage.label}</span>
-                      <div className="flex-1 h-8 bg-stone-50 rounded overflow-hidden">
+                      <span className="text-xs text-slate-500 w-24 text-right">{stage.label}</span>
+                      <div className="flex-1 h-8 bg-slate-50 rounded overflow-hidden">
                         <div
                           className="h-full rounded flex items-center px-3 transition-all"
                           style={{
@@ -333,7 +333,7 @@ export default function Employment() {
                             backgroundColor: stage.color,
                           }}
                         >
-                          <span className="text-xs font-medium text-stone-700">{count}</span>
+                          <span className="text-xs font-medium text-slate-700">{count}</span>
                         </div>
                       </div>
                     </div>
@@ -352,7 +352,7 @@ export default function Employment() {
           </CardHeader>
           <CardContent>
             {memberApplications.size === 0 ? (
-              <p className="text-sm text-stone-400 text-center py-8">
+              <p className="text-sm text-slate-400 text-center py-8">
                 No member activity to display.
               </p>
             ) : (
@@ -393,7 +393,7 @@ export default function Employment() {
         <CardContent>
           <div className="mb-4">
             <div className="relative max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input
                 placeholder="Search employers..."
                 value={employerSearch}

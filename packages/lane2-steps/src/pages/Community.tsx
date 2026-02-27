@@ -79,10 +79,10 @@ const STEP_LABELS = [
 function LoadingSkeleton() {
   return (
     <div className="space-y-3 animate-pulse">
-      <div className="h-10 bg-stone-100 rounded-lg" />
-      <div className="h-24 bg-stone-100 rounded-xl" />
-      <div className="h-24 bg-stone-100 rounded-xl" />
-      <div className="h-24 bg-stone-100 rounded-xl" />
+      <div className="h-10 bg-slate-100 rounded-lg" />
+      <div className="h-24 bg-slate-100 rounded-xl" />
+      <div className="h-24 bg-slate-100 rounded-xl" />
+      <div className="h-24 bg-slate-100 rounded-xl" />
     </div>
   );
 }
@@ -90,9 +90,9 @@ function LoadingSkeleton() {
 function EmptyState({ stepNumber }: { stepNumber: number }) {
   return (
     <div className="text-center py-8">
-      <Users className="h-10 w-10 text-stone-300 mx-auto mb-2" />
-      <p className="text-stone-500">No discussions yet for Step {stepNumber}.</p>
-      <p className="text-sm text-stone-400 mt-1">Be the first to start a conversation!</p>
+      <Users className="h-10 w-10 text-slate-300 mx-auto mb-2" />
+      <p className="text-slate-500">No discussions yet for Step {stepNumber}.</p>
+      <p className="text-sm text-slate-400 mt-1">Be the first to start a conversation!</p>
     </div>
   );
 }
@@ -198,13 +198,13 @@ export default function Community() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div className="flex-1 min-w-0">
-            <p className="text-xs text-stone-400">Step {activeThread.stepNumber} Discussion</p>
-            <h3 className="font-semibold text-stone-800 truncate">{activeThread.title}</h3>
+            <p className="text-xs text-slate-400">Step {activeThread.stepNumber} Discussion</p>
+            <h3 className="font-semibold text-slate-800 truncate">{activeThread.title}</h3>
           </div>
         </div>
 
         {/* Original Post */}
-        <Card className="border-amber-200">
+        <Card className="border-blue-200">
           <CardContent className="p-4">
             <div className="flex items-start gap-3">
               <Avatar
@@ -214,7 +214,7 @@ export default function Community() {
               />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-medium text-sm text-stone-800">
+                  <span className="font-medium text-sm text-slate-800">
                     {activeThread.authorName}
                   </span>
                   {isStaffRole(activeThread.authorRole) && (
@@ -229,10 +229,10 @@ export default function Community() {
                     </Badge>
                   )}
                 </div>
-                <p className="text-xs text-stone-400 mt-0.5">
+                <p className="text-xs text-slate-400 mt-0.5">
                   {formatRelative(activeThread.createdAt)}
                 </p>
-                <p className="text-sm text-stone-700 mt-3 whitespace-pre-wrap">
+                <p className="text-sm text-slate-700 mt-3 whitespace-pre-wrap">
                   {activeThread.content}
                 </p>
               </div>
@@ -242,13 +242,13 @@ export default function Community() {
 
         {/* Replies */}
         <div className="space-y-2 mt-4">
-          <p className="text-sm font-medium text-stone-600">
+          <p className="text-sm font-medium text-slate-600">
             {replies?.length ?? 0} {(replies?.length ?? 0) === 1 ? 'Reply' : 'Replies'}
           </p>
           {repliesLoading ? (
             <div className="space-y-2 animate-pulse">
-              <div className="h-16 bg-stone-100 rounded-lg" />
-              <div className="h-16 bg-stone-100 rounded-lg" />
+              <div className="h-16 bg-slate-100 rounded-lg" />
+              <div className="h-16 bg-slate-100 rounded-lg" />
             </div>
           ) : replies && replies.length > 0 ? (
             replies.map((reply) => (
@@ -262,7 +262,7 @@ export default function Community() {
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium text-sm text-stone-800">
+                        <span className="font-medium text-sm text-slate-800">
                           {reply.authorName}
                         </span>
                         {isStaffRole(reply.authorRole) && (
@@ -271,11 +271,11 @@ export default function Community() {
                             {reply.authorRole === 'mentor' ? 'Mentor' : 'Staff'}
                           </Badge>
                         )}
-                        <span className="text-xs text-stone-400">
+                        <span className="text-xs text-slate-400">
                           {formatRelative(reply.createdAt)}
                         </span>
                       </div>
-                      <p className="text-sm text-stone-700 mt-1 whitespace-pre-wrap">
+                      <p className="text-sm text-slate-700 mt-1 whitespace-pre-wrap">
                         {reply.content}
                       </p>
                     </div>
@@ -284,7 +284,7 @@ export default function Community() {
               </Card>
             ))
           ) : (
-            <p className="text-sm text-stone-400 text-center py-4">
+            <p className="text-sm text-slate-400 text-center py-4">
               No replies yet. Be the first to respond!
             </p>
           )}
@@ -341,10 +341,10 @@ export default function Community() {
                   disabled={!isAccessible}
                   className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
                     selectedStep === String(stepN)
-                      ? 'bg-amber-700 text-white shadow-sm'
+                      ? 'bg-blue-700 text-white shadow-sm'
                       : isAccessible
-                        ? 'bg-stone-100 text-stone-600 hover:bg-stone-200'
-                        : 'bg-stone-50 text-stone-300 cursor-not-allowed'
+                        ? 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        : 'bg-slate-50 text-slate-300 cursor-not-allowed'
                   }`}
                 >
                   {stepN}
@@ -355,7 +355,7 @@ export default function Community() {
         </Tabs>
       </div>
 
-      <p className="text-sm text-stone-500 font-medium">{STEP_LABELS[stepNum - 1]}</p>
+      <p className="text-sm text-slate-500 font-medium">{STEP_LABELS[stepNum - 1]}</p>
 
       {/* Thread List */}
       {threadsLoading ? (
@@ -381,16 +381,16 @@ export default function Community() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         {thread.isPinned && (
-                          <Pin className="h-3 w-3 text-amber-600" />
+                          <Pin className="h-3 w-3 text-blue-600" />
                         )}
-                        <h4 className="font-medium text-sm text-stone-800 truncate">
+                        <h4 className="font-medium text-sm text-slate-800 truncate">
                           {thread.title}
                         </h4>
                       </div>
-                      <p className="text-xs text-stone-500 mt-0.5 line-clamp-1">
+                      <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">
                         {thread.content}
                       </p>
-                      <div className="flex items-center gap-3 mt-2 text-xs text-stone-400">
+                      <div className="flex items-center gap-3 mt-2 text-xs text-slate-400">
                         <span>{thread.authorName}</span>
                         <span className="flex items-center gap-1">
                           <MessageCircle className="h-3 w-3" />
@@ -408,7 +408,7 @@ export default function Community() {
                         )}
                       </div>
                     </div>
-                    <ChevronRight className="h-4 w-4 text-stone-300 shrink-0 mt-1" />
+                    <ChevronRight className="h-4 w-4 text-slate-300 shrink-0 mt-1" />
                   </div>
                 </button>
               </CardContent>
@@ -438,7 +438,7 @@ export default function Community() {
             rows={5}
             className="resize-none"
           />
-          <p className="text-xs text-stone-400">
+          <p className="text-xs text-slate-400">
             Be respectful and supportive. This is a safe space for recovery.
           </p>
         </DialogContent>

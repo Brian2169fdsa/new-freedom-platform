@@ -5,11 +5,11 @@ import { updateDocument } from '../../services/firebase/firestore';
 import type { AppNotification, NotificationType } from '../../types';
 
 const NOTIFICATION_ICONS: Record<NotificationType, React.ReactNode> = {
-  appointment_reminder: <Calendar className="h-4 w-4 text-amber-600" />,
+  appointment_reminder: <Calendar className="h-4 w-4 text-blue-600" />,
   message: <MessageCircle className="h-4 w-4 text-blue-600" />,
-  achievement: <Award className="h-4 w-4 text-amber-500" />,
+  achievement: <Award className="h-4 w-4 text-blue-500" />,
   milestone: <Award className="h-4 w-4 text-green-600" />,
-  system: <Settings className="h-4 w-4 text-stone-500" />,
+  system: <Settings className="h-4 w-4 text-slate-500" />,
   job_match: <Briefcase className="h-4 w-4 text-emerald-600" />,
   community: <Users className="h-4 w-4 text-purple-600" />,
 };
@@ -30,28 +30,34 @@ function NotificationItem({ notification, onMarkRead }: {
   notification: AppNotification;
   onMarkRead: (id: string) => void;
 }) {
-  const icon = NOTIFICATION_ICONS[notification.type] || <Bell className="h-4 w-4 text-stone-500" />;
-  const timeAgo = notification.createdAt?.toDate
-    ? formatTimeAgo(notification.createdAt.toDate())
+  const icon = NOTIFICATION_ICONS[notification.type] || <Bell className="h-4 w-4 text-slate-500" />;
+  const timeAgo = notification.createdAt
+    ? formatTimeAgo(
+        notification.createdAt instanceof Date
+          ? notification.createdAt
+          : typeof (notification.createdAt as any).toDate === 'function'
+          ? (notification.createdAt as any).toDate()
+          : new Date(notification.createdAt as any)
+      )
     : '';
 
   return (
     <div
-      className={`flex items-start gap-3 px-4 py-3 hover:bg-stone-50 transition-colors cursor-pointer ${
-        !notification.read ? 'bg-amber-50/50' : ''
+      className={`flex items-start gap-3 px-4 py-3 hover:bg-slate-50 transition-colors cursor-pointer ${
+        !notification.read ? 'bg-blue-50/50' : ''
       }`}
       onClick={() => !notification.read && onMarkRead(notification.id)}
     >
       <div className="flex-shrink-0 mt-0.5">{icon}</div>
       <div className="flex-1 min-w-0">
-        <p className={`text-sm ${!notification.read ? 'font-medium text-stone-800' : 'text-stone-600'}`}>
+        <p className={`text-sm ${!notification.read ? 'font-medium text-slate-800' : 'text-slate-600'}`}>
           {notification.title}
         </p>
-        <p className="text-xs text-stone-500 mt-0.5 line-clamp-2">{notification.body}</p>
-        <p className="text-xs text-stone-400 mt-1">{timeAgo}</p>
+        <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">{notification.body}</p>
+        <p className="text-xs text-slate-400 mt-1">{timeAgo}</p>
       </div>
       {!notification.read && (
-        <div className="h-2 w-2 rounded-full bg-amber-500 flex-shrink-0 mt-2" />
+        <div className="h-2 w-2 rounded-full bg-blue-500 flex-shrink-0 mt-2" />
       )}
     </div>
   );
@@ -89,7 +95,7 @@ export function NotificationBell() {
     <div className="relative" ref={panelRef}>
       <button
         onClick={() => setOpen(!open)}
-        className="relative p-2 text-stone-500 hover:text-stone-700 rounded-lg hover:bg-stone-100 transition-colors"
+        className="relative p-2 text-slate-500 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
       >
         <Bell className="h-5 w-5" />
         {unreadCount > 0 && (
@@ -100,14 +106,14 @@ export function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-80 max-h-96 bg-white rounded-xl border border-stone-200 shadow-lg overflow-hidden z-50">
+        <div className="absolute right-0 top-full mt-2 w-80 max-h-96 bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden z-50">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-stone-100">
-            <h3 className="font-semibold text-stone-800 text-sm">Notifications</h3>
+          <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
+            <h3 className="font-semibold text-slate-800 text-sm">Notifications</h3>
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllRead}
-                className="flex items-center gap-1 text-xs text-amber-600 hover:text-amber-700 font-medium"
+                className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 font-medium"
               >
                 <Check className="h-3 w-3" />
                 Mark all read
@@ -116,15 +122,15 @@ export function NotificationBell() {
           </div>
 
           {/* List */}
-          <div className="overflow-y-auto max-h-72 divide-y divide-stone-100">
+          <div className="overflow-y-auto max-h-72 divide-y divide-slate-100">
             {loading ? (
               <div className="flex items-center justify-center py-8">
-                <div className="h-5 w-5 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+                <div className="h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
               </div>
             ) : notifications.length === 0 ? (
               <div className="py-8 text-center">
-                <Bell className="h-8 w-8 text-stone-300 mx-auto mb-2" />
-                <p className="text-sm text-stone-500">No notifications yet</p>
+                <Bell className="h-8 w-8 text-slate-300 mx-auto mb-2" />
+                <p className="text-sm text-slate-500">No notifications yet</p>
               </div>
             ) : (
               notifications.slice(0, 20).map((notification) => (

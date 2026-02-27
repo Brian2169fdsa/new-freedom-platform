@@ -17,7 +17,7 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
         <div className="relative bg-white rounded-xl shadow-lg max-w-lg w-full max-h-[85vh] overflow-auto">
           <button
             onClick={() => onOpenChange(false)}
-            className="absolute right-4 top-4 text-stone-400 hover:text-stone-600"
+            className="absolute right-4 top-4 text-slate-400 hover:text-slate-600"
           >
             <X className="h-4 w-4" />
           </button>
@@ -33,7 +33,7 @@ export function DialogHeader({ className, ...props }: React.HTMLAttributes<HTMLD
 }
 
 export function DialogTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
-  return <h2 className={cn('text-lg font-semibold text-stone-800', className)} {...props} />;
+  return <h2 className={cn('text-lg font-semibold text-slate-800', className)} {...props} />;
 }
 
 export function DialogContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {

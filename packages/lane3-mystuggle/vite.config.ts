@@ -14,7 +14,7 @@ export default defineConfig({
         short_name: 'My Struggle',
         description:
           'Nonprofit social network connecting homeless individuals with resources and community support',
-        theme_color: '#b45309',
+        theme_color: '#2563eb',
         background_color: '#fafaf9',
         display: 'standalone',
         scope: '/',

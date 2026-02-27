@@ -16,13 +16,13 @@ export function ChatBubble({ message, isUser, timestamp, avatar }: ChatBubblePro
         className={cn(
           'max-w-[75%] rounded-2xl px-4 py-2.5 text-sm',
           isUser
-            ? 'bg-amber-700 text-white rounded-br-md'
-            : 'bg-stone-100 text-stone-800 rounded-bl-md'
+            ? 'bg-blue-700 text-white rounded-br-md'
+            : 'bg-slate-100 text-slate-800 rounded-bl-md'
         )}
       >
         <p className="whitespace-pre-wrap">{message}</p>
         {timestamp && (
-          <p className={cn('text-[10px] mt-1', isUser ? 'text-amber-200' : 'text-stone-400')}>
+          <p className={cn('text-[10px] mt-1', isUser ? 'text-blue-200' : 'text-slate-400')}>
             {timestamp}
           </p>
         )}

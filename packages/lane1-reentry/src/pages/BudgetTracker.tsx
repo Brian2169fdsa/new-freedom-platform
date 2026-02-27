@@ -15,16 +15,12 @@ import {
   useAuth,
 } from '@reprieve/shared';
 import type { Budget, BudgetItem } from '@reprieve/shared';
-import { db } from '@reprieve/shared/services/firebase/config';
 import {
-  doc,
-  setDoc,
-  getDoc,
-  collection,
-  query,
-  where,
-  getDocs,
-} from 'firebase/firestore';
+  getDocuments,
+  setDocument,
+  addDocument,
+} from '@reprieve/shared/services/firebase/firestore';
+import { where } from 'firebase/firestore';
 import {
   DollarSign,
   Plus,
@@ -103,7 +99,7 @@ const FIRST_90_DAYS_INCOME: BudgetItem[] = [
 // ---------------------------------------------------------------------------
 
 const PIE_COLORS = [
-  '#d97706', // amber-600
+  '#1d4ed8', // blue-600
   '#059669', // emerald-600
   '#7c3aed', // violet-600
   '#dc2626', // red-600
@@ -113,7 +109,7 @@ const PIE_COLORS = [
   '#ea580c', // orange-600
   '#64748b', // slate-500
   '#84cc16', // lime-500
-  '#f59e0b', // amber-500
+  '#3b82f6', // blue-500
   '#6366f1', // indigo-500
 ];
 
@@ -172,8 +168,8 @@ function ExpensePieChart({ expenses }: { expenses: BudgetItem[] }) {
               className="h-3 w-3 rounded-sm flex-shrink-0"
               style={{ backgroundColor: slice.color }}
             />
-            <span className="text-xs text-stone-600 truncate">{slice.label}</span>
-            <span className="text-xs font-medium text-stone-800 ml-auto flex-shrink-0">
+            <span className="text-xs text-slate-600 truncate">{slice.label}</span>
+            <span className="text-xs font-medium text-slate-800 ml-auto flex-shrink-0">
               {slice.percent.toFixed(0)}%
             </span>
           </div>
@@ -206,17 +202,16 @@ export default function BudgetTracker() {
     const loadBudget = async () => {
       setLoading(true);
       try {
-        const q = query(
-          collection(db, 'budgets'),
+        const results = await getDocuments<Budget>(
+          'budgets',
           where('userId', '==', user.uid),
           where('month', '==', currentMonth)
         );
-        const snapshot = await getDocs(q);
 
-        if (!snapshot.empty) {
-          const docData = snapshot.docs[0];
-          setBudget({ id: docData.id, ...docData.data() } as Budget);
-          setSavingsGoal(String(docData.data().savingsGoal || 0));
+        if (results.length > 0) {
+          const budgetDoc = results[0];
+          setBudget(budgetDoc);
+          setSavingsGoal(String((budgetDoc as any).savingsGoal || 0));
         } else {
           setBudget(null);
           setSavingsGoal('0');
@@ -264,12 +259,11 @@ export default function BudgetTracker() {
       };
 
       if (budget?.id) {
-        await setDoc(doc(db, 'budgets', budget.id), budgetData);
+        await setDocument('budgets', budget.id, budgetData);
         setBudget({ ...budgetData, id: budget.id });
       } else {
-        const newDocRef = doc(collection(db, 'budgets'));
-        await setDoc(newDocRef, budgetData);
-        setBudget({ ...budgetData, id: newDocRef.id });
+        const newId = await addDocument('budgets', budgetData);
+        setBudget({ ...budgetData, id: newId });
       }
     } catch (error) {
       console.error('Failed to save budget:', error);
@@ -349,7 +343,7 @@ export default function BudgetTracker() {
       {/* Back link */}
       <Link
         to="/tools"
-        className="inline-flex items-center gap-1 text-sm text-amber-700 hover:text-amber-800 -mt-2 mb-2"
+        className="inline-flex items-center gap-1 text-sm text-blue-700 hover:text-blue-800 -mt-2 mb-2"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Tools
@@ -359,16 +353,16 @@ export default function BudgetTracker() {
       <div className="flex items-center justify-center gap-4 mb-2">
         <button
           onClick={() => navigateMonth(-1)}
-          className="h-8 w-8 rounded-lg flex items-center justify-center text-stone-500 hover:bg-stone-100 transition-colors"
+          className="h-8 w-8 rounded-lg flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-colors"
         >
           <ChevronLeft className="h-5 w-5" />
         </button>
-        <h3 className="text-lg font-semibold text-stone-800 min-w-[180px] text-center">
+        <h3 className="text-lg font-semibold text-slate-800 min-w-[180px] text-center">
           {formatMonthDisplay(currentMonth)}
         </h3>
         <button
           onClick={() => navigateMonth(1)}
-          className="h-8 w-8 rounded-lg flex items-center justify-center text-stone-500 hover:bg-stone-100 transition-colors"
+          className="h-8 w-8 rounded-lg flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-colors"
         >
           <ChevronRight className="h-5 w-5" />
         </button>
@@ -376,12 +370,12 @@ export default function BudgetTracker() {
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="h-8 w-8 border-2 border-amber-700 border-t-transparent rounded-full animate-spin" />
+          <div className="h-8 w-8 border-2 border-blue-700 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
         <div className="space-y-4">
           {/* Summary Card */}
-          <Card className="bg-gradient-to-br from-amber-50 to-stone-50 border-amber-200">
+          <Card className="bg-gradient-to-br from-blue-50 to-slate-50 border-blue-200">
             <CardContent className="p-4">
               <div className="grid grid-cols-3 gap-3 text-center">
                 <div>
@@ -389,7 +383,7 @@ export default function BudgetTracker() {
                     <TrendingUp className="h-4 w-4" />
                     <span className="text-xs font-medium">Income</span>
                   </div>
-                  <p className="text-lg font-bold text-stone-800">
+                  <p className="text-lg font-bold text-slate-800">
                     ${totalIncome.toFixed(2)}
                   </p>
                 </div>
@@ -398,12 +392,12 @@ export default function BudgetTracker() {
                     <TrendingDown className="h-4 w-4" />
                     <span className="text-xs font-medium">Expenses</span>
                   </div>
-                  <p className="text-lg font-bold text-stone-800">
+                  <p className="text-lg font-bold text-slate-800">
                     ${totalExpenses.toFixed(2)}
                   </p>
                 </div>
                 <div>
-                  <div className="flex items-center justify-center gap-1 text-amber-700 mb-1">
+                  <div className="flex items-center justify-center gap-1 text-blue-700 mb-1">
                     <DollarSign className="h-4 w-4" />
                     <span className="text-xs font-medium">Net</span>
                   </div>
@@ -418,20 +412,20 @@ export default function BudgetTracker() {
               </div>
 
               {/* Savings Goal */}
-              <div className="mt-4 pt-3 border-t border-amber-200">
+              <div className="mt-4 pt-3 border-t border-blue-200">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-1.5">
-                    <PiggyBank className="h-4 w-4 text-amber-700" />
-                    <span className="text-sm font-medium text-stone-700">Savings Goal</span>
+                    <PiggyBank className="h-4 w-4 text-blue-700" />
+                    <span className="text-sm font-medium text-slate-700">Savings Goal</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-stone-500">$</span>
+                    <span className="text-xs text-slate-500">$</span>
                     <input
                       type="number"
                       value={savingsGoal}
                       onChange={(e) => setSavingsGoal(e.target.value)}
                       onBlur={handleSavingsGoalChange}
-                      className="w-20 h-7 rounded border border-stone-300 px-2 text-sm text-right text-stone-800 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                      className="w-20 h-7 rounded border border-slate-300 px-2 text-sm text-right text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
                       min="0"
                       step="50"
                     />
@@ -439,13 +433,13 @@ export default function BudgetTracker() {
                 </div>
                 {savingsGoalNum > 0 && (
                   <div>
-                    <div className="flex justify-between text-xs text-stone-500 mb-1">
+                    <div className="flex justify-between text-xs text-slate-500 mb-1">
                       <span>${Math.max(net, 0).toFixed(2)} saved</span>
                       <span>{savingsProgress.toFixed(0)}%</span>
                     </div>
-                    <div className="w-full bg-stone-200 rounded-full h-2">
+                    <div className="w-full bg-slate-200 rounded-full h-2">
                       <div
-                        className="bg-amber-600 h-2 rounded-full transition-all"
+                        className="bg-blue-600 h-2 rounded-full transition-all"
                         style={{ width: `${savingsProgress}%` }}
                       />
                     </div>
@@ -470,7 +464,7 @@ export default function BudgetTracker() {
             </CardHeader>
             <CardContent>
               {incomeItems.length === 0 ? (
-                <p className="text-sm text-stone-400 text-center py-4">
+                <p className="text-sm text-slate-400 text-center py-4">
                   No income items yet. Tap Add to get started.
                 </p>
               ) : (
@@ -478,13 +472,13 @@ export default function BudgetTracker() {
                   {incomeItems.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center justify-between py-2 border-b border-stone-100 last:border-0"
+                      className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0"
                     >
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-stone-800 truncate">
+                        <p className="text-sm font-medium text-slate-800 truncate">
                           {item.label}
                         </p>
-                        <p className="text-xs text-stone-400">{item.category}</p>
+                        <p className="text-xs text-slate-400">{item.category}</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-semibold text-green-600">
@@ -492,15 +486,15 @@ export default function BudgetTracker() {
                         </span>
                         <button
                           onClick={() => handleRemoveItem('income', item.id)}
-                          className="h-7 w-7 rounded flex items-center justify-center text-stone-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                          className="h-7 w-7 rounded flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
                       </div>
                     </div>
                   ))}
-                  <div className="flex items-center justify-between pt-2 border-t border-stone-200">
-                    <span className="text-sm font-semibold text-stone-700">Total Income</span>
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-200">
+                    <span className="text-sm font-semibold text-slate-700">Total Income</span>
                     <span className="text-sm font-bold text-green-600">
                       ${totalIncome.toFixed(2)}
                     </span>
@@ -525,7 +519,7 @@ export default function BudgetTracker() {
             </CardHeader>
             <CardContent>
               {expenseItems.length === 0 ? (
-                <p className="text-sm text-stone-400 text-center py-4">
+                <p className="text-sm text-slate-400 text-center py-4">
                   No expense items yet. Tap Add to get started.
                 </p>
               ) : (
@@ -533,13 +527,13 @@ export default function BudgetTracker() {
                   {expenseItems.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center justify-between py-2 border-b border-stone-100 last:border-0"
+                      className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0"
                     >
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-stone-800 truncate">
+                        <p className="text-sm font-medium text-slate-800 truncate">
                           {item.label}
                         </p>
-                        <p className="text-xs text-stone-400">{item.category}</p>
+                        <p className="text-xs text-slate-400">{item.category}</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-semibold text-red-500">
@@ -547,15 +541,15 @@ export default function BudgetTracker() {
                         </span>
                         <button
                           onClick={() => handleRemoveItem('expenses', item.id)}
-                          className="h-7 w-7 rounded flex items-center justify-center text-stone-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                          className="h-7 w-7 rounded flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
                       </div>
                     </div>
                   ))}
-                  <div className="flex items-center justify-between pt-2 border-t border-stone-200">
-                    <span className="text-sm font-semibold text-stone-700">Total Expenses</span>
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-200">
+                    <span className="text-sm font-semibold text-slate-700">Total Expenses</span>
                     <span className="text-sm font-bold text-red-500">
                       ${totalExpenses.toFixed(2)}
                     </span>
@@ -569,7 +563,7 @@ export default function BudgetTracker() {
           {expenseItems.length > 0 && (
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-base text-stone-700">
+                <CardTitle className="text-base text-slate-700">
                   Expense Breakdown
                 </CardTitle>
               </CardHeader>
@@ -583,13 +577,13 @@ export default function BudgetTracker() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
-                <Bell className="h-4 w-4 text-amber-600" />
+                <Bell className="h-4 w-4 text-blue-600" />
                 Bill Reminders
               </CardTitle>
             </CardHeader>
             <CardContent>
               {expenseItems.length === 0 ? (
-                <p className="text-sm text-stone-400 text-center py-4">
+                <p className="text-sm text-slate-400 text-center py-4">
                   Add expenses to track bill due dates.
                 </p>
               ) : (
@@ -603,18 +597,18 @@ export default function BudgetTracker() {
                     .map((item) => (
                       <div
                         key={item.id}
-                        className="flex items-center gap-3 p-2.5 rounded-lg bg-amber-50 border border-amber-100"
+                        className="flex items-center gap-3 p-2.5 rounded-lg bg-blue-50 border border-blue-100"
                       >
-                        <Bell className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                        <Bell className="h-4 w-4 text-blue-600 flex-shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-stone-800 truncate">
+                          <p className="text-sm font-medium text-slate-800 truncate">
                             {item.label}
                           </p>
-                          <p className="text-xs text-stone-500">
+                          <p className="text-xs text-slate-500">
                             {item.category} - ${item.amount.toFixed(2)}/mo
                           </p>
                         </div>
-                        <span className="text-xs text-amber-700 font-medium flex-shrink-0">
+                        <span className="text-xs text-blue-700 font-medium flex-shrink-0">
                           Monthly
                         </span>
                       </div>
@@ -624,7 +618,7 @@ export default function BudgetTracker() {
                       item.category,
                     ),
                   ).length === 0 && (
-                    <p className="text-sm text-stone-400 text-center py-2">
+                    <p className="text-sm text-slate-400 text-center py-2">
                       No recurring bills detected.
                     </p>
                   )}
@@ -635,24 +629,24 @@ export default function BudgetTracker() {
 
           {/* First 90 Days Template */}
           {incomeItems.length === 0 && expenseItems.length === 0 && (
-            <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+            <Card className="bg-gradient-to-br from-blue-50 to-orange-50 border-blue-200">
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
-                  <div className="h-10 w-10 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
-                    <Zap className="h-5 w-5 text-amber-700" />
+                  <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+                    <Zap className="h-5 w-5 text-blue-700" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="text-sm font-semibold text-stone-800 mb-1">
+                    <h4 className="text-sm font-semibold text-slate-800 mb-1">
                       First 90 Days Template
                     </h4>
-                    <p className="text-xs text-stone-500 mb-3">
+                    <p className="text-xs text-slate-500 mb-3">
                       Start with a common budget template for people re-entering the community.
                       Pre-fills typical expenses like rent, groceries, transportation, and phone.
                     </p>
                     <Button
                       size="sm"
                       variant="outline"
-                      className="border-amber-300 text-amber-700 hover:bg-amber-100"
+                      className="border-blue-300 text-blue-700 hover:bg-blue-100"
                       onClick={handleApplyTemplate}
                     >
                       <Zap className="h-4 w-4 mr-1" /> Apply Template
@@ -666,7 +660,7 @@ export default function BudgetTracker() {
           {/* Monthly Comparison */}
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-base text-stone-700">
+              <CardTitle className="text-base text-slate-700">
                 Monthly Trend
               </CardTitle>
             </CardHeader>
@@ -680,7 +674,7 @@ export default function BudgetTracker() {
                       height: `${Math.min((totalIncome / Math.max(totalIncome, totalExpenses, 1)) * 80, 80)}px`,
                     }}
                   />
-                  <span className="text-[10px] text-stone-500">Income</span>
+                  <span className="text-[10px] text-slate-500">Income</span>
                 </div>
                 <div className="flex flex-col items-center gap-1">
                   <div
@@ -689,19 +683,19 @@ export default function BudgetTracker() {
                       height: `${Math.min((totalExpenses / Math.max(totalIncome, totalExpenses, 1)) * 80, 80)}px`,
                     }}
                   />
-                  <span className="text-[10px] text-stone-500">Expenses</span>
+                  <span className="text-[10px] text-slate-500">Expenses</span>
                 </div>
                 <div className="flex flex-col items-center gap-1">
                   <div
-                    className={`w-10 rounded-t transition-all ${net >= 0 ? 'bg-amber-400' : 'bg-orange-400'}`}
+                    className={`w-10 rounded-t transition-all ${net >= 0 ? 'bg-blue-400' : 'bg-orange-400'}`}
                     style={{
                       height: `${Math.min((Math.abs(net) / Math.max(totalIncome, totalExpenses, 1)) * 80, 80)}px`,
                     }}
                   />
-                  <span className="text-[10px] text-stone-500">Net</span>
+                  <span className="text-[10px] text-slate-500">Net</span>
                 </div>
               </div>
-              <p className="text-center text-xs text-stone-400 mt-2">
+              <p className="text-center text-xs text-slate-400 mt-2">
                 {formatMonthDisplay(currentMonth)}
               </p>
             </CardContent>
@@ -719,7 +713,7 @@ export default function BudgetTracker() {
         <DialogContent>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">
+              <label className="block text-sm font-medium text-slate-700 mb-1">
                 Label
               </label>
               <Input
@@ -731,7 +725,7 @@ export default function BudgetTracker() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">
+              <label className="block text-sm font-medium text-slate-700 mb-1">
                 Amount ($)
               </label>
               <Input
@@ -744,13 +738,13 @@ export default function BudgetTracker() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">
+              <label className="block text-sm font-medium text-slate-700 mb-1">
                 Category
               </label>
               <select
                 value={newCategory}
                 onChange={(e) => setNewCategory(e.target.value)}
-                className="flex h-10 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 {(addType === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES).map(
                   (cat) => (

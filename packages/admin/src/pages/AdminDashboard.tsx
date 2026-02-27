@@ -35,7 +35,7 @@ function StatCard({ label, value, change, changeType = 'neutral', icon: Icon, ic
     ? 'text-green-600'
     : changeType === 'negative'
       ? 'text-red-600'
-      : 'text-stone-500';
+      : 'text-slate-500';
 
   return (
     <Card>
@@ -45,8 +45,8 @@ function StatCard({ label, value, change, changeType = 'neutral', icon: Icon, ic
             <Icon className="h-6 w-6" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-3xl font-bold text-stone-800">{value}</p>
-            <p className="text-sm text-stone-500">{label}</p>
+            <p className="text-3xl font-bold text-slate-800">{value}</p>
+            <p className="text-sm text-slate-500">{label}</p>
           </div>
           {change && (
             <span className={`text-xs font-medium ${changeColor}`}>{change}</span>
@@ -81,15 +81,15 @@ const ACTIVITY_ICON_MAP: Record<ActivityType, { icon: React.ElementType; color: 
 function ActivityFeedItem({ item }: { readonly item: ActivityItem }) {
   const { icon: Icon, color } = ACTIVITY_ICON_MAP[item.type];
   return (
-    <div className="flex items-start gap-3 py-3 border-b border-stone-100 last:border-0">
+    <div className="flex items-start gap-3 py-3 border-b border-slate-100 last:border-0">
       <div className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 ${color}`}>
         <Icon className="h-4 w-4" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-stone-700">{item.title}</p>
-        <p className="text-xs text-stone-500 truncate">{item.description}</p>
+        <p className="text-sm font-medium text-slate-700">{item.title}</p>
+        <p className="text-xs text-slate-500 truncate">{item.description}</p>
       </div>
-      <span className="text-xs text-stone-400 whitespace-nowrap">{item.time}</span>
+      <span className="text-xs text-slate-400 whitespace-nowrap">{item.time}</span>
     </div>
   );
 }
@@ -107,19 +107,19 @@ interface LaneHealthProps {
 
 function LaneHealthCard({ lane, activeUsers, totalUsers, completionRate }: LaneHealthProps) {
   return (
-    <div className="flex items-center justify-between py-3 border-b border-stone-100 last:border-0">
+    <div className="flex items-center justify-between py-3 border-b border-slate-100 last:border-0">
       <div>
-        <p className="text-sm font-medium text-stone-700">{LANE_NAMES[lane]}</p>
-        <p className="text-xs text-stone-500">{activeUsers} active / {totalUsers} total</p>
+        <p className="text-sm font-medium text-slate-700">{LANE_NAMES[lane]}</p>
+        <p className="text-xs text-slate-500">{activeUsers} active / {totalUsers} total</p>
       </div>
       <div className="flex items-center gap-3">
-        <div className="w-24 h-2 bg-stone-100 rounded-full overflow-hidden">
+        <div className="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
           <div
-            className="h-full bg-amber-600 rounded-full transition-all"
+            className="h-full bg-blue-600 rounded-full transition-all"
             style={{ width: `${Math.min(completionRate, 100)}%` }}
           />
         </div>
-        <span className="text-xs font-medium text-stone-600 w-10 text-right">
+        <span className="text-xs font-medium text-slate-600 w-10 text-right">
           {completionRate}%
         </span>
       </div>
@@ -237,12 +237,12 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-48 bg-stone-200 rounded animate-pulse" />
+        <div className="h-8 w-48 bg-slate-200 rounded animate-pulse" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <Card key={i}>
               <CardContent className="p-6">
-                <div className="h-16 bg-stone-100 rounded animate-pulse" />
+                <div className="h-16 bg-slate-100 rounded animate-pulse" />
               </CardContent>
             </Card>
           ))}
@@ -256,8 +256,8 @@ export default function AdminDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-stone-800">Dashboard</h1>
-          <p className="text-stone-500 text-sm">Platform overview and key metrics</p>
+          <h1 className="text-2xl font-bold text-slate-800">Dashboard</h1>
+          <p className="text-slate-500 text-sm">Platform overview and key metrics</p>
         </div>
         <Button
           variant="outline"
@@ -275,7 +275,7 @@ export default function AdminDashboard() {
           label="Total Members"
           value={totalMembers}
           icon={Users}
-          iconBg="bg-amber-100 text-amber-700"
+          iconBg="bg-blue-100 text-blue-700"
           change="+12 this week"
           changeType="positive"
         />
@@ -327,8 +327,8 @@ export default function AdminDashboard() {
                   <Area
                     type="monotone"
                     dataKey="count"
-                    stroke="#b45309"
-                    fill="#fef3c7"
+                    stroke="#2563eb"
+                    fill="#dbeafe"
                     strokeWidth={2}
                     name="Members"
                   />
@@ -345,7 +345,7 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             {activityFeed.length === 0 ? (
-              <p className="text-sm text-stone-400 text-center py-8">No recent activity</p>
+              <p className="text-sm text-slate-400 text-center py-8">No recent activity</p>
             ) : (
               <div className="max-h-64 overflow-y-auto">
                 {activityFeed.map((item) => (
@@ -418,16 +418,16 @@ function QuickAction({ icon: Icon, label, description, href }: QuickActionProps)
   return (
     <a
       href={href}
-      className="flex items-center gap-3 p-3 rounded-lg border border-stone-200 hover:bg-stone-50 transition-colors group"
+      className="flex items-center gap-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors group"
     >
-      <div className="h-10 w-10 rounded-lg bg-stone-100 flex items-center justify-center group-hover:bg-amber-100 transition-colors">
-        <Icon className="h-5 w-5 text-stone-600 group-hover:text-amber-700" />
+      <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+        <Icon className="h-5 w-5 text-slate-600 group-hover:text-blue-700" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-stone-700">{label}</p>
-        <p className="text-xs text-stone-500">{description}</p>
+        <p className="text-sm font-medium text-slate-700">{label}</p>
+        <p className="text-xs text-slate-500">{description}</p>
       </div>
-      <ArrowRight className="h-4 w-4 text-stone-400 group-hover:text-amber-600" />
+      <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-blue-600" />
     </a>
   );
 }

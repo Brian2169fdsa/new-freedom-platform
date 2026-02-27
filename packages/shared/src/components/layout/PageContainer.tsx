@@ -15,8 +15,8 @@ export function PageContainer({ children, title, subtitle, className, action }: 
       {(title || action) && (
         <div className="flex items-center justify-between">
           <div>
-            {title && <h2 className="text-2xl font-bold text-stone-800">{title}</h2>}
-            {subtitle && <p className="text-sm text-stone-500 mt-1">{subtitle}</p>}
+            {title && <h2 className="text-2xl font-bold text-slate-800">{title}</h2>}
+            {subtitle && <p className="text-sm text-slate-500 mt-1">{subtitle}</p>}
           </div>
           {action && <div>{action}</div>}
         </div>

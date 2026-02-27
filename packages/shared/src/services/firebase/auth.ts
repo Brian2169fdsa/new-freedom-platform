@@ -11,6 +11,8 @@ import {
 import { auth } from './config';
 import { createDocument, getDocument } from './firestore';
 
+const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === 'true';
+
 const googleProvider = new GoogleAuthProvider();
 
 const DEFAULT_USER_DATA = (uid: string, email: string, displayName: string, photoURL?: string) => {
@@ -40,6 +42,7 @@ export const signUpWithEmail = async (
   password: string,
   displayName?: string
 ) => {
+  if (DEMO_MODE) throw new Error('Sign-up is disabled in demo mode');
   const cred = await createUserWithEmailAndPassword(auth, email, password);
 
   // Set displayName on Firebase Auth profile
@@ -57,10 +60,13 @@ export const signUpWithEmail = async (
   return cred;
 };
 
-export const signInWithEmail = (email: string, password: string) =>
-  signInWithEmailAndPassword(auth, email, password);
+export const signInWithEmail = (email: string, password: string) => {
+  if (DEMO_MODE) throw new Error('Sign-in is disabled in demo mode');
+  return signInWithEmailAndPassword(auth, email, password);
+};
 
 export const signInWithGoogle = async () => {
+  if (DEMO_MODE) throw new Error('Google sign-in is disabled in demo mode');
   const cred = await signInWithPopup(auth, googleProvider);
 
   // Create Firestore user doc if it doesn't exist (first Google sign-in)

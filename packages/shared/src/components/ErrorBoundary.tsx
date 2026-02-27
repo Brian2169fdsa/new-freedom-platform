@@ -48,12 +48,12 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     const isDev = process.env.NODE_ENV === 'development';
 
     return (
-      <div className="min-h-screen flex items-center justify-center bg-stone-50 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
         <div className="max-w-md w-full text-center space-y-6">
           {/* Icon */}
-          <div className="mx-auto w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center">
+          <div className="mx-auto w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
             <svg
-              className="w-8 h-8 text-amber-600"
+              className="w-8 h-8 text-blue-600"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -69,10 +69,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
           {/* Heading */}
           <div>
-            <h1 className="text-xl font-semibold text-stone-800">
+            <h1 className="text-xl font-semibold text-slate-800">
               Something went wrong
             </h1>
-            <p className="mt-2 text-sm text-stone-500">
+            <p className="mt-2 text-sm text-slate-500">
               We hit an unexpected issue. Your data is safe — please try again.
             </p>
           </div>
@@ -94,21 +94,21 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
           {/* Try Again button */}
           <button
             onClick={this.handleReset}
-            className="inline-flex items-center px-6 py-2.5 bg-amber-500 text-white text-sm font-medium rounded-lg hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 transition-colors"
+            className="inline-flex items-center px-6 py-2.5 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-colors"
           >
             Try Again
           </button>
 
           {/* Crisis hotline link */}
-          <div className="pt-4 border-t border-stone-200">
-            <p className="text-xs text-stone-400">
+          <div className="pt-4 border-t border-slate-200">
+            <p className="text-xs text-slate-400">
               If you are in crisis and need immediate help:
             </p>
             <a
               href={CRISIS_HOTLINE.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block mt-1 text-xs font-medium text-amber-600 hover:text-amber-700 underline underline-offset-2"
+              className="inline-block mt-1 text-xs font-medium text-blue-600 hover:text-blue-700 underline underline-offset-2"
             >
               {CRISIS_HOTLINE.name} &mdash; Call {CRISIS_HOTLINE.phone}
             </a>

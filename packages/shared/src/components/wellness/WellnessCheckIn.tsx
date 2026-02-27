@@ -180,7 +180,7 @@ export function WellnessCheckIn() {
   if (submitted || alreadyCheckedIn) {
     const showCrisis = submitted && safetyRating <= 2;
     return (
-      <Card className="border-amber-200 overflow-hidden">
+      <Card className="border-blue-200 overflow-hidden">
         {showCrisis && (
           <div className="bg-red-50 border-b border-red-200 p-4 space-y-3">
             <div className="flex items-center gap-2">
@@ -215,7 +215,7 @@ export function WellnessCheckIn() {
             </div>
             <div className="flex-1">
               <p className="font-semibold text-emerald-800">Check-in complete!</p>
-              <p className="text-sm text-stone-600 mt-0.5">
+              <p className="text-sm text-slate-600 mt-0.5">
                 {submitted
                   ? getEncouragingMessage(mood, safetyRating)
                   : 'Great job taking care of yourself today.'}
@@ -223,9 +223,9 @@ export function WellnessCheckIn() {
             </div>
           </div>
           {streakDays > 0 && (
-            <div className="mt-3 flex items-center gap-2 bg-amber-50 rounded-lg px-3 py-2">
+            <div className="mt-3 flex items-center gap-2 bg-blue-50 rounded-lg px-3 py-2">
               <Flame className="h-4 w-4 text-orange-500" />
-              <span className="text-sm font-medium text-amber-800">
+              <span className="text-sm font-medium text-blue-800">
                 {streakDays} day streak!
               </span>
             </div>
@@ -236,7 +236,7 @@ export function WellnessCheckIn() {
   }
 
   return (
-    <Card className="border-amber-200">
+    <Card className="border-blue-200">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-base">Daily Wellness Check-in</CardTitle>
@@ -256,8 +256,8 @@ export function WellnessCheckIn() {
         {/* Mood Slider */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="text-sm font-medium text-stone-700">Mood</label>
-            <span className="text-lg">{getMoodEmoji(mood)} <span className="text-sm text-stone-600">{mood}/10</span></span>
+            <label className="text-sm font-medium text-slate-700">Mood</label>
+            <span className="text-lg">{getMoodEmoji(mood)} <span className="text-sm text-slate-600">{mood}/10</span></span>
           </div>
           <input
             type="range"
@@ -265,9 +265,9 @@ export function WellnessCheckIn() {
             max={10}
             value={mood}
             onChange={(e) => setMood(parseInt(e.target.value, 10))}
-            className="w-full accent-amber-600"
+            className="w-full accent-blue-600"
           />
-          <div className="flex justify-between text-xs text-stone-400 mt-1">
+          <div className="flex justify-between text-xs text-slate-400 mt-1">
             <span>{'\u{1F614}'} Struggling</span>
             <span>Great {'\u{1F604}'}</span>
           </div>
@@ -276,7 +276,7 @@ export function WellnessCheckIn() {
         {/* Craving Level */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="text-sm font-medium text-stone-700">Craving Level</label>
+            <label className="text-sm font-medium text-slate-700">Craving Level</label>
             <span className={cn('text-sm font-semibold', getCravingColor(cravingLevel))}>
               {cravingLevel}/10
             </span>
@@ -287,7 +287,7 @@ export function WellnessCheckIn() {
             max={10}
             value={cravingLevel}
             onChange={(e) => setCravingLevel(parseInt(e.target.value, 10))}
-            className="w-full accent-amber-600"
+            className="w-full accent-blue-600"
           />
           <div className="flex justify-between items-center mt-1">
             <span className="text-xs text-green-600">None</span>
@@ -298,7 +298,7 @@ export function WellnessCheckIn() {
 
         {/* Sleep Quality */}
         <div>
-          <label className="text-sm font-medium text-stone-700 mb-2 block">Sleep Quality</label>
+          <label className="text-sm font-medium text-slate-700 mb-2 block">Sleep Quality</label>
           <div className="grid grid-cols-4 gap-2">
             {SLEEP_OPTIONS.map((opt) => (
               <button
@@ -307,8 +307,8 @@ export function WellnessCheckIn() {
                 className={cn(
                   'py-2 rounded-lg text-sm font-medium transition-all',
                   sleepQuality === opt.value
-                    ? 'bg-amber-600 text-white shadow-sm'
-                    : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 )}
               >
                 {opt.label}
@@ -319,7 +319,7 @@ export function WellnessCheckIn() {
 
         {/* Energy Level */}
         <div>
-          <label className="text-sm font-medium text-stone-700 mb-2 block">Energy Level</label>
+          <label className="text-sm font-medium text-slate-700 mb-2 block">Energy Level</label>
           <div className="grid grid-cols-3 gap-2">
             {ENERGY_OPTIONS.map((opt) => (
               <button
@@ -328,8 +328,8 @@ export function WellnessCheckIn() {
                 className={cn(
                   'py-2 rounded-lg text-sm font-medium transition-all',
                   energyLevel === opt.value
-                    ? 'bg-amber-600 text-white shadow-sm'
-                    : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 )}
               >
                 {opt.label}
@@ -340,7 +340,7 @@ export function WellnessCheckIn() {
 
         {/* Gratitude Prompt */}
         <div>
-          <label className="text-sm font-medium text-stone-700 mb-2 block">
+          <label className="text-sm font-medium text-slate-700 mb-2 block">
             One thing I am grateful for today
           </label>
           <Input
@@ -353,7 +353,7 @@ export function WellnessCheckIn() {
 
         {/* Safety Rating */}
         <div>
-          <label className="text-sm font-medium text-stone-700 mb-2 block">
+          <label className="text-sm font-medium text-slate-700 mb-2 block">
             How safe do you feel?
           </label>
           <div className="flex gap-2">
@@ -369,19 +369,19 @@ export function WellnessCheckIn() {
                       : val === 3
                         ? 'bg-yellow-500 text-white shadow-sm'
                         : 'bg-green-600 text-white shadow-sm'
-                    : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 )}
               >
                 {val}
               </button>
             ))}
           </div>
-          <div className="flex justify-between text-xs text-stone-400 mt-1">
+          <div className="flex justify-between text-xs text-slate-400 mt-1">
             <span>Very Unsafe</span>
             <span>Very Safe</span>
           </div>
           {safetyRating > 0 && (
-            <p className="text-xs text-stone-500 mt-1 text-center">
+            <p className="text-xs text-slate-500 mt-1 text-center">
               {SAFETY_LABELS[safetyRating]}
             </p>
           )}
@@ -389,8 +389,8 @@ export function WellnessCheckIn() {
 
         {/* Journal Note */}
         <div>
-          <label className="text-sm font-medium text-stone-700 mb-2 block">
-            Journal note <span className="text-stone-400 font-normal">(optional)</span>
+          <label className="text-sm font-medium text-slate-700 mb-2 block">
+            Journal note <span className="text-slate-400 font-normal">(optional)</span>
           </label>
           <Textarea
             value={journalNote}

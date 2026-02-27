@@ -20,14 +20,13 @@ import type { Goal, GoalCategory, Milestone } from '@reprieve/shared';
 import { useCollection } from '@reprieve/shared/hooks/useFirestore';
 import { useAuth } from '@reprieve/shared/hooks/useAuth';
 import {
+  addDocument,
   updateDocument,
   deleteDocument,
-  serverTimestamp,
   where,
   orderBy,
 } from '@reprieve/shared/services/firebase/firestore';
-import { addDoc, collection as firestoreCollection, Timestamp } from 'firebase/firestore';
-import { db } from '@reprieve/shared/services/firebase/config';
+import { Timestamp } from 'firebase/firestore';
 import {
   Plus,
   Target,
@@ -38,6 +37,18 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function tsToDate(ts: unknown): Date {
+  if (ts instanceof Date) return ts;
+  if (typeof ts === 'string') return new Date(ts);
+  if (ts && typeof (ts as { toDate?: unknown }).toDate === 'function')
+    return (ts as Timestamp).toDate();
+  return new Date(ts as number);
+}
 
 // ---------------------------------------------------------------------------
 // Category configuration
@@ -63,9 +74,9 @@ const CATEGORY_CONFIG: Record<
   },
   housing: {
     label: 'Housing',
-    bg: 'bg-amber-100',
-    text: 'text-amber-800',
-    ring: 'ring-amber-300',
+    bg: 'bg-blue-100',
+    text: 'text-blue-800',
+    ring: 'ring-blue-300',
     icon: '🟡',
   },
   education: {
@@ -98,9 +109,9 @@ const CATEGORY_CONFIG: Record<
   },
   personal: {
     label: 'Personal',
-    bg: 'bg-stone-100',
-    text: 'text-stone-800',
-    ring: 'ring-stone-300',
+    bg: 'bg-slate-100',
+    text: 'text-slate-800',
+    ring: 'ring-slate-300',
     icon: '⚪',
   },
 };
@@ -146,13 +157,11 @@ function GoalCard({ goal, onToggleMilestone, onDelete, onEdit }: GoalCardProps) 
   const status = STATUS_BADGE[goal.status] ?? STATUS_BADGE.active;
 
   const targetDateStr = goal.targetDate
-    ? goal.targetDate instanceof Timestamp
-      ? goal.targetDate.toDate().toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric',
-        })
-      : ''
+    ? tsToDate(goal.targetDate).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
     : null;
 
   return (
@@ -171,7 +180,7 @@ function GoalCard({ goal, onToggleMilestone, onDelete, onEdit }: GoalCardProps) 
                 <Target className={`h-4 w-4 ${cat.text}`} />
               </span>
               <div className="min-w-0">
-                <h3 className="font-semibold text-stone-800 truncate">{goal.title}</h3>
+                <h3 className="font-semibold text-slate-800 truncate">{goal.title}</h3>
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${cat.bg} ${cat.text}`}>
                     {cat.label}
@@ -199,19 +208,19 @@ function GoalCard({ goal, onToggleMilestone, onDelete, onEdit }: GoalCardProps) 
           {/* Progress bar */}
           <div>
             <div className="flex items-center justify-between mb-1">
-              <span className="text-xs text-stone-500">Progress</span>
-              <span className="text-xs font-semibold text-stone-700">
+              <span className="text-xs text-slate-500">Progress</span>
+              <span className="text-xs font-semibold text-slate-700">
                 {Math.round(goal.progress)}%
               </span>
             </div>
-            <div className="h-2 rounded-full bg-stone-100 overflow-hidden">
+            <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
               <div
                 className={`h-full rounded-full transition-all duration-500 ${
                   goal.progress >= 100
                     ? 'bg-green-500'
                     : goal.progress >= 50
-                    ? 'bg-amber-500'
-                    : 'bg-amber-300'
+                    ? 'bg-blue-500'
+                    : 'bg-blue-300'
                 }`}
                 style={{ width: `${Math.min(goal.progress, 100)}%` }}
               />
@@ -220,8 +229,8 @@ function GoalCard({ goal, onToggleMilestone, onDelete, onEdit }: GoalCardProps) 
 
           {/* Target date */}
           {targetDateStr && (
-            <p className="text-xs text-stone-400">
-              Target: <span className="text-stone-600">{targetDateStr}</span>
+            <p className="text-xs text-slate-400">
+              Target: <span className="text-slate-600">{targetDateStr}</span>
             </p>
           )}
 
@@ -229,7 +238,7 @@ function GoalCard({ goal, onToggleMilestone, onDelete, onEdit }: GoalCardProps) 
           {goal.milestones && goal.milestones.length > 0 && (
             <div>
               <button
-                className="flex items-center gap-1 text-xs font-medium text-amber-700 hover:text-amber-900 transition-colors"
+                className="flex items-center gap-1 text-xs font-medium text-blue-700 hover:text-blue-900 transition-colors"
                 onClick={() => setExpanded(!expanded)}
               >
                 {expanded ? (
@@ -252,12 +261,12 @@ function GoalCard({ goal, onToggleMilestone, onDelete, onEdit }: GoalCardProps) 
                         {ms.completed ? (
                           <CheckCircle2 className="h-4 w-4 text-green-600" />
                         ) : (
-                          <Circle className="h-4 w-4 text-stone-300 hover:text-amber-500 transition-colors" />
+                          <Circle className="h-4 w-4 text-slate-300 hover:text-blue-500 transition-colors" />
                         )}
                       </button>
                       <span
                         className={`text-sm ${
-                          ms.completed ? 'line-through text-stone-400' : 'text-stone-700'
+                          ms.completed ? 'line-through text-slate-400' : 'text-slate-700'
                         }`}
                       >
                         {ms.title}
@@ -298,11 +307,11 @@ function EmptyState({ tab }: { tab: string }) {
   return (
     <Card>
       <CardContent className="p-8 text-center">
-        <div className="mx-auto h-14 w-14 rounded-full bg-amber-50 flex items-center justify-center mb-4">
-          <Target className="h-7 w-7 text-amber-400" />
+        <div className="mx-auto h-14 w-14 rounded-full bg-blue-50 flex items-center justify-center mb-4">
+          <Target className="h-7 w-7 text-blue-400" />
         </div>
-        <h3 className="text-lg font-semibold text-stone-700 mb-1">{msg.title}</h3>
-        <p className="text-sm text-stone-500 max-w-xs mx-auto">{msg.desc}</p>
+        <h3 className="text-lg font-semibold text-slate-700 mb-1">{msg.title}</h3>
+        <p className="text-sm text-slate-500 max-w-xs mx-auto">{msg.desc}</p>
       </CardContent>
     </Card>
   );
@@ -385,7 +394,7 @@ function GoalDialog({ open, onOpenChange, onSave, initial, mode }: GoalDialogPro
       <DialogContent className="space-y-4">
         {/* Title */}
         <div>
-          <label className="block text-sm font-medium text-stone-700 mb-1">Goal Title</label>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Goal Title</label>
           <Input
             placeholder="e.g. Find stable housing"
             value={form.title}
@@ -395,7 +404,7 @@ function GoalDialog({ open, onOpenChange, onSave, initial, mode }: GoalDialogPro
 
         {/* Category grid */}
         <div>
-          <label className="block text-sm font-medium text-stone-700 mb-2">Category</label>
+          <label className="block text-sm font-medium text-slate-700 mb-2">Category</label>
           <div className="grid grid-cols-4 gap-2">
             {ALL_CATEGORIES.map((cat) => {
               const cfg = CATEGORY_CONFIG[cat];
@@ -407,7 +416,7 @@ function GoalDialog({ open, onOpenChange, onSave, initial, mode }: GoalDialogPro
                   className={`flex flex-col items-center gap-1 rounded-lg p-2 text-xs font-medium border-2 transition-all ${
                     selected
                       ? `${cfg.bg} ${cfg.text} border-current ring-2 ${cfg.ring}`
-                      : 'bg-white text-stone-500 border-stone-200 hover:border-stone-300'
+                      : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
                   }`}
                   onClick={() => setForm((p) => ({ ...p, category: cat }))}
                 >
@@ -421,8 +430,8 @@ function GoalDialog({ open, onOpenChange, onSave, initial, mode }: GoalDialogPro
 
         {/* Target date */}
         <div>
-          <label className="block text-sm font-medium text-stone-700 mb-1">
-            Target Date <span className="text-stone-400 font-normal">(optional)</span>
+          <label className="block text-sm font-medium text-slate-700 mb-1">
+            Target Date <span className="text-slate-400 font-normal">(optional)</span>
           </label>
           <Input
             type="date"
@@ -433,16 +442,16 @@ function GoalDialog({ open, onOpenChange, onSave, initial, mode }: GoalDialogPro
 
         {/* Milestones */}
         <div>
-          <label className="block text-sm font-medium text-stone-700 mb-1">Milestones</label>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Milestones</label>
           {form.milestones.length > 0 && (
             <ul className="space-y-1.5 mb-2">
               {form.milestones.map((ms) => (
-                <li key={ms.id} className="flex items-center gap-2 text-sm text-stone-700">
-                  <Circle className="h-3.5 w-3.5 text-stone-300 shrink-0" />
+                <li key={ms.id} className="flex items-center gap-2 text-sm text-slate-700">
+                  <Circle className="h-3.5 w-3.5 text-slate-300 shrink-0" />
                   <span className="flex-1 truncate">{ms.title}</span>
                   <button
                     type="button"
-                    className="text-stone-400 hover:text-red-500 transition-colors shrink-0"
+                    className="text-slate-400 hover:text-red-500 transition-colors shrink-0"
                     onClick={() => handleRemoveMilestone(ms.id)}
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -520,15 +529,13 @@ export default function Goals() {
       status: 'active',
       progress: 0,
       milestones,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
     };
 
     if (form.targetDate) {
       goalData.targetDate = Timestamp.fromDate(new Date(form.targetDate));
     }
 
-    await addDoc(firestoreCollection(db, 'goals'), goalData);
+    await addDocument('goals', goalData);
   };
 
   // ------- Edit goal -------
@@ -605,9 +612,7 @@ export default function Goals() {
         title: editGoal.title,
         category: editGoal.category,
         targetDate: editGoal.targetDate
-          ? editGoal.targetDate instanceof Timestamp
-            ? editGoal.targetDate.toDate().toISOString().split('T')[0]
-            : ''
+          ? tsToDate(editGoal.targetDate).toISOString().split('T')[0]
           : '',
         milestones: editGoal.milestones.map((m) => ({ id: m.id, title: m.title })),
         newMilestone: '',
@@ -624,13 +629,13 @@ export default function Goals() {
               <CardContent className="p-4">
                 <div className="animate-pulse space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-lg bg-stone-200" />
+                    <div className="h-8 w-8 rounded-lg bg-slate-200" />
                     <div className="space-y-1.5 flex-1">
-                      <div className="h-4 w-40 bg-stone-200 rounded" />
-                      <div className="h-3 w-24 bg-stone-100 rounded" />
+                      <div className="h-4 w-40 bg-slate-200 rounded" />
+                      <div className="h-3 w-24 bg-slate-100 rounded" />
                     </div>
                   </div>
-                  <div className="h-2 w-full bg-stone-100 rounded-full" />
+                  <div className="h-2 w-full bg-slate-100 rounded-full" />
                 </div>
               </CardContent>
             </Card>
@@ -654,20 +659,20 @@ export default function Goals() {
       <div className="grid grid-cols-3 gap-3">
         <Card>
           <CardContent className="p-3 text-center">
-            <p className="text-2xl font-bold text-amber-700">{activeGoals.length}</p>
-            <p className="text-[11px] text-stone-500">Active</p>
+            <p className="text-2xl font-bold text-blue-700">{activeGoals.length}</p>
+            <p className="text-[11px] text-slate-500">Active</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-3 text-center">
             <p className="text-2xl font-bold text-green-700">{completedGoals.length}</p>
-            <p className="text-[11px] text-stone-500">Completed</p>
+            <p className="text-[11px] text-slate-500">Completed</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-3 text-center">
-            <p className="text-2xl font-bold text-stone-700">{goals.length}</p>
-            <p className="text-[11px] text-stone-500">Total</p>
+            <p className="text-2xl font-bold text-slate-700">{goals.length}</p>
+            <p className="text-[11px] text-slate-500">Total</p>
           </CardContent>
         </Card>
       </div>

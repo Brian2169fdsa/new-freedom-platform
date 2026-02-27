@@ -17,8 +17,8 @@ import {
   useCollection,
 } from '@reprieve/shared';
 import type { Appointment, AppointmentType } from '@reprieve/shared';
-import { db } from '@reprieve/shared/services/firebase/config';
-import { addDoc, collection, Timestamp, where } from 'firebase/firestore';
+import { addDocument } from '@reprieve/shared/services/firebase/firestore';
+import { Timestamp, where } from 'firebase/firestore';
 import {
   Plus,
   ArrowLeft,
@@ -33,7 +33,7 @@ import {
 import { Link } from 'react-router-dom';
 
 const APPOINTMENT_TYPES: { value: AppointmentType; label: string; color: string }[] = [
-  { value: 'case_manager', label: 'Case Manager', color: 'bg-amber-500' },
+  { value: 'case_manager', label: 'Case Manager', color: 'bg-blue-500' },
   { value: 'mentor', label: 'Mentor', color: 'bg-blue-500' },
   { value: 'therapy', label: 'Therapy', color: 'bg-purple-500' },
   { value: 'court', label: 'Court', color: 'bg-red-500' },
@@ -41,7 +41,7 @@ const APPOINTMENT_TYPES: { value: AppointmentType; label: string; color: string 
   { value: 'medical', label: 'Medical', color: 'bg-pink-500' },
   { value: 'interview', label: 'Interview', color: 'bg-green-500' },
   { value: 'aa_meeting', label: 'AA/NA Meeting', color: 'bg-teal-500' },
-  { value: 'other', label: 'Other', color: 'bg-stone-500' },
+  { value: 'other', label: 'Other', color: 'bg-slate-500' },
 ];
 
 const appointmentTypeMap = Object.fromEntries(
@@ -98,6 +98,15 @@ function getReminderLabel(apptDate: Date): string | null {
   return null;
 }
 
+/** Safely convert Timestamp-like objects, Dates, or strings to a native Date. */
+function toNativeDate(ts: unknown): Date {
+  if (ts instanceof Date) return ts;
+  if (typeof ts === 'string') return new Date(ts);
+  if (ts && typeof (ts as any).toDate === 'function')
+    return (ts as any).toDate();
+  return new Date(ts as number);
+}
+
 export default function CalendarView() {
   const { user } = useAuth();
   const { data: appointments, loading } = useCollection<Appointment>(
@@ -133,7 +142,7 @@ export default function CalendarView() {
   const appointmentsByDay = useMemo(() => {
     const map: Record<number, Appointment[]> = {};
     appointments.forEach((appt) => {
-      const apptDate = appt.dateTime.toDate();
+      const apptDate = toNativeDate(appt.dateTime);
       if (apptDate.getFullYear() === year && apptDate.getMonth() === month) {
         const day = apptDate.getDate();
         if (!map[day]) map[day] = [];
@@ -147,8 +156,8 @@ export default function CalendarView() {
   const selectedDayAppointments = useMemo(() => {
     if (!selectedDate) return [];
     return appointments
-      .filter((appt) => isSameDay(appt.dateTime.toDate(), selectedDate))
-      .sort((a, b) => a.dateTime.toDate().getTime() - b.dateTime.toDate().getTime());
+      .filter((appt) => isSameDay(toNativeDate(appt.dateTime), selectedDate))
+      .sort((a, b) => toNativeDate(a.dateTime).getTime() - toNativeDate(b.dateTime).getTime());
   }, [appointments, selectedDate]);
 
   const navigateMonth = (direction: -1 | 1) => {
@@ -164,7 +173,7 @@ export default function CalendarView() {
       const dateObj = new Date(newDate);
       dateObj.setHours(hours, minutes, 0, 0);
 
-      await addDoc(collection(db, 'appointments'), {
+      await addDocument('appointments', {
         userId: user.uid,
         title: newTitle.trim(),
         type: newType,
@@ -226,7 +235,7 @@ export default function CalendarView() {
       {/* Back link */}
       <Link
         to="/tools"
-        className="inline-flex items-center gap-1 text-sm text-amber-700 hover:text-amber-800 -mt-2 mb-2"
+        className="inline-flex items-center gap-1 text-sm text-blue-700 hover:text-blue-800 -mt-2 mb-2"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Tools
@@ -234,7 +243,7 @@ export default function CalendarView() {
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="h-8 w-8 border-2 border-amber-700 border-t-transparent rounded-full animate-spin" />
+          <div className="h-8 w-8 border-2 border-blue-700 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
         <div className="space-y-4">
@@ -244,14 +253,14 @@ export default function CalendarView() {
               <div className="flex items-center justify-between mb-4">
                 <button
                   onClick={() => navigateMonth(-1)}
-                  className="h-8 w-8 rounded-lg flex items-center justify-center text-stone-500 hover:bg-stone-100 transition-colors"
+                  className="h-8 w-8 rounded-lg flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-colors"
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </button>
-                <h3 className="text-lg font-semibold text-stone-800">{monthLabel}</h3>
+                <h3 className="text-lg font-semibold text-slate-800">{monthLabel}</h3>
                 <button
                   onClick={() => navigateMonth(1)}
-                  className="h-8 w-8 rounded-lg flex items-center justify-center text-stone-500 hover:bg-stone-100 transition-colors"
+                  className="h-8 w-8 rounded-lg flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-colors"
                 >
                   <ChevronRight className="h-5 w-5" />
                 </button>
@@ -262,7 +271,7 @@ export default function CalendarView() {
                 {DAYS_OF_WEEK.map((day) => (
                   <div
                     key={day}
-                    className="text-center text-xs font-medium text-stone-400 py-1"
+                    className="text-center text-xs font-medium text-slate-400 py-1"
                   >
                     {day}
                   </div>
@@ -284,7 +293,7 @@ export default function CalendarView() {
 
                   // Collect unique appointment type colors for this day
                   const dotColors = (appointmentsByDay[day] || [])
-                    .map((a) => appointmentTypeMap[a.type]?.color || 'bg-stone-500')
+                    .map((a) => appointmentTypeMap[a.type]?.color || 'bg-slate-500')
                     .filter((v, i, arr) => arr.indexOf(v) === i)
                     .slice(0, 3);
 
@@ -294,10 +303,10 @@ export default function CalendarView() {
                       onClick={() => setSelectedDate(cellDate)}
                       className={`h-10 rounded-lg flex flex-col items-center justify-center text-sm transition-colors relative ${
                         isSelected
-                          ? 'bg-amber-700 text-white'
+                          ? 'bg-blue-700 text-white'
                           : isTodayDate
-                          ? 'bg-amber-50 text-amber-800 font-semibold'
-                          : 'text-stone-700 hover:bg-stone-100'
+                          ? 'bg-blue-50 text-blue-800 font-semibold'
+                          : 'text-slate-700 hover:bg-slate-100'
                       }`}
                     >
                       <span>{day}</span>
@@ -324,7 +333,7 @@ export default function CalendarView() {
           {(() => {
             const courtDates = appointments
               .filter((a) => {
-                const d = a.dateTime.toDate();
+                const d = toNativeDate(a.dateTime);
                 return (
                   (a.type === 'court' || a.type === 'parole') &&
                   d > new Date()
@@ -332,7 +341,7 @@ export default function CalendarView() {
               })
               .sort(
                 (a, b) =>
-                  a.dateTime.toDate().getTime() - b.dateTime.toDate().getTime(),
+                  toNativeDate(a.dateTime).getTime() - toNativeDate(b.dateTime).getTime(),
               )
               .slice(0, 3);
 
@@ -349,7 +358,7 @@ export default function CalendarView() {
                 <CardContent>
                   <div className="space-y-2">
                     {courtDates.map((appt) => {
-                      const apptDate = appt.dateTime.toDate();
+                      const apptDate = toNativeDate(appt.dateTime);
                       const days = daysUntil(apptDate);
                       const typeInfo = appointmentTypeMap[appt.type];
 
@@ -365,10 +374,10 @@ export default function CalendarView() {
                               }`}
                             />
                             <div className="min-w-0">
-                              <p className="text-sm font-medium text-stone-800 truncate">
+                              <p className="text-sm font-medium text-slate-800 truncate">
                                 {appt.title}
                               </p>
-                              <p className="text-xs text-stone-500">
+                              <p className="text-xs text-slate-500">
                                 {apptDate.toLocaleDateString('en-US', {
                                   weekday: 'short',
                                   month: 'short',
@@ -401,7 +410,7 @@ export default function CalendarView() {
           {(() => {
             const upcoming = appointments
               .filter((a) => {
-                const reminder = getReminderLabel(a.dateTime.toDate());
+                const reminder = getReminderLabel(toNativeDate(a.dateTime));
                 return reminder !== null;
               })
               .slice(0, 3);
@@ -409,9 +418,9 @@ export default function CalendarView() {
             if (upcoming.length === 0) return null;
 
             return (
-              <Card className="border-amber-200 bg-amber-50/50">
+              <Card className="border-blue-200 bg-blue-50/50">
                 <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center gap-2 text-base text-amber-700">
+                  <CardTitle className="flex items-center gap-2 text-base text-blue-700">
                     <Bell className="h-4 w-4" />
                     Reminders
                   </CardTitle>
@@ -419,18 +428,18 @@ export default function CalendarView() {
                 <CardContent>
                   <div className="space-y-2">
                     {upcoming.map((appt) => {
-                      const reminder = getReminderLabel(appt.dateTime.toDate());
+                      const reminder = getReminderLabel(toNativeDate(appt.dateTime));
                       return (
                         <div
                           key={appt.id}
-                          className="flex items-center gap-3 p-2.5 rounded-lg bg-white border border-amber-100"
+                          className="flex items-center gap-3 p-2.5 rounded-lg bg-white border border-blue-100"
                         >
-                          <Bell className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                          <Bell className="h-4 w-4 text-blue-600 flex-shrink-0" />
                           <div className="min-w-0 flex-1">
-                            <p className="text-sm font-medium text-stone-800 truncate">
+                            <p className="text-sm font-medium text-slate-800 truncate">
                               {appt.title}
                             </p>
-                            <p className="text-xs text-amber-600">{reminder}</p>
+                            <p className="text-xs text-blue-600">{reminder}</p>
                           </div>
                         </div>
                       );
@@ -456,8 +465,8 @@ export default function CalendarView() {
               <CardContent>
                 {selectedDayAppointments.length === 0 ? (
                   <div className="text-center py-6">
-                    <Calendar className="h-10 w-10 text-stone-300 mx-auto mb-2" />
-                    <p className="text-sm text-stone-400">No appointments this day</p>
+                    <Calendar className="h-10 w-10 text-slate-300 mx-auto mb-2" />
+                    <p className="text-sm text-slate-400">No appointments this day</p>
                     <Button
                       size="sm"
                       variant="outline"
@@ -471,21 +480,21 @@ export default function CalendarView() {
                   <div className="space-y-3">
                     {selectedDayAppointments.map((appt) => {
                       const typeInfo = appointmentTypeMap[appt.type];
-                      const apptDate = appt.dateTime.toDate();
+                      const apptDate = toNativeDate(appt.dateTime);
 
                       return (
                         <div
                           key={appt.id}
-                          className="flex items-start gap-3 p-3 rounded-lg bg-stone-50"
+                          className="flex items-start gap-3 p-3 rounded-lg bg-slate-50"
                         >
                           <div
                             className={`h-2 w-2 rounded-full mt-2 flex-shrink-0 ${
-                              typeInfo?.color || 'bg-stone-500'
+                              typeInfo?.color || 'bg-slate-500'
                             }`}
                           />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <h4 className="font-medium text-stone-800 text-sm">
+                              <h4 className="font-medium text-slate-800 text-sm">
                                 {appt.title}
                               </h4>
                               <Badge variant="secondary">
@@ -498,7 +507,7 @@ export default function CalendarView() {
                                 <Badge variant="success">Completed</Badge>
                               )}
                             </div>
-                            <div className="flex items-center gap-3 mt-1 text-xs text-stone-500">
+                            <div className="flex items-center gap-3 mt-1 text-xs text-slate-500">
                               <span className="flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
                                 {formatTime(apptDate)}
@@ -531,7 +540,7 @@ export default function CalendarView() {
         <DialogContent>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">
+              <label className="block text-sm font-medium text-slate-700 mb-1">
                 Title
               </label>
               <Input
@@ -542,13 +551,13 @@ export default function CalendarView() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">
+              <label className="block text-sm font-medium text-slate-700 mb-1">
                 Type
               </label>
               <select
                 value={newType}
                 onChange={(e) => setNewType(e.target.value as AppointmentType)}
-                className="flex h-10 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 {APPOINTMENT_TYPES.map((type) => (
                   <option key={type.value} value={type.value}>
@@ -560,7 +569,7 @@ export default function CalendarView() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">
+                <label className="block text-sm font-medium text-slate-700 mb-1">
                   Date
                 </label>
                 <Input
@@ -570,7 +579,7 @@ export default function CalendarView() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">
+                <label className="block text-sm font-medium text-slate-700 mb-1">
                   Time
                 </label>
                 <Input
@@ -582,13 +591,13 @@ export default function CalendarView() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">
+              <label className="block text-sm font-medium text-slate-700 mb-1">
                 Duration (minutes)
               </label>
               <select
                 value={newDuration}
                 onChange={(e) => setNewDuration(e.target.value)}
-                className="flex h-10 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="15">15 min</option>
                 <option value="30">30 min</option>
@@ -600,7 +609,7 @@ export default function CalendarView() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">
+              <label className="block text-sm font-medium text-slate-700 mb-1">
                 Location (optional)
               </label>
               <Input
@@ -611,7 +620,7 @@ export default function CalendarView() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">
+              <label className="block text-sm font-medium text-slate-700 mb-1">
                 Notes (optional)
               </label>
               <textarea
@@ -619,7 +628,7 @@ export default function CalendarView() {
                 onChange={(e) => setNewNotes(e.target.value)}
                 placeholder="Any additional details..."
                 rows={2}
-                className="flex w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-none"
+                className="flex w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
             </div>
           </div>

@@ -25,12 +25,12 @@ const RESOURCE_CATEGORIES: { type: ResourceType; label: string; icon: React.Reac
   { type: 'food', label: 'Food', icon: <Utensils className="h-5 w-5" />, color: 'bg-green-50 text-green-600', markerColor: '#22c55e' },
   { type: 'medical', label: 'Medical', icon: <Stethoscope className="h-5 w-5" />, color: 'bg-red-50 text-red-600', markerColor: '#ef4444' },
   { type: 'mental_health', label: 'Mental Health', icon: <Brain className="h-5 w-5" />, color: 'bg-purple-50 text-purple-600', markerColor: '#a855f7' },
-  { type: 'legal', label: 'Legal Aid', icon: <Scale className="h-5 w-5" />, color: 'bg-amber-50 text-amber-600', markerColor: '#f59e0b' },
+  { type: 'legal', label: 'Legal Aid', icon: <Scale className="h-5 w-5" />, color: 'bg-blue-50 text-blue-600', markerColor: '#3b82f6' },
   { type: 'employment', label: 'Jobs', icon: <Briefcase className="h-5 w-5" />, color: 'bg-emerald-50 text-emerald-600', markerColor: '#10b981' },
   { type: 'transportation', label: 'Transport', icon: <Bus className="h-5 w-5" />, color: 'bg-sky-50 text-sky-600', markerColor: '#0ea5e9' },
   { type: 'showers', label: 'Showers', icon: <Droplets className="h-5 w-5" />, color: 'bg-cyan-50 text-cyan-600', markerColor: '#06b6d4' },
   { type: 'phone_internet', label: 'Phone/WiFi', icon: <Wifi className="h-5 w-5" />, color: 'bg-indigo-50 text-indigo-600', markerColor: '#6366f1' },
-  { type: 'other', label: 'Other', icon: <HelpCircle className="h-5 w-5" />, color: 'bg-stone-50 text-stone-600', markerColor: '#78716c' },
+  { type: 'other', label: 'Other', icon: <HelpCircle className="h-5 w-5" />, color: 'bg-slate-50 text-slate-600', markerColor: '#78716c' },
 ];
 
 function getCategoryInfo(type: ResourceType) {
@@ -79,7 +79,7 @@ function EmergencyBanner() {
 
 function DistanceBadge({ miles }: { miles: number }) {
   return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
       <Locate className="h-3 w-3" />
       {formatDistance(miles)}
     </span>
@@ -95,29 +95,29 @@ function ResourceCard({ resource, distance }: { resource: Resource; distance: nu
   const mapsUrl = getSearchUrl(resource.address);
 
   return (
-    <div className="bg-white rounded-xl border border-stone-200 p-4">
+    <div className="bg-white rounded-xl border border-slate-200 p-4">
       <div className="flex items-start gap-3">
         <div className={`p-2 rounded-lg flex-shrink-0 ${category.color}`}>
           {category.icon}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="font-semibold text-stone-800 text-sm">{resource.name}</h3>
+            <h3 className="font-semibold text-slate-800 text-sm">{resource.name}</h3>
             {distance !== null && <DistanceBadge miles={distance} />}
           </div>
-          <p className="text-xs text-stone-500 mt-0.5">{resource.description}</p>
+          <p className="text-xs text-slate-500 mt-0.5">{resource.description}</p>
 
           <div className="mt-3 space-y-1.5">
-            <div className="flex items-center gap-2 text-xs text-stone-600">
-              <MapPin className="h-3.5 w-3.5 text-stone-400 flex-shrink-0" />
+            <div className="flex items-center gap-2 text-xs text-slate-600">
+              <MapPin className="h-3.5 w-3.5 text-slate-400 flex-shrink-0" />
               <span className="truncate">{resource.address}</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-stone-600">
-              <Clock className="h-3.5 w-3.5 text-stone-400 flex-shrink-0" />
+            <div className="flex items-center gap-2 text-xs text-slate-600">
+              <Clock className="h-3.5 w-3.5 text-slate-400 flex-shrink-0" />
               <span>{resource.hours}</span>
             </div>
             {resource.phone && (
-              <a href={`tel:${resource.phone}`} className="flex items-center gap-2 text-xs text-amber-700 font-medium">
+              <a href={`tel:${resource.phone}`} className="flex items-center gap-2 text-xs text-blue-700 font-medium">
                 <Phone className="h-3.5 w-3.5" />
                 {resource.phone}
               </a>
@@ -152,7 +152,7 @@ function ResourceCard({ resource, distance }: { resource: Resource; distance: nu
               href={mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 text-white rounded-lg text-xs font-medium hover:bg-amber-600"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 text-white rounded-lg text-xs font-medium hover:bg-blue-600"
             >
               <Navigation className="h-3.5 w-3.5" />
               Directions
@@ -162,7 +162,7 @@ function ResourceCard({ resource, distance }: { resource: Resource; distance: nu
                 href={resource.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-stone-100 text-stone-700 rounded-lg text-xs font-medium hover:bg-stone-200"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg text-xs font-medium hover:bg-slate-200"
               >
                 <ExternalLink className="h-3.5 w-3.5" />
                 Website
@@ -174,12 +174,12 @@ function ResourceCard({ resource, distance }: { resource: Resource; distance: nu
           {resource.services.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2">
               {resource.services.slice(0, 4).map((service) => (
-                <span key={service} className="px-2 py-0.5 bg-stone-100 text-stone-600 rounded text-xs">
+                <span key={service} className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-xs">
                   {service}
                 </span>
               ))}
               {resource.services.length > 4 && (
-                <span className="text-xs text-stone-400">+{resource.services.length - 4} more</span>
+                <span className="text-xs text-slate-400">+{resource.services.length - 4} more</span>
               )}
             </div>
           )}
@@ -240,7 +240,7 @@ function MapPlaceholderSvg() {
       <g transform="translate(192, 115)">
         <path
           d="M8 0C3.6 0 0 3.6 0 8c0 5.4 8 14 8 14s8-8.6 8-14c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"
-          fill="#f59e0b"
+          fill="#3b82f6"
           opacity="0.7"
         />
       </g>
@@ -259,7 +259,7 @@ function MapSidebarItem({
   const directionsUrl = getDirectionsUrl(resource.address);
 
   return (
-    <div className="border-b border-stone-100 last:border-b-0 p-3">
+    <div className="border-b border-slate-100 last:border-b-0 p-3">
       <div className="flex items-start gap-2.5">
         {/* Category color dot */}
         <div
@@ -269,20 +269,20 @@ function MapSidebarItem({
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
-            <h4 className="font-semibold text-stone-800 text-xs leading-tight">
+            <h4 className="font-semibold text-slate-800 text-xs leading-tight">
               {resource.name}
             </h4>
             {distance !== null && <DistanceBadge miles={distance} />}
           </div>
 
-          <p className="text-xs text-stone-500 mt-0.5 truncate">{resource.address}</p>
+          <p className="text-xs text-slate-500 mt-0.5 truncate">{resource.address}</p>
 
           <div className="flex items-center gap-1.5 mt-2">
             <a
               href={directionsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 px-2.5 py-1 bg-amber-500 text-white rounded-md text-xs font-medium hover:bg-amber-600 transition-colors"
+              className="flex items-center gap-1 px-2.5 py-1 bg-blue-500 text-white rounded-md text-xs font-medium hover:bg-blue-600 transition-colors"
             >
               <Navigation className="h-3 w-3" />
               Get Directions
@@ -311,9 +311,9 @@ function MapView({
   distances: Map<string, number>;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
+    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
       {/* Legend */}
-      <div className="border-b border-stone-200 px-4 py-2.5 bg-stone-50">
+      <div className="border-b border-slate-200 px-4 py-2.5 bg-slate-50">
         <div className="flex flex-wrap gap-x-4 gap-y-1">
           {RESOURCE_CATEGORIES.slice(0, -1).map((cat) => (
             <div key={cat.type} className="flex items-center gap-1.5">
@@ -321,7 +321,7 @@ function MapView({
                 className="w-2.5 h-2.5 rounded-full"
                 style={{ backgroundColor: cat.markerColor }}
               />
-              <span className="text-xs text-stone-600">{cat.label}</span>
+              <span className="text-xs text-slate-600">{cat.label}</span>
             </div>
           ))}
         </div>
@@ -329,21 +329,21 @@ function MapView({
 
       <div className="flex flex-col md:flex-row">
         {/* Map placeholder area */}
-        <div className="md:w-1/2 relative bg-stone-100">
+        <div className="md:w-1/2 relative bg-slate-100">
           <div className="aspect-[4/3] md:aspect-auto md:h-full min-h-[240px] flex items-center justify-center relative overflow-hidden">
             <MapPlaceholderSvg />
 
             {/* Overlay with resource count markers */}
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/5">
               <div className="bg-white/90 backdrop-blur-sm rounded-xl px-5 py-4 shadow-lg text-center">
-                <MapIcon className="h-8 w-8 text-amber-500 mx-auto mb-2" />
-                <p className="text-sm font-semibold text-stone-800">
+                <MapIcon className="h-8 w-8 text-blue-500 mx-auto mb-2" />
+                <p className="text-sm font-semibold text-slate-800">
                   {resources.length} Resources in Phoenix
                 </p>
-                <p className="text-xs text-stone-500 mt-1">
+                <p className="text-xs text-slate-500 mt-1">
                   Use "Get Directions" to navigate
                 </p>
-                <p className="text-xs text-stone-400 mt-0.5">
+                <p className="text-xs text-slate-400 mt-0.5">
                   Full map requires Google Maps API key
                 </p>
               </div>
@@ -352,11 +352,11 @@ function MapView({
         </div>
 
         {/* Sidebar with resource list */}
-        <div className="md:w-1/2 max-h-[500px] overflow-y-auto divide-y divide-stone-100">
+        <div className="md:w-1/2 max-h-[500px] overflow-y-auto divide-y divide-slate-100">
           {resources.length === 0 ? (
             <div className="p-6 text-center">
-              <MapPin className="h-6 w-6 text-stone-300 mx-auto" />
-              <p className="text-sm text-stone-500 mt-2">No resources match your filters</p>
+              <MapPin className="h-6 w-6 text-slate-300 mx-auto" />
+              <p className="text-sm text-slate-500 mt-2">No resources match your filters</p>
             </div>
           ) : (
             resources.map((resource) => (
@@ -385,13 +385,13 @@ function ViewToggle({
   onViewChange: (v: ViewMode) => void;
 }) {
   return (
-    <div className="inline-flex bg-stone-100 rounded-lg p-0.5">
+    <div className="inline-flex bg-slate-100 rounded-lg p-0.5">
       <button
         onClick={() => onViewChange('list')}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
           view === 'list'
-            ? 'bg-white text-stone-800 shadow-sm'
-            : 'text-stone-500 hover:text-stone-700'
+            ? 'bg-white text-slate-800 shadow-sm'
+            : 'text-slate-500 hover:text-slate-700'
         }`}
         aria-pressed={view === 'list'}
       >
@@ -402,8 +402,8 @@ function ViewToggle({
         onClick={() => onViewChange('map')}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
           view === 'map'
-            ? 'bg-white text-stone-800 shadow-sm'
-            : 'text-stone-500 hover:text-stone-700'
+            ? 'bg-white text-slate-800 shadow-sm'
+            : 'text-slate-500 hover:text-slate-700'
         }`}
         aria-pressed={view === 'map'}
       >
@@ -422,13 +422,13 @@ function LoadingSkeleton() {
   return (
     <div className="space-y-3">
       {[1, 2, 3].map((i) => (
-        <div key={i} className="bg-white rounded-xl border border-stone-200 p-4 animate-pulse">
+        <div key={i} className="bg-white rounded-xl border border-slate-200 p-4 animate-pulse">
           <div className="flex items-start gap-3">
-            <div className="h-10 w-10 rounded-lg bg-stone-200" />
+            <div className="h-10 w-10 rounded-lg bg-slate-200" />
             <div className="flex-1 space-y-2">
-              <div className="h-4 w-40 bg-stone-200 rounded" />
-              <div className="h-3 w-full bg-stone-100 rounded" />
-              <div className="h-3 w-2/3 bg-stone-100 rounded" />
+              <div className="h-4 w-40 bg-slate-200 rounded" />
+              <div className="h-3 w-full bg-slate-100 rounded" />
+              <div className="h-3 w-2/3 bg-slate-100 rounded" />
             </div>
           </div>
         </div>
@@ -499,8 +499,8 @@ export default function Resources() {
       {/* Header with view toggle */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-stone-800">Resources</h1>
-          <p className="text-sm text-stone-500 mt-0.5">Find help near you in Phoenix</p>
+          <h1 className="text-xl font-bold text-slate-800">Resources</h1>
+          <p className="text-sm text-slate-500 mt-0.5">Find help near you in Phoenix</p>
         </div>
         <ViewToggle view={view} onViewChange={setView} />
       </div>
@@ -517,13 +517,13 @@ export default function Resources() {
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search resources..."
-          className="w-full pl-10 pr-4 py-2.5 bg-white border border-stone-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-300"
+          className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
         />
       </div>
 
@@ -533,8 +533,8 @@ export default function Resources() {
           onClick={() => setSelectedType('all')}
           className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
             selectedType === 'all'
-              ? 'bg-amber-500 text-white'
-              : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+              ? 'bg-blue-500 text-white'
+              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
           }`}
         >
           All
@@ -545,8 +545,8 @@ export default function Resources() {
             onClick={() => setSelectedType(cat.type)}
             className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
               selectedType === cat.type
-                ? 'bg-amber-500 text-white'
-                : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                ? 'bg-blue-500 text-white'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
             {cat.label}
@@ -560,16 +560,16 @@ export default function Resources() {
       ) : view === 'map' ? (
         <MapView resources={sorted} distances={distances} />
       ) : sorted.length === 0 ? (
-        <div className="bg-white rounded-xl border border-stone-200 p-8 text-center">
-          <MapPin className="h-8 w-8 text-stone-300 mx-auto" />
-          <h3 className="font-medium text-stone-800 mt-3">No resources found</h3>
-          <p className="text-sm text-stone-500 mt-1">
+        <div className="bg-white rounded-xl border border-slate-200 p-8 text-center">
+          <MapPin className="h-8 w-8 text-slate-300 mx-auto" />
+          <h3 className="font-medium text-slate-800 mt-3">No resources found</h3>
+          <p className="text-sm text-slate-500 mt-1">
             {search ? 'Try a different search term' : 'Resources will appear here as they are verified'}
           </p>
         </div>
       ) : (
         <div className="space-y-3">
-          <p className="text-xs text-stone-400">{sorted.length} resources found</p>
+          <p className="text-xs text-slate-400">{sorted.length} resources found</p>
           {sorted.map((resource) => (
             <ResourceCard
               key={resource.id}

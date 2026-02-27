@@ -40,17 +40,17 @@ export function PostComposer({ onSubmit, placeholder = "Share your thoughts..." 
               onChange={(e) => setContent(e.target.value)}
               className="min-h-[60px] resize-none border-0 p-0 focus:ring-0"
             />
-            <div className="flex items-center justify-between mt-2 pt-2 border-t border-stone-100">
+            <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100">
               <div className="flex items-center gap-3">
-                <button className="text-stone-400 hover:text-stone-600">
+                <button className="text-slate-400 hover:text-slate-600">
                   <Image className="h-5 w-5" />
                 </button>
-                <label className="flex items-center gap-1.5 text-xs text-stone-500 cursor-pointer">
+                <label className="flex items-center gap-1.5 text-xs text-slate-500 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={isAnonymous}
                     onChange={(e) => setIsAnonymous(e.target.checked)}
-                    className="rounded border-stone-300 text-amber-600 focus:ring-amber-500"
+                    className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                   />
                   Post anonymously
                 </label>

@@ -126,7 +126,7 @@ export function WellnessHistory() {
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
-            <CalendarDays className="h-4 w-4 text-amber-600" />
+            <CalendarDays className="h-4 w-4 text-blue-600" />
             Wellness History
           </CardTitle>
           <div className="flex gap-1">
@@ -140,8 +140,8 @@ export function WellnessHistory() {
                 className={cn(
                   'px-3 py-1 text-xs font-medium rounded-full transition-colors',
                   timeRange === range
-                    ? 'bg-amber-600 text-white'
-                    : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 )}
               >
                 {range === 'week' ? '7 Days' : '30 Days'}
@@ -152,7 +152,7 @@ export function WellnessHistory() {
       </CardHeader>
       <CardContent className="space-y-4">
         {loading ? (
-          <div className="h-16 bg-stone-100 rounded-lg animate-pulse" />
+          <div className="h-16 bg-slate-100 rounded-lg animate-pulse" />
         ) : (
           <>
             {/* Heatmap Grid */}
@@ -171,10 +171,10 @@ export function WellnessHistory() {
                     className={cn(
                       'aspect-square rounded-md flex flex-col items-center justify-center transition-all text-xs',
                       record
-                        ? cn(getMoodColor(record.mood), 'hover:ring-2 hover:ring-amber-400 cursor-pointer text-white font-medium')
-                        : 'bg-stone-100 text-stone-400',
-                      isToday && 'ring-2 ring-amber-500',
-                      isSelected && 'ring-2 ring-stone-800 scale-105'
+                        ? cn(getMoodColor(record.mood), 'hover:ring-2 hover:ring-blue-400 cursor-pointer text-white font-medium')
+                        : 'bg-slate-100 text-slate-400',
+                      isToday && 'ring-2 ring-blue-500',
+                      isSelected && 'ring-2 ring-slate-800 scale-105'
                     )}
                     title={`${formatShortDate(date)}${record ? ` — Mood: ${record.mood}/10` : ' — No check-in'}`}
                   >
@@ -192,7 +192,7 @@ export function WellnessHistory() {
             </div>
 
             {/* Legend */}
-            <div className="flex items-center justify-center gap-2 text-xs text-stone-500">
+            <div className="flex items-center justify-center gap-2 text-xs text-slate-500">
               <span>Low</span>
               <div className="flex gap-0.5">
                 <div className="w-3 h-3 rounded-sm bg-red-400" />
@@ -205,50 +205,50 @@ export function WellnessHistory() {
 
             {/* Selected Day Detail */}
             {selectedRecord && (
-              <div className="bg-stone-50 rounded-lg p-4 space-y-3 relative">
+              <div className="bg-slate-50 rounded-lg p-4 space-y-3 relative">
                 <button
                   onClick={() => setSelectedRecord(null)}
-                  className="absolute top-2 right-2 p-1 text-stone-400 hover:text-stone-600"
+                  className="absolute top-2 right-2 p-1 text-slate-400 hover:text-slate-600"
                 >
                   <X className="h-4 w-4" />
                 </button>
                 <div className="flex items-center gap-2">
                   <span className="text-xl">{getMoodEmoji(selectedRecord.mood)}</span>
                   <div>
-                    <p className="font-medium text-stone-800">
+                    <p className="font-medium text-slate-800">
                       {formatShortDate(new Date(selectedRecord.dateStr + 'T00:00:00'))}
                     </p>
-                    <p className="text-xs text-stone-500">Mood: {selectedRecord.mood}/10</p>
+                    <p className="text-xs text-slate-500">Mood: {selectedRecord.mood}/10</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-center">
                   <div className="bg-white rounded-lg p-2">
-                    <p className="text-xs text-stone-500">Craving</p>
-                    <p className="font-semibold text-stone-800">{selectedRecord.cravingLevel}/10</p>
+                    <p className="text-xs text-slate-500">Craving</p>
+                    <p className="font-semibold text-slate-800">{selectedRecord.cravingLevel}/10</p>
                   </div>
                   <div className="bg-white rounded-lg p-2">
-                    <p className="text-xs text-stone-500">Sleep</p>
-                    <p className="font-semibold text-stone-800">
+                    <p className="text-xs text-slate-500">Sleep</p>
+                    <p className="font-semibold text-slate-800">
                       {SLEEP_LABEL[selectedRecord.sleepQuality] ?? selectedRecord.sleepQuality}
                     </p>
                   </div>
                   <div className="bg-white rounded-lg p-2">
-                    <p className="text-xs text-stone-500">Energy</p>
-                    <p className="font-semibold text-stone-800">
+                    <p className="text-xs text-slate-500">Energy</p>
+                    <p className="font-semibold text-slate-800">
                       {ENERGY_LABEL[selectedRecord.energyLevel] ?? selectedRecord.energyLevel}
                     </p>
                   </div>
                 </div>
                 {selectedRecord.gratitude && (
-                  <div className="bg-amber-50 rounded-lg p-3">
-                    <p className="text-xs text-amber-700 font-medium mb-1">Grateful for:</p>
-                    <p className="text-sm text-stone-700">{selectedRecord.gratitude}</p>
+                  <div className="bg-blue-50 rounded-lg p-3">
+                    <p className="text-xs text-blue-700 font-medium mb-1">Grateful for:</p>
+                    <p className="text-sm text-slate-700">{selectedRecord.gratitude}</p>
                   </div>
                 )}
                 {selectedRecord.journalNote && (
                   <div>
-                    <p className="text-xs text-stone-500 font-medium mb-1">Journal note:</p>
-                    <p className="text-sm text-stone-700">{selectedRecord.journalNote}</p>
+                    <p className="text-xs text-slate-500 font-medium mb-1">Journal note:</p>
+                    <p className="text-sm text-slate-700">{selectedRecord.journalNote}</p>
                   </div>
                 )}
               </div>
@@ -256,10 +256,10 @@ export function WellnessHistory() {
 
             {/* Averages Summary */}
             {averages && (
-              <div className="border-t border-stone-100 pt-3">
+              <div className="border-t border-slate-100 pt-3">
                 <div className="flex items-center gap-1.5 mb-2">
-                  <TrendingUp className="h-3.5 w-3.5 text-amber-600" />
-                  <span className="text-xs font-medium text-stone-600">
+                  <TrendingUp className="h-3.5 w-3.5 text-blue-600" />
+                  <span className="text-xs font-medium text-slate-600">
                     {timeRange === 'week' ? 'Weekly' : 'Monthly'} Averages
                   </span>
                   <Badge variant="secondary" className="ml-auto text-[10px]">
@@ -267,17 +267,17 @@ export function WellnessHistory() {
                   </Badge>
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-center">
-                  <div className="bg-stone-50 rounded-lg p-2">
-                    <p className="text-xs text-stone-500">Avg Mood</p>
-                    <p className="font-semibold text-stone-800">{averages.mood}</p>
+                  <div className="bg-slate-50 rounded-lg p-2">
+                    <p className="text-xs text-slate-500">Avg Mood</p>
+                    <p className="font-semibold text-slate-800">{averages.mood}</p>
                   </div>
-                  <div className="bg-stone-50 rounded-lg p-2">
-                    <p className="text-xs text-stone-500">Avg Craving</p>
-                    <p className="font-semibold text-stone-800">{averages.craving}</p>
+                  <div className="bg-slate-50 rounded-lg p-2">
+                    <p className="text-xs text-slate-500">Avg Craving</p>
+                    <p className="font-semibold text-slate-800">{averages.craving}</p>
                   </div>
-                  <div className="bg-stone-50 rounded-lg p-2">
-                    <p className="text-xs text-stone-500">Avg Safety</p>
-                    <p className="font-semibold text-stone-800">{averages.safety}</p>
+                  <div className="bg-slate-50 rounded-lg p-2">
+                    <p className="text-xs text-slate-500">Avg Safety</p>
+                    <p className="font-semibold text-slate-800">{averages.safety}</p>
                   </div>
                 </div>
               </div>

@@ -37,15 +37,15 @@ export function PostCard({
           />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-medium text-stone-800 text-sm">
+              <span className="font-medium text-slate-800 text-sm">
                 {post.isAnonymous ? 'Anonymous' : authorName || 'Member'}
               </span>
-              <span className="text-xs text-stone-400">{formatRelative(post.createdAt)}</span>
+              <span className="text-xs text-slate-400">{formatRelative(post.createdAt)}</span>
               {post.type !== 'text' && (
                 <Badge variant="secondary">{post.type}</Badge>
               )}
             </div>
-            <p className="mt-2 text-stone-700 text-sm whitespace-pre-wrap">{post.content}</p>
+            <p className="mt-2 text-slate-700 text-sm whitespace-pre-wrap">{post.content}</p>
             {post.mediaURLs && post.mediaURLs.length > 0 && (
               <div className="mt-3 grid grid-cols-2 gap-2">
                 {post.mediaURLs.map((url, i) => (
@@ -57,7 +57,7 @@ export function PostCard({
               <button
                 onClick={onLike}
                 className={`flex items-center gap-1 text-xs ${
-                  isLiked ? 'text-red-500' : 'text-stone-400 hover:text-red-500'
+                  isLiked ? 'text-red-500' : 'text-slate-400 hover:text-red-500'
                 }`}
               >
                 <Heart className="h-4 w-4" fill={isLiked ? 'currentColor' : 'none'} />
@@ -65,14 +65,14 @@ export function PostCard({
               </button>
               <button
                 onClick={onComment}
-                className="flex items-center gap-1 text-xs text-stone-400 hover:text-stone-600"
+                className="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-600"
               >
                 <MessageCircle className="h-4 w-4" />
                 {post.commentCount > 0 && post.commentCount}
               </button>
               <button
                 onClick={onReport}
-                className="flex items-center gap-1 text-xs text-stone-400 hover:text-stone-600 ml-auto"
+                className="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-600 ml-auto"
               >
                 <Flag className="h-3 w-3" />
               </button>

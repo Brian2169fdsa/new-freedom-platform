@@ -21,7 +21,7 @@ export function AppShell({
   showBottomNav = true,
 }: AppShellProps) {
   return (
-    <div className="min-h-screen bg-stone-50 flex flex-col">
+    <div className="min-h-screen bg-slate-50 flex flex-col">
       {showHeader && <Header title={title} currentLane={currentLane} />}
       <main className="flex-1 pb-20 md:pb-0 md:pl-64">
         <div className="max-w-4xl mx-auto px-4 py-6">{children}</div>

@@ -108,8 +108,8 @@ function MemberDrawer({
         <div className="flex items-center gap-3">
           <Avatar src={member.photoURL} alt={member.displayName} size="lg" />
           <div>
-            <p className="font-semibold text-stone-800">{member.displayName}</p>
-            <p className="text-sm text-stone-500">{member.email}</p>
+            <p className="font-semibold text-slate-800">{member.displayName}</p>
+            <p className="text-sm text-slate-500">{member.email}</p>
             <Badge variant={badge.variant} className="mt-1">{badge.label}</Badge>
           </div>
         </div>
@@ -129,7 +129,7 @@ function MemberDrawer({
         {/* Lane 1: Re-Entry Details */}
         {member.reentry && (
           <div>
-            <p className="text-xs font-semibold text-stone-400 uppercase mb-2">Re-Entry Details</p>
+            <p className="text-xs font-semibold text-slate-400 uppercase mb-2">Re-Entry Details</p>
             <div className="space-y-2 text-sm">
               <InfoRow label="Facility" value={member.reentry.facilityName ?? 'N/A'} />
               <InfoRow label="Release Date" value={formatDate(member.reentry.releaseDate)} />
@@ -141,7 +141,7 @@ function MemberDrawer({
         {/* Lane 2: Step Progress */}
         {member.stepExperience && (
           <div>
-            <p className="text-xs font-semibold text-stone-400 uppercase mb-2">Step Progress</p>
+            <p className="text-xs font-semibold text-slate-400 uppercase mb-2">Step Progress</p>
             <div className="space-y-2 text-sm">
               <InfoRow label="Current Step" value={`Step ${member.stepExperience.currentStep}`} />
               <InfoRow label="Enrolled" value={formatDate(member.stepExperience.enrollmentDate)} />
@@ -152,10 +152,10 @@ function MemberDrawer({
         {/* Case Manager */}
         {caseManager && (
           <div>
-            <p className="text-xs font-semibold text-stone-400 uppercase mb-2">Case Manager</p>
+            <p className="text-xs font-semibold text-slate-400 uppercase mb-2">Case Manager</p>
             <div className="flex items-center gap-2">
               <Avatar src={caseManager.photoURL} alt={caseManager.displayName} size="sm" />
-              <span className="text-sm text-stone-700">{caseManager.displayName}</span>
+              <span className="text-sm text-slate-700">{caseManager.displayName}</span>
             </div>
           </div>
         )}
@@ -167,8 +167,8 @@ function MemberDrawer({
 function InfoRow({ label, value }: { readonly label: string; readonly value: string }) {
   return (
     <div className="flex justify-between">
-      <span className="text-stone-500">{label}</span>
-      <span className="text-stone-700 font-medium">{value || 'N/A'}</span>
+      <span className="text-slate-500">{label}</span>
+      <span className="text-slate-700 font-medium">{value || 'N/A'}</span>
     </div>
   );
 }
@@ -193,7 +193,7 @@ function SortHeader({
   const isActive = currentField === field;
   return (
     <button
-      className="flex items-center gap-1 text-xs font-semibold text-stone-500 uppercase hover:text-stone-700"
+      className="flex items-center gap-1 text-xs font-semibold text-slate-500 uppercase hover:text-slate-700"
       onClick={() => onSort(field)}
     >
       {label}
@@ -269,8 +269,8 @@ export default function Members() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-40 bg-stone-200 rounded animate-pulse" />
-        <div className="h-96 bg-stone-100 rounded-xl animate-pulse" />
+        <div className="h-8 w-40 bg-slate-200 rounded animate-pulse" />
+        <div className="h-96 bg-slate-100 rounded-xl animate-pulse" />
       </div>
     );
   }
@@ -280,8 +280,8 @@ export default function Members() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-stone-800">Members</h1>
-          <p className="text-sm text-stone-500">{allUsers.length} total members</p>
+          <h1 className="text-2xl font-bold text-slate-800">Members</h1>
+          <p className="text-sm text-slate-500">{allUsers.length} total members</p>
         </div>
         <Button variant="outline" size="sm">
           <Download className="h-4 w-4 mr-1.5" />
@@ -294,7 +294,7 @@ export default function Members() {
         <CardContent className="p-4">
           <div className="flex flex-wrap items-center gap-3">
             <div className="relative flex-1 min-w-[200px]">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input
                 placeholder="Search by name or email..."
                 value={search}
@@ -305,7 +305,7 @@ export default function Members() {
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value as UserRole | '')}
-              className="h-10 rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-700"
+              className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700"
             >
               {ROLE_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>{o.label}</option>
@@ -314,7 +314,7 @@ export default function Members() {
             <select
               value={laneFilter}
               onChange={(e) => setLaneFilter(e.target.value as Lane | '')}
-              className="h-10 rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-700"
+              className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700"
             >
               {LANE_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>{o.label}</option>
@@ -323,7 +323,7 @@ export default function Members() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="h-10 rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-700"
+              className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700"
             >
               {STATUS_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>{o.label}</option>
@@ -335,8 +335,8 @@ export default function Members() {
 
       {/* Bulk Actions */}
       {selectedIds.size > 0 && (
-        <div className="flex items-center gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-          <span className="text-sm font-medium text-amber-800">
+        <div className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <span className="text-sm font-medium text-blue-800">
             {selectedIds.size} selected
           </span>
           <Button size="sm" variant="outline">
@@ -349,7 +349,7 @@ export default function Members() {
             Export Selected
           </Button>
           <button
-            className="ml-auto text-stone-500 hover:text-stone-700"
+            className="ml-auto text-slate-500 hover:text-slate-700"
             onClick={() => setSelectedIds(new Set())}
           >
             <X className="h-4 w-4" />
@@ -363,13 +363,13 @@ export default function Members() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-stone-200">
+                <tr className="border-b border-slate-200">
                   <th className="p-4 w-10">
                     <input
                       type="checkbox"
                       checked={selectedIds.size === filtered.length && filtered.length > 0}
                       onChange={toggleSelectAll}
-                      className="rounded border-stone-300"
+                      className="rounded border-slate-300"
                     />
                   </th>
                   <th className="p-4 text-left">
@@ -382,7 +382,7 @@ export default function Members() {
                     <SortHeader label="Role" field="role" currentField={sortField} dir={sortDir} onSort={handleSort} />
                   </th>
                   <th className="p-4 text-left">
-                    <span className="text-xs font-semibold text-stone-500 uppercase">Lanes</span>
+                    <span className="text-xs font-semibold text-slate-500 uppercase">Lanes</span>
                   </th>
                   <th className="p-4 text-left">
                     <SortHeader label="Status" field="status" currentField={sortField} dir={sortDir} onSort={handleSort} />
@@ -396,7 +396,7 @@ export default function Members() {
               <tbody>
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="p-8 text-center text-stone-400">
+                    <td colSpan={8} className="p-8 text-center text-slate-400">
                       No members match your filters.
                     </td>
                   </tr>
@@ -407,7 +407,7 @@ export default function Members() {
                     return (
                       <tr
                         key={member.uid}
-                        className="border-b border-stone-100 hover:bg-stone-50 cursor-pointer transition-colors"
+                        className="border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors"
                         onClick={() => setSelectedMember(member)}
                       >
                         <td className="p-4" onClick={(e) => e.stopPropagation()}>
@@ -415,18 +415,18 @@ export default function Members() {
                             type="checkbox"
                             checked={selectedIds.has(member.uid)}
                             onChange={() => toggleSelect(member.uid)}
-                            className="rounded border-stone-300"
+                            className="rounded border-slate-300"
                           />
                         </td>
                         <td className="p-4">
                           <div className="flex items-center gap-3">
                             <Avatar src={member.photoURL} alt={member.displayName} size="sm" />
-                            <span className="text-sm font-medium text-stone-700">
+                            <span className="text-sm font-medium text-slate-700">
                               {member.displayName}
                             </span>
                           </div>
                         </td>
-                        <td className="p-4 text-sm text-stone-600">{member.email}</td>
+                        <td className="p-4 text-sm text-slate-600">{member.email}</td>
                         <td className="p-4">
                           <Badge variant="outline">{member.role}</Badge>
                         </td>
@@ -440,11 +440,11 @@ export default function Members() {
                         <td className="p-4">
                           <Badge variant={badge.variant}>{badge.label}</Badge>
                         </td>
-                        <td className="p-4 text-sm text-stone-600">
+                        <td className="p-4 text-sm text-slate-600">
                           {formatDate(member.createdAt)}
                         </td>
                         <td className="p-4">
-                          <button className="text-stone-400 hover:text-stone-600">
+                          <button className="text-slate-400 hover:text-slate-600">
                             <MoreHorizontal className="h-4 w-4" />
                           </button>
                         </td>

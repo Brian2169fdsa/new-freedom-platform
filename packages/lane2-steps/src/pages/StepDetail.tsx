@@ -56,12 +56,12 @@ function buildLessonDocId(userId: string, stepId: string, lessonId: string): str
 function LoadingSkeleton() {
   return (
     <div className="space-y-4 animate-pulse">
-      <div className="h-10 bg-stone-100 rounded-xl w-3/4" />
-      <div className="h-4 bg-stone-100 rounded w-1/2" />
-      <div className="h-3 bg-stone-100 rounded-full w-full mt-4" />
+      <div className="h-10 bg-slate-100 rounded-xl w-3/4" />
+      <div className="h-4 bg-slate-100 rounded w-1/2" />
+      <div className="h-3 bg-slate-100 rounded-full w-full mt-4" />
       <div className="space-y-3 mt-6">
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="h-20 bg-stone-100 rounded-xl" />
+          <div key={i} className="h-20 bg-slate-100 rounded-xl" />
         ))}
       </div>
     </div>
@@ -94,7 +94,7 @@ function StepHeader({
       {/* Navigation */}
       <button
         onClick={onGoBack}
-        className="flex items-center gap-2 text-sm text-stone-500 hover:text-stone-700 transition-colors"
+        className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Steps
@@ -104,14 +104,14 @@ function StepHeader({
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-1">
-            <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center font-bold text-lg text-amber-700 shrink-0">
+            <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-lg text-blue-700 shrink-0">
               {step.stepNumber}
             </div>
             <div>
-              <h1 className="text-xl font-bold text-stone-800">
+              <h1 className="text-xl font-bold text-slate-800">
                 Step {step.stepNumber}: {step.title}
               </h1>
-              <p className="text-sm text-stone-500">{step.tagline}</p>
+              <p className="text-sm text-slate-500">{step.tagline}</p>
             </div>
           </div>
         </div>
@@ -126,12 +126,12 @@ function StepHeader({
       {/* Progress bar */}
       <div>
         <div className="flex items-center justify-between text-sm mb-1.5">
-          <span className="text-stone-500">Progress</span>
-          <span className="font-semibold text-amber-700">{completionPercentage}%</span>
+          <span className="text-slate-500">Progress</span>
+          <span className="font-semibold text-blue-700">{completionPercentage}%</span>
         </div>
-        <div className="h-2.5 bg-stone-100 rounded-full overflow-hidden">
+        <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-amber-400 to-amber-600 rounded-full transition-all duration-500"
+            className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full transition-all duration-500"
             style={{ width: `${completionPercentage}%` }}
           />
         </div>
@@ -146,12 +146,12 @@ function StepHeader({
       )}
 
       {/* Step description */}
-      <Card className="bg-amber-50/50 border-amber-200">
+      <Card className="bg-blue-50/50 border-blue-200">
         <CardContent className="p-4">
-          <p className="text-sm text-amber-800 font-medium mb-1">
+          <p className="text-sm text-blue-800 font-medium mb-1">
             Principle: {step.principle}
           </p>
-          <p className="text-sm text-amber-700 leading-relaxed">{step.description}</p>
+          <p className="text-sm text-blue-700 leading-relaxed">{step.description}</p>
         </CardContent>
       </Card>
     </div>
@@ -183,12 +183,12 @@ function LessonCard({
       disabled={isLocked}
       className={`w-full text-left p-4 rounded-xl border transition-all ${
         isLocked
-          ? 'opacity-50 cursor-not-allowed bg-stone-50 border-stone-200'
+          ? 'opacity-50 cursor-not-allowed bg-slate-50 border-slate-200'
           : isActive
-            ? 'bg-amber-50 border-amber-300 shadow-md ring-1 ring-amber-200'
+            ? 'bg-blue-50 border-blue-300 shadow-md ring-1 ring-blue-200'
             : isCompleted
-              ? 'bg-white border-stone-200 hover:bg-stone-50'
-              : 'bg-white border-stone-200 hover:bg-amber-50 hover:border-amber-200'
+              ? 'bg-white border-slate-200 hover:bg-slate-50'
+              : 'bg-white border-slate-200 hover:bg-blue-50 hover:border-blue-200'
       }`}
     >
       <div className="flex items-center gap-3">
@@ -198,18 +198,18 @@ function LessonCard({
             isCompleted
               ? 'bg-green-100'
               : isLocked
-                ? 'bg-stone-100'
+                ? 'bg-slate-100'
                 : isActive
-                  ? 'bg-amber-100'
-                  : 'bg-stone-100'
+                  ? 'bg-blue-100'
+                  : 'bg-slate-100'
           }`}
         >
           {isCompleted ? (
             <CheckCircle className="h-5 w-5 text-green-600" />
           ) : isLocked ? (
-            <Lock className="h-4 w-4 text-stone-400" />
+            <Lock className="h-4 w-4 text-slate-400" />
           ) : (
-            <span className="text-sm font-bold text-amber-700">
+            <span className="text-sm font-bold text-blue-700">
               {lesson.lessonNumber}
             </span>
           )}
@@ -220,21 +220,21 @@ function LessonCard({
           <p
             className={`text-sm font-medium ${
               isCompleted
-                ? 'text-stone-400 line-through'
+                ? 'text-slate-400 line-through'
                 : isLocked
-                  ? 'text-stone-400'
-                  : 'text-stone-800'
+                  ? 'text-slate-400'
+                  : 'text-slate-800'
             }`}
           >
             {lesson.title}
           </p>
-          <div className="flex items-center gap-2 text-xs text-stone-400 mt-0.5">
+          <div className="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
             <Clock className="h-3 w-3" />
             <span>{lesson.estimatedMinutes} min</span>
             {isActive && (
               <>
-                <span className="inline-block h-1 w-1 rounded-full bg-amber-400" />
-                <span className="text-amber-600 font-medium">Active</span>
+                <span className="inline-block h-1 w-1 rounded-full bg-blue-400" />
+                <span className="text-blue-600 font-medium">Active</span>
               </>
             )}
           </div>
@@ -242,9 +242,9 @@ function LessonCard({
 
         {/* Expand indicator */}
         {!isLocked && (
-          <div className="shrink-0 text-stone-400">
+          <div className="shrink-0 text-slate-400">
             {isActive ? (
-              <ChevronUp className="h-5 w-5 text-amber-500" />
+              <ChevronUp className="h-5 w-5 text-blue-500" />
             ) : (
               <ChevronDown className="h-5 w-5" />
             )}
@@ -284,11 +284,11 @@ function ActiveLessonView({
       <Card>
         <CardContent className="p-5 space-y-4">
           <div className="flex items-center gap-2 mb-2">
-            <BookOpen className="h-4 w-4 text-amber-600" />
-            <h3 className="font-semibold text-stone-800">{lesson.title}</h3>
+            <BookOpen className="h-4 w-4 text-blue-600" />
+            <h3 className="font-semibold text-slate-800">{lesson.title}</h3>
           </div>
           {lesson.contentBlocks.map((block, idx) => (
-            <p key={idx} className="text-sm text-stone-700 leading-relaxed">
+            <p key={idx} className="text-sm text-slate-700 leading-relaxed">
               {block}
             </p>
           ))}
@@ -296,15 +296,15 @@ function ActiveLessonView({
       </Card>
 
       {/* Reflection prompts */}
-      <Card className="border-amber-200">
+      <Card className="border-blue-200">
         <CardContent className="p-5 space-y-4">
           <div className="flex items-center gap-2">
-            <MessageSquare className="h-4 w-4 text-amber-600" />
-            <h4 className="font-semibold text-stone-800 text-sm">Reflection</h4>
+            <MessageSquare className="h-4 w-4 text-blue-600" />
+            <h4 className="font-semibold text-slate-800 text-sm">Reflection</h4>
           </div>
-          <div className="bg-amber-50 rounded-lg p-3 space-y-2">
+          <div className="bg-blue-50 rounded-lg p-3 space-y-2">
             {lesson.reflectionPrompts.map((prompt, idx) => (
-              <p key={idx} className="text-sm text-amber-800">
+              <p key={idx} className="text-sm text-blue-800">
                 {idx + 1}. {prompt}
               </p>
             ))}
@@ -317,7 +317,7 @@ function ActiveLessonView({
             className="resize-none"
           />
           <div className="flex items-center justify-between">
-            <span className="text-xs text-stone-400">
+            <span className="text-xs text-slate-400">
               {reflectionText.length} characters
             </span>
             <Button
@@ -338,7 +338,7 @@ function ActiveLessonView({
         <CardContent className="p-5 space-y-3">
           <div className="flex items-center gap-2">
             <Lightbulb className="h-4 w-4 text-emerald-600" />
-            <h4 className="font-semibold text-stone-800 text-sm">Key Takeaways</h4>
+            <h4 className="font-semibold text-slate-800 text-sm">Key Takeaways</h4>
           </div>
           <ul className="space-y-2">
             {lesson.keyTakeaways.map((takeaway, idx) => (
@@ -577,9 +577,9 @@ export default function StepDetail() {
     return (
       <PageContainer>
         <div className="text-center py-12">
-          <BookOpen className="h-12 w-12 text-stone-300 mx-auto mb-3" />
-          <h2 className="text-lg font-semibold text-stone-700">Step Not Found</h2>
-          <p className="text-sm text-stone-500 mt-1">
+          <BookOpen className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+          <h2 className="text-lg font-semibold text-slate-700">Step Not Found</h2>
+          <p className="text-sm text-slate-500 mt-1">
             The step you are looking for does not exist.
           </p>
           <Button onClick={handleGoBack} variant="outline" className="mt-4">
@@ -615,7 +615,7 @@ export default function StepDetail() {
 
       {/* Lesson List */}
       <div className="space-y-3">
-        <h2 className="text-base font-semibold text-stone-700">
+        <h2 className="text-base font-semibold text-slate-700">
           Lessons ({completedCount}/{totalLessons})
         </h2>
 

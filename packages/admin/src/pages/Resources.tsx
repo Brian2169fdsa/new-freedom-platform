@@ -42,6 +42,26 @@ const RESOURCE_TYPE_OPTIONS: { value: ResourceType; label: string }[] = Object.e
 type SortField = 'name' | 'type' | 'lastVerified';
 type SortDir = 'asc' | 'desc';
 
+/** Safely convert Timestamp-like objects, Dates, or strings to epoch ms. */
+function toEpochMs(ts: unknown): number {
+  if (!ts) return 0;
+  if (ts instanceof Date) return ts.getTime();
+  if (typeof ts === 'number') return ts;
+  if (typeof ts === 'string') return new Date(ts).getTime();
+  if (typeof (ts as any).toMillis === 'function') return (ts as any).toMillis();
+  if (typeof (ts as any).toDate === 'function') return (ts as any).toDate().getTime();
+  return 0;
+}
+
+/** Safely convert Timestamp-like objects, Dates, or strings to a native Date. */
+function toNativeDate(ts: unknown): Date {
+  if (ts instanceof Date) return ts;
+  if (typeof ts === 'string') return new Date(ts);
+  if (ts && typeof (ts as any).toDate === 'function')
+    return (ts as any).toDate();
+  return new Date(ts as number);
+}
+
 function compareResource(a: Resource, b: Resource, field: SortField, dir: SortDir): number {
   let cmp = 0;
   switch (field) {
@@ -52,8 +72,8 @@ function compareResource(a: Resource, b: Resource, field: SortField, dir: SortDi
       cmp = a.type.localeCompare(b.type);
       break;
     case 'lastVerified': {
-      const da = a.lastVerified?.toMillis?.() ?? 0;
-      const db = b.lastVerified?.toMillis?.() ?? 0;
+      const da = toEpochMs(a.lastVerified);
+      const db = toEpochMs(b.lastVerified);
       cmp = da - db;
       break;
     }
@@ -84,14 +104,14 @@ function ResourceFormDialog({ open, resource, onClose, onSave }: ResourceFormPro
         <div className="space-y-4 max-h-[60vh] overflow-y-auto">
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2">
-              <label className="text-sm font-medium text-stone-700">Name</label>
+              <label className="text-sm font-medium text-slate-700">Name</label>
               <Input defaultValue={resource?.name ?? ''} placeholder="Resource name" className="mt-1" />
             </div>
             <div>
-              <label className="text-sm font-medium text-stone-700">Type</label>
+              <label className="text-sm font-medium text-slate-700">Type</label>
               <select
                 defaultValue={resource?.type ?? 'shelter'}
-                className="mt-1 w-full h-10 rounded-lg border border-stone-300 bg-white px-3 text-sm"
+                className="mt-1 w-full h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm"
               >
                 {RESOURCE_TYPE_OPTIONS.map((o) => (
                   <option key={o.value} value={o.value}>{o.label}</option>
@@ -99,23 +119,23 @@ function ResourceFormDialog({ open, resource, onClose, onSave }: ResourceFormPro
               </select>
             </div>
             <div>
-              <label className="text-sm font-medium text-stone-700">Phone</label>
+              <label className="text-sm font-medium text-slate-700">Phone</label>
               <Input defaultValue={resource?.phone ?? ''} placeholder="(555) 123-4567" className="mt-1" />
             </div>
             <div className="col-span-2">
-              <label className="text-sm font-medium text-stone-700">Address</label>
+              <label className="text-sm font-medium text-slate-700">Address</label>
               <Input defaultValue={resource?.address ?? ''} placeholder="Full address" className="mt-1" />
             </div>
             <div>
-              <label className="text-sm font-medium text-stone-700">Website</label>
+              <label className="text-sm font-medium text-slate-700">Website</label>
               <Input defaultValue={resource?.website ?? ''} placeholder="https://..." className="mt-1" />
             </div>
             <div>
-              <label className="text-sm font-medium text-stone-700">Hours</label>
+              <label className="text-sm font-medium text-slate-700">Hours</label>
               <Input defaultValue={resource?.hours ?? ''} placeholder="Mon-Fri 9am-5pm" className="mt-1" />
             </div>
             <div className="col-span-2">
-              <label className="text-sm font-medium text-stone-700">Description</label>
+              <label className="text-sm font-medium text-slate-700">Description</label>
               <Textarea
                 defaultValue={resource?.description ?? ''}
                 placeholder="Description of services offered..."
@@ -123,7 +143,7 @@ function ResourceFormDialog({ open, resource, onClose, onSave }: ResourceFormPro
               />
             </div>
             <div className="col-span-2">
-              <label className="text-sm font-medium text-stone-700">Services (comma-separated)</label>
+              <label className="text-sm font-medium text-slate-700">Services (comma-separated)</label>
               <Input
                 defaultValue={resource?.services?.join(', ') ?? ''}
                 placeholder="counseling, housing, food"
@@ -133,7 +153,7 @@ function ResourceFormDialog({ open, resource, onClose, onSave }: ResourceFormPro
 
             {/* Availability */}
             <div>
-              <label className="text-sm font-medium text-stone-700">Total Beds</label>
+              <label className="text-sm font-medium text-slate-700">Total Beds</label>
               <Input
                 type="number"
                 defaultValue={resource?.availability?.beds?.total ?? ''}
@@ -142,7 +162,7 @@ function ResourceFormDialog({ open, resource, onClose, onSave }: ResourceFormPro
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-stone-700">Available Beds</label>
+              <label className="text-sm font-medium text-slate-700">Available Beds</label>
               <Input
                 type="number"
                 defaultValue={resource?.availability?.beds?.available ?? ''}
@@ -155,9 +175,9 @@ function ResourceFormDialog({ open, resource, onClose, onSave }: ResourceFormPro
                 <input
                   type="checkbox"
                   defaultChecked={resource?.availability?.walkIn ?? false}
-                  className="rounded border-stone-300"
+                  className="rounded border-slate-300"
                 />
-                <span className="text-sm text-stone-700">Accepts walk-ins</span>
+                <span className="text-sm text-slate-700">Accepts walk-ins</span>
               </label>
             </div>
           </div>
@@ -189,7 +209,7 @@ function DeleteConfirmDialog({ open, resourceName, onConfirm, onCancel }: Delete
         <DialogTitle>Delete Resource</DialogTitle>
       </DialogHeader>
       <DialogContent>
-        <p className="text-sm text-stone-600">
+        <p className="text-sm text-slate-600">
           Are you sure you want to delete <strong>{resourceName}</strong>? This action cannot be undone.
         </p>
       </DialogContent>
@@ -221,7 +241,7 @@ function SortHeader({
   const isActive = currentField === field;
   return (
     <button
-      className="flex items-center gap-1 text-xs font-semibold text-stone-500 uppercase hover:text-stone-700"
+      className="flex items-center gap-1 text-xs font-semibold text-slate-500 uppercase hover:text-slate-700"
       onClick={() => onSort(field)}
     >
       {label}
@@ -280,8 +300,8 @@ export default function Resources() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-36 bg-stone-200 rounded animate-pulse" />
-        <div className="h-96 bg-stone-100 rounded-xl animate-pulse" />
+        <div className="h-8 w-36 bg-slate-200 rounded animate-pulse" />
+        <div className="h-96 bg-slate-100 rounded-xl animate-pulse" />
       </div>
     );
   }
@@ -291,8 +311,8 @@ export default function Resources() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-stone-800">Resources</h1>
-          <p className="text-sm text-stone-500">{resources.length} community resources</p>
+          <h1 className="text-2xl font-bold text-slate-800">Resources</h1>
+          <p className="text-sm text-slate-500">{resources.length} community resources</p>
         </div>
         <Button size="sm" onClick={openAdd}>
           <Plus className="h-4 w-4 mr-1.5" />
@@ -305,7 +325,7 @@ export default function Resources() {
         <CardContent className="p-4">
           <div className="flex items-center gap-3">
             <div className="relative flex-1 min-w-[200px]">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input
                 placeholder="Search by name or address..."
                 value={search}
@@ -316,7 +336,7 @@ export default function Resources() {
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value as ResourceType | '')}
-              className="h-10 rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-700"
+              className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700"
             >
               <option value="">All Types</option>
               {RESOURCE_TYPE_OPTIONS.map((o) => (
@@ -333,7 +353,7 @@ export default function Resources() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-stone-200">
+                <tr className="border-b border-slate-200">
                   <th className="p-4 text-left">
                     <SortHeader label="Name" field="name" currentField={sortField} dir={sortDir} onSort={handleSort} />
                   </th>
@@ -341,13 +361,13 @@ export default function Resources() {
                     <SortHeader label="Type" field="type" currentField={sortField} dir={sortDir} onSort={handleSort} />
                   </th>
                   <th className="p-4 text-left">
-                    <span className="text-xs font-semibold text-stone-500 uppercase">Address</span>
+                    <span className="text-xs font-semibold text-slate-500 uppercase">Address</span>
                   </th>
                   <th className="p-4 text-left">
-                    <span className="text-xs font-semibold text-stone-500 uppercase">Hours</span>
+                    <span className="text-xs font-semibold text-slate-500 uppercase">Hours</span>
                   </th>
                   <th className="p-4 text-left">
-                    <span className="text-xs font-semibold text-stone-500 uppercase">Availability</span>
+                    <span className="text-xs font-semibold text-slate-500 uppercase">Availability</span>
                   </th>
                   <th className="p-4 text-left">
                     <SortHeader label="Verified" field="lastVerified" currentField={sortField} dir={sortDir} onSort={handleSort} />
@@ -358,7 +378,7 @@ export default function Resources() {
               <tbody>
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="p-8 text-center text-stone-400">
+                    <td colSpan={7} className="p-8 text-center text-slate-400">
                       No resources match your search.
                     </td>
                   </tr>
@@ -366,7 +386,7 @@ export default function Resources() {
                   filtered.map((resource) => {
                     const daysSinceVerified = resource.lastVerified
                       ? Math.floor(
-                          (Date.now() - resource.lastVerified.toDate().getTime()) /
+                          (Date.now() - toNativeDate(resource.lastVerified).getTime()) /
                             (1000 * 60 * 60 * 24),
                         )
                       : Infinity;
@@ -375,13 +395,13 @@ export default function Resources() {
                     return (
                       <tr
                         key={resource.id}
-                        className="border-b border-stone-100 hover:bg-stone-50 transition-colors"
+                        className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
                       >
                         <td className="p-4">
                           <div>
-                            <p className="text-sm font-medium text-stone-700">{resource.name}</p>
+                            <p className="text-sm font-medium text-slate-700">{resource.name}</p>
                             {resource.phone && (
-                              <p className="text-xs text-stone-400 flex items-center gap-1 mt-0.5">
+                              <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
                                 <Phone className="h-3 w-3" />
                                 {resource.phone}
                               </p>
@@ -394,21 +414,21 @@ export default function Resources() {
                           </Badge>
                         </td>
                         <td className="p-4">
-                          <p className="text-sm text-stone-600 max-w-[200px] truncate flex items-center gap-1">
-                            <MapPin className="h-3.5 w-3.5 shrink-0 text-stone-400" />
+                          <p className="text-sm text-slate-600 max-w-[200px] truncate flex items-center gap-1">
+                            <MapPin className="h-3.5 w-3.5 shrink-0 text-slate-400" />
                             {resource.address}
                           </p>
                         </td>
                         <td className="p-4">
-                          <p className="text-sm text-stone-600 flex items-center gap-1">
-                            <Clock className="h-3.5 w-3.5 text-stone-400" />
+                          <p className="text-sm text-slate-600 flex items-center gap-1">
+                            <Clock className="h-3.5 w-3.5 text-slate-400" />
                             {resource.hours}
                           </p>
                         </td>
                         <td className="p-4">
                           <div className="flex items-center gap-2 text-xs">
                             {resource.availability?.beds && (
-                              <span className="flex items-center gap-1 text-stone-600">
+                              <span className="flex items-center gap-1 text-slate-600">
                                 <BedDouble className="h-3.5 w-3.5" />
                                 {resource.availability.beds.available}/{resource.availability.beds.total}
                               </span>
@@ -425,7 +445,7 @@ export default function Resources() {
                             ) : (
                               <CheckCircle className="h-3.5 w-3.5 text-green-500" />
                             )}
-                            <span className={cn('text-xs', isStale ? 'text-orange-600' : 'text-stone-600')}>
+                            <span className={cn('text-xs', isStale ? 'text-orange-600' : 'text-slate-600')}>
                               {formatDate(resource.lastVerified)}
                             </span>
                           </div>
@@ -463,12 +483,12 @@ export default function Resources() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5 text-stone-400" />
+            <MapPin className="h-5 w-5 text-slate-400" />
             Resource Locations
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-64 bg-stone-100 rounded-lg flex items-center justify-center text-stone-400 text-sm">
+          <div className="h-64 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400 text-sm">
             Map integration will display resource markers here (Google Maps API)
           </div>
         </CardContent>

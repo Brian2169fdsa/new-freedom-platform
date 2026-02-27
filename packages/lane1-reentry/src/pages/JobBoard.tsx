@@ -82,7 +82,7 @@ const JOB_TYPES: readonly JobType[] = ['Full-Time', 'Part-Time', 'Temp'] as cons
 
 const TYPE_BADGE_STYLES: Record<JobType, string> = {
   'Full-Time': 'bg-blue-100 text-blue-800',
-  'Part-Time': 'bg-amber-100 text-amber-800',
+  'Part-Time': 'bg-blue-100 text-blue-800',
   Temp: 'bg-purple-100 text-purple-800',
 };
 
@@ -394,12 +394,12 @@ function FilterBar({
   const [filtersExpanded, setFiltersExpanded] = useState(false);
 
   return (
-    <Card className="bg-gradient-to-br from-amber-50 to-stone-50 border-amber-200">
+    <Card className="bg-gradient-to-br from-blue-50 to-slate-50 border-blue-200">
       <CardContent className="p-4">
         <div className="space-y-3">
           {/* Search Input */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <Input
               placeholder="Search jobs by title, company, or keyword..."
               value={searchQuery}
@@ -411,7 +411,7 @@ function FilterBar({
           {/* Toggle filters on mobile */}
           <button
             onClick={() => setFiltersExpanded((prev) => !prev)}
-            className="flex items-center gap-2 text-sm font-medium text-amber-700 hover:text-amber-800 transition-colors sm:hidden"
+            className="flex items-center gap-2 text-sm font-medium text-blue-700 hover:text-blue-800 transition-colors sm:hidden"
           >
             <Filter className="h-4 w-4" />
             {filtersExpanded ? 'Hide Filters' : 'Show Filters'}
@@ -426,7 +426,7 @@ function FilterBar({
           <div className={`space-y-3 ${filtersExpanded ? 'block' : 'hidden'} sm:block`}>
             {/* Category Filter */}
             <div>
-              <label className="block text-xs font-medium text-stone-500 uppercase tracking-wide mb-1.5">
+              <label className="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-1.5">
                 Category
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -436,8 +436,8 @@ function FilterBar({
                     onClick={() => onCategoryChange(cat)}
                     className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${
                       selectedCategory === cat
-                        ? 'bg-amber-600 border-amber-600 text-white'
-                        : 'bg-white border-stone-200 text-stone-600 hover:border-amber-300 hover:bg-amber-50'
+                        ? 'bg-blue-600 border-blue-600 text-white'
+                        : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:bg-blue-50'
                     }`}
                   >
                     {cat}
@@ -449,7 +449,7 @@ function FilterBar({
             {/* Type Filter + Fair Chance Toggle */}
             <div className="flex flex-wrap items-end gap-4">
               <div>
-                <label className="block text-xs font-medium text-stone-500 uppercase tracking-wide mb-1.5">
+                <label className="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-1.5">
                   Job Type
                 </label>
                 <div className="flex flex-wrap gap-1.5">
@@ -457,8 +457,8 @@ function FilterBar({
                     onClick={() => onTypeChange('All')}
                     className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${
                       selectedType === 'All'
-                        ? 'bg-amber-600 border-amber-600 text-white'
-                        : 'bg-white border-stone-200 text-stone-600 hover:border-amber-300 hover:bg-amber-50'
+                        ? 'bg-blue-600 border-blue-600 text-white'
+                        : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:bg-blue-50'
                     }`}
                   >
                     All Types
@@ -469,8 +469,8 @@ function FilterBar({
                       onClick={() => onTypeChange(type)}
                       className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${
                         selectedType === type
-                          ? 'bg-amber-600 border-amber-600 text-white'
-                          : 'bg-white border-stone-200 text-stone-600 hover:border-amber-300 hover:bg-amber-50'
+                          ? 'bg-blue-600 border-blue-600 text-white'
+                          : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:bg-blue-50'
                       }`}
                     >
                       {type}
@@ -484,7 +484,7 @@ function FilterBar({
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${
                   fairChanceOnly
                     ? 'bg-green-600 border-green-600 text-white'
-                    : 'bg-white border-stone-200 text-stone-600 hover:border-green-300 hover:bg-green-50'
+                    : 'bg-white border-slate-200 text-slate-600 hover:border-green-300 hover:bg-green-50'
                 }`}
               >
                 <ShieldCheck className="h-3.5 w-3.5" />
@@ -518,17 +518,17 @@ function JobCard({ job, isSaved, isExpanded, onToggleSave, onToggleExpand }: Job
           {/* Header Row */}
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-stone-800 text-base leading-tight">
+              <h3 className="font-semibold text-slate-800 text-base leading-tight">
                 {job.title}
               </h3>
-              <p className="text-sm text-stone-600 mt-0.5">{job.company}</p>
+              <p className="text-sm text-slate-600 mt-0.5">{job.company}</p>
             </div>
             <button
               onClick={() => onToggleSave(job.id)}
               className={`flex-shrink-0 p-1.5 rounded-lg transition-colors ${
                 isSaved
-                  ? 'text-amber-600 bg-amber-50 hover:bg-amber-100'
-                  : 'text-stone-300 hover:text-amber-500 hover:bg-stone-50'
+                  ? 'text-blue-600 bg-blue-50 hover:bg-blue-100'
+                  : 'text-slate-300 hover:text-blue-500 hover:bg-slate-50'
               }`}
               aria-label={isSaved ? 'Remove from saved jobs' : 'Save job'}
             >
@@ -541,7 +541,7 @@ function JobCard({ job, isSaved, isExpanded, onToggleSave, onToggleExpand }: Job
           </div>
 
           {/* Meta Info */}
-          <div className="flex flex-wrap items-center gap-2 text-sm text-stone-500">
+          <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500">
             <span className="inline-flex items-center gap-1">
               <MapPin className="h-3.5 w-3.5" />
               {job.location}
@@ -574,7 +574,7 @@ function JobCard({ job, isSaved, isExpanded, onToggleSave, onToggleExpand }: Job
 
           {/* Description — 2 line clamp when collapsed */}
           <p
-            className={`text-sm text-stone-600 leading-relaxed ${
+            className={`text-sm text-slate-600 leading-relaxed ${
               isExpanded ? '' : 'line-clamp-2'
             }`}
           >
@@ -583,16 +583,16 @@ function JobCard({ job, isSaved, isExpanded, onToggleSave, onToggleExpand }: Job
 
           {/* Expanded Content */}
           {isExpanded && (
-            <div className="space-y-3 pt-2 border-t border-stone-100">
+            <div className="space-y-3 pt-2 border-t border-slate-100">
               <div>
-                <h4 className="text-sm font-medium text-stone-700 mb-2">Requirements</h4>
+                <h4 className="text-sm font-medium text-slate-700 mb-2">Requirements</h4>
                 <ul className="space-y-1.5">
                   {job.requirements.map((req) => (
                     <li
                       key={req}
-                      className="flex items-start gap-2 text-sm text-stone-600"
+                      className="flex items-start gap-2 text-sm text-slate-600"
                     >
-                      <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-amber-400 flex-shrink-0" />
+                      <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-blue-400 flex-shrink-0" />
                       {req}
                     </li>
                   ))}
@@ -647,13 +647,13 @@ interface EmptyStateProps {
 function EmptyState({ variant }: EmptyStateProps) {
   if (variant === 'no-saved') {
     return (
-      <Card className="border-dashed border-stone-300">
+      <Card className="border-dashed border-slate-300">
         <CardContent className="p-8 text-center">
-          <div className="mx-auto mb-4 h-14 w-14 rounded-full bg-amber-50 flex items-center justify-center">
-            <Bookmark className="h-7 w-7 text-amber-400" />
+          <div className="mx-auto mb-4 h-14 w-14 rounded-full bg-blue-50 flex items-center justify-center">
+            <Bookmark className="h-7 w-7 text-blue-400" />
           </div>
-          <h3 className="font-semibold text-stone-700 mb-1">No saved jobs yet</h3>
-          <p className="text-sm text-stone-500 max-w-sm mx-auto">
+          <h3 className="font-semibold text-slate-700 mb-1">No saved jobs yet</h3>
+          <p className="text-sm text-slate-500 max-w-sm mx-auto">
             Tap the bookmark icon on any job listing to save it here for easy access later.
             Building a list of opportunities is a great step forward.
           </p>
@@ -663,13 +663,13 @@ function EmptyState({ variant }: EmptyStateProps) {
   }
 
   return (
-    <Card className="border-dashed border-stone-300">
+    <Card className="border-dashed border-slate-300">
       <CardContent className="p-8 text-center">
-        <div className="mx-auto mb-4 h-14 w-14 rounded-full bg-amber-50 flex items-center justify-center">
-          <Search className="h-7 w-7 text-amber-400" />
+        <div className="mx-auto mb-4 h-14 w-14 rounded-full bg-blue-50 flex items-center justify-center">
+          <Search className="h-7 w-7 text-blue-400" />
         </div>
-        <h3 className="font-semibold text-stone-700 mb-1">No jobs match your filters</h3>
-        <p className="text-sm text-stone-500 max-w-sm mx-auto">
+        <h3 className="font-semibold text-slate-700 mb-1">No jobs match your filters</h3>
+        <p className="text-sm text-slate-500 max-w-sm mx-auto">
           Try adjusting your search or filters. New opportunities are added regularly.
           Every application is a step toward your fresh start.
         </p>
@@ -691,31 +691,31 @@ interface ViewTabsProps {
 
 function ViewTabs({ activeTab, onTabChange, savedCount, totalCount }: ViewTabsProps) {
   return (
-    <div className="flex items-center gap-1 p-1 rounded-lg bg-stone-100">
+    <div className="flex items-center gap-1 p-1 rounded-lg bg-slate-100">
       <button
         onClick={() => onTabChange('all')}
         className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
           activeTab === 'all'
-            ? 'bg-white text-stone-800 shadow-sm'
-            : 'text-stone-500 hover:text-stone-700'
+            ? 'bg-white text-slate-800 shadow-sm'
+            : 'text-slate-500 hover:text-slate-700'
         }`}
       >
         <Briefcase className="h-4 w-4" />
         All Jobs
-        <span className="text-xs text-stone-400">({totalCount})</span>
+        <span className="text-xs text-slate-400">({totalCount})</span>
       </button>
       <button
         onClick={() => onTabChange('saved')}
         className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
           activeTab === 'saved'
-            ? 'bg-white text-stone-800 shadow-sm'
-            : 'text-stone-500 hover:text-stone-700'
+            ? 'bg-white text-slate-800 shadow-sm'
+            : 'text-slate-500 hover:text-slate-700'
         }`}
       >
         <Heart className="h-4 w-4" />
         Saved
         {savedCount > 0 && (
-          <span className="inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-amber-100 text-amber-800 text-xs font-medium px-1.5">
+          <span className="inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-blue-100 text-blue-800 text-xs font-medium px-1.5">
             {savedCount}
           </span>
         )}
@@ -819,14 +819,14 @@ export default function JobBoard() {
       {/* Back link */}
       <Link
         to="/tools"
-        className="inline-flex items-center gap-1 text-sm text-amber-700 hover:text-amber-800 -mt-2 mb-2"
+        className="inline-flex items-center gap-1 text-sm text-blue-700 hover:text-blue-800 -mt-2 mb-2"
       >
         <ChevronLeft className="h-4 w-4" />
         Back to Tools
       </Link>
 
       {/* Encouraging banner */}
-      <Card className="bg-gradient-to-r from-amber-600 to-amber-700 border-amber-700 text-white">
+      <Card className="bg-gradient-to-r from-blue-600 to-blue-700 border-blue-700 text-white">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
             <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
@@ -834,7 +834,7 @@ export default function JobBoard() {
             </div>
             <div>
               <h3 className="font-semibold text-white text-sm">Your next chapter starts here</h3>
-              <p className="text-amber-100 text-sm mt-0.5">
+              <p className="text-blue-100 text-sm mt-0.5">
                 Every listing below welcomes your application. Many employers on this board
                 specifically partner with re-entry programs and value the dedication it takes
                 to rebuild. You have what it takes.
@@ -866,7 +866,7 @@ export default function JobBoard() {
 
       {/* Results Count */}
       {displayedJobs.length > 0 && (
-        <p className="text-sm text-stone-500">
+        <p className="text-sm text-slate-500">
           Showing {displayedJobs.length}{' '}
           {displayedJobs.length === 1 ? 'opportunity' : 'opportunities'}
           {activeTab === 'saved' ? ' you saved' : ''}

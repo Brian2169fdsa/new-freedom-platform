@@ -98,8 +98,8 @@ const MOCK_CAMPAIGNS: readonly {
 const FUND_ALLOCATION = [
   { label: 'Direct Services', percentage: 70, color: 'bg-purple-600' },
   { label: 'Programs', percentage: 15, color: 'bg-purple-400' },
-  { label: 'Operations', percentage: 10, color: 'bg-stone-400' },
-  { label: 'Technology', percentage: 5, color: 'bg-stone-300' },
+  { label: 'Operations', percentage: 10, color: 'bg-slate-400' },
+  { label: 'Technology', percentage: 5, color: 'bg-slate-300' },
 ] as const;
 
 const IMPACT_STATS = [
@@ -196,13 +196,13 @@ function DonationAmountSelector({
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Monthly / One-time Toggle */}
-        <div className="flex rounded-lg bg-stone-100 p-1">
+        <div className="flex rounded-lg bg-slate-100 p-1">
           <button
             onClick={isMonthly ? onToggleMonthly : undefined}
             className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
               !isMonthly
                 ? 'bg-white text-purple-700 shadow-sm'
-                : 'text-stone-500 hover:text-stone-700'
+                : 'text-slate-500 hover:text-slate-700'
             }`}
           >
             One-Time
@@ -212,7 +212,7 @@ function DonationAmountSelector({
             className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-sm font-medium rounded-md transition-colors ${
               isMonthly
                 ? 'bg-white text-purple-700 shadow-sm'
-                : 'text-stone-500 hover:text-stone-700'
+                : 'text-slate-500 hover:text-slate-700'
             }`}
           >
             <Repeat className="h-3.5 w-3.5" />
@@ -229,7 +229,7 @@ function DonationAmountSelector({
               className={`py-3 rounded-lg text-sm font-semibold transition-all ${
                 selectedAmount === amount
                   ? 'bg-purple-600 text-white shadow-md ring-2 ring-purple-300'
-                  : 'bg-stone-100 text-stone-700 hover:bg-purple-50 hover:text-purple-700 hover:border-purple-200'
+                  : 'bg-slate-100 text-slate-700 hover:bg-purple-50 hover:text-purple-700 hover:border-purple-200'
               }`}
             >
               ${amount}
@@ -240,7 +240,7 @@ function DonationAmountSelector({
             className={`py-3 rounded-lg text-sm font-semibold transition-all ${
               selectedAmount === null
                 ? 'bg-purple-600 text-white shadow-md ring-2 ring-purple-300'
-                : 'bg-stone-100 text-stone-700 hover:bg-purple-50 hover:text-purple-700'
+                : 'bg-slate-100 text-slate-700 hover:bg-purple-50 hover:text-purple-700'
             }`}
           >
             Custom
@@ -250,7 +250,7 @@ function DonationAmountSelector({
         {/* Custom Amount Input */}
         {selectedAmount === null && (
           <div className="relative">
-            <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+            <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <Input
               type="number"
               value={customAmount}
@@ -281,17 +281,17 @@ function DonationAmountSelector({
                   }`}
                 >
                   <div className={`h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                    isActive ? 'bg-purple-200 text-purple-700' : 'bg-stone-200 text-stone-400'
+                    isActive ? 'bg-purple-200 text-purple-700' : 'bg-slate-200 text-slate-400'
                   }`}>
                     {item.icon}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className={`text-xs font-medium ${isActive ? 'text-purple-800' : 'text-stone-500'}`}>
+                    <p className={`text-xs font-medium ${isActive ? 'text-purple-800' : 'text-slate-500'}`}>
                       {item.label}
                     </p>
-                    <p className="text-xs text-stone-400 truncate">{item.description}</p>
+                    <p className="text-xs text-slate-400 truncate">{item.description}</p>
                   </div>
-                  <span className={`text-xs font-bold flex-shrink-0 ${isActive ? 'text-purple-700' : 'text-stone-400'}`}>
+                  <span className={`text-xs font-bold flex-shrink-0 ${isActive ? 'text-purple-700' : 'text-slate-400'}`}>
                     ${item.amount}
                   </span>
                 </div>
@@ -386,15 +386,15 @@ function DonationForm({
             type="checkbox"
             checked={isAnonymous}
             onChange={(e) => setIsAnonymous(e.target.checked)}
-            className="h-4 w-4 rounded border-stone-300 text-purple-600 focus:ring-purple-500"
+            className="h-4 w-4 rounded border-slate-300 text-purple-600 focus:ring-purple-500"
           />
-          <span className="text-sm text-stone-700">Donate Anonymously</span>
+          <span className="text-sm text-slate-700">Donate Anonymously</span>
         </label>
 
         {/* Name Field */}
         {!isAnonymous && (
           <div>
-            <label htmlFor="donor-name" className="block text-sm font-medium text-stone-700 mb-1.5">
+            <label htmlFor="donor-name" className="block text-sm font-medium text-slate-700 mb-1.5">
               Full Name
             </label>
             <Input
@@ -408,7 +408,7 @@ function DonationForm({
 
         {/* Email Field */}
         <div>
-          <label htmlFor="donor-email" className="block text-sm font-medium text-stone-700 mb-1.5">
+          <label htmlFor="donor-email" className="block text-sm font-medium text-slate-700 mb-1.5">
             Email Address
           </label>
           <Input
@@ -418,13 +418,13 @@ function DonationForm({
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
           />
-          <p className="text-xs text-stone-400 mt-1">For your donation receipt</p>
+          <p className="text-xs text-slate-400 mt-1">For your donation receipt</p>
         </div>
 
         {/* Dedication Field */}
         <div>
-          <label htmlFor="donor-dedication" className="block text-sm font-medium text-stone-700 mb-1.5">
-            In Honor Of <span className="text-stone-400 font-normal">(optional)</span>
+          <label htmlFor="donor-dedication" className="block text-sm font-medium text-slate-700 mb-1.5">
+            In Honor Of <span className="text-slate-400 font-normal">(optional)</span>
           </label>
           <Input
             id="donor-dedication"
@@ -435,9 +435,9 @@ function DonationForm({
         </div>
 
         {/* Security Note */}
-        <div className="flex items-center gap-2 p-3 bg-stone-50 rounded-lg border border-stone-100">
-          <Shield className="h-4 w-4 text-stone-400 flex-shrink-0" />
-          <span className="text-xs text-stone-500">
+        <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg border border-slate-100">
+          <Shield className="h-4 w-4 text-slate-400 flex-shrink-0" />
+          <span className="text-xs text-slate-500">
             Secure, encrypted payment powered by Stripe. Your information is never stored on our servers.
           </span>
         </div>
@@ -477,7 +477,7 @@ function SuccessModal({ amount, isMonthly, onClose }: {
       <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 text-center relative animate-in fade-in zoom-in duration-200">
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-stone-400 hover:text-stone-600"
+          className="absolute top-3 right-3 text-slate-400 hover:text-slate-600"
         >
           <X className="h-5 w-5" />
         </button>
@@ -486,9 +486,9 @@ function SuccessModal({ amount, isMonthly, onClose }: {
           <CheckCircle2 className="h-8 w-8 text-green-600" />
         </div>
 
-        <h2 className="text-xl font-bold text-stone-800 mb-2">Thank You for Your Generosity!</h2>
+        <h2 className="text-xl font-bold text-slate-800 mb-2">Thank You for Your Generosity!</h2>
 
-        <p className="text-sm text-stone-500 mb-4">
+        <p className="text-sm text-slate-500 mb-4">
           Your ${amount.toFixed(2)}{isMonthly ? '/month' : ''} donation will directly
           support people in our community who are working to rebuild their lives.
         </p>
@@ -532,8 +532,8 @@ function CampaignCard({ campaign }: {
             {campaign.icon}
           </div>
           <div className="flex-1 min-w-0">
-            <h4 className="font-semibold text-stone-800 text-sm">{campaign.name}</h4>
-            <p className="text-xs text-stone-500 mt-0.5 leading-relaxed">
+            <h4 className="font-semibold text-slate-800 text-sm">{campaign.name}</h4>
+            <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
               {campaign.description}
             </p>
           </div>
@@ -545,17 +545,17 @@ function CampaignCard({ campaign }: {
             <span className="font-semibold text-purple-700">
               ${campaign.raised.toLocaleString()} raised
             </span>
-            <span className="text-stone-400">
+            <span className="text-slate-400">
               of ${campaign.goal.toLocaleString()} goal
             </span>
           </div>
-          <div className="h-2.5 bg-stone-100 rounded-full overflow-hidden">
+          <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
             <div
               className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full transition-all duration-500"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
-          <p className="text-xs text-stone-400 mt-1">{progressPercent}% funded</p>
+          <p className="text-xs text-slate-400 mt-1">{progressPercent}% funded</p>
         </div>
 
         {/* Contribute Button */}
@@ -585,9 +585,9 @@ function ActiveCampaigns() {
     <div className="space-y-3">
       <div className="flex items-center gap-2">
         <Flame className="h-5 w-5 text-purple-600" />
-        <h2 className="text-lg font-bold text-stone-800">Active Campaigns</h2>
+        <h2 className="text-lg font-bold text-slate-800">Active Campaigns</h2>
       </div>
-      <p className="text-sm text-stone-500">
+      <p className="text-sm text-slate-500">
         Support a specific cause that speaks to you. Every contribution counts.
       </p>
       <div className="grid gap-3 sm:grid-cols-2">
@@ -617,10 +617,10 @@ function TransparencySection() {
           {FUND_ALLOCATION.map((item) => (
             <div key={item.label}>
               <div className="flex items-center justify-between text-sm mb-1">
-                <span className="font-medium text-stone-700">{item.label}</span>
-                <span className="font-bold text-stone-800">{item.percentage}%</span>
+                <span className="font-medium text-slate-700">{item.label}</span>
+                <span className="font-bold text-slate-800">{item.percentage}%</span>
               </div>
-              <div className="h-3 bg-stone-100 rounded-full overflow-hidden">
+              <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
                 <div
                   className={`h-full ${item.color} rounded-full transition-all duration-700`}
                   style={{ width: `${item.percentage}%` }}
@@ -648,7 +648,7 @@ function TransparencySection() {
             <div className="absolute inset-3 rounded-full bg-white flex items-center justify-center">
               <div className="text-center">
                 <p className="text-lg font-bold text-purple-700">70%</p>
-                <p className="text-xs text-stone-500">Direct Aid</p>
+                <p className="text-xs text-slate-500">Direct Aid</p>
               </div>
             </div>
           </div>
@@ -659,7 +659,7 @@ function TransparencySection() {
           {FUND_ALLOCATION.map((item) => (
             <div key={item.label} className="flex items-center gap-2">
               <div className={`h-3 w-3 rounded-full ${item.color}`} />
-              <span className="text-xs text-stone-600">
+              <span className="text-xs text-slate-600">
                 {item.label} ({item.percentage}%)
               </span>
             </div>
@@ -667,14 +667,14 @@ function TransparencySection() {
         </div>
 
         {/* 501(c)(3) Note */}
-        <div className="bg-stone-50 border border-stone-100 rounded-lg p-3">
+        <div className="bg-slate-50 border border-slate-100 rounded-lg p-3">
           <div className="flex items-start gap-2">
-            <Building2 className="h-4 w-4 text-stone-400 flex-shrink-0 mt-0.5" />
+            <Building2 className="h-4 w-4 text-slate-400 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-xs text-stone-600 font-medium">
+              <p className="text-xs text-slate-600 font-medium">
                 New Freedom AZ is a registered 501(c)(3) nonprofit organization.
               </p>
-              <p className="text-xs text-stone-400 mt-0.5">
+              <p className="text-xs text-slate-400 mt-0.5">
                 All donations are tax-deductible to the extent permitted by law.
                 You will receive a receipt for your records.
               </p>
@@ -691,9 +691,9 @@ function TestimonialsSection() {
     <div className="space-y-3">
       <div className="flex items-center gap-2">
         <Quote className="h-5 w-5 text-purple-600" />
-        <h2 className="text-lg font-bold text-stone-800">Lives You Have Changed</h2>
+        <h2 className="text-lg font-bold text-slate-800">Lives You Have Changed</h2>
       </div>
-      <p className="text-sm text-stone-500">
+      <p className="text-sm text-slate-500">
         Real stories from real people in our community. Your generosity makes this possible.
       </p>
       <div className="space-y-3">
@@ -703,7 +703,7 @@ function TestimonialsSection() {
               <div className="flex gap-3">
                 <Quote className="h-5 w-5 text-purple-300 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm text-stone-700 leading-relaxed italic">
+                  <p className="text-sm text-slate-700 leading-relaxed italic">
                     "{testimonial.quote}"
                   </p>
                   <div className="mt-3 flex items-center gap-2">
@@ -713,8 +713,8 @@ function TestimonialsSection() {
                       </span>
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-stone-800">{testimonial.name}</p>
-                      <p className="text-xs text-stone-400">{testimonial.context}</p>
+                      <p className="text-sm font-semibold text-slate-800">{testimonial.name}</p>
+                      <p className="text-xs text-slate-400">{testimonial.context}</p>
                     </div>
                   </div>
                 </div>
@@ -767,9 +767,9 @@ function ManageDonationsButton() {
       <CardContent className="p-4 space-y-3">
         <div className="flex items-center gap-2">
           <Settings className="h-5 w-5 text-purple-600" />
-          <h3 className="font-semibold text-stone-800">Manage Recurring Donations</h3>
+          <h3 className="font-semibold text-slate-800">Manage Recurring Donations</h3>
         </div>
-        <p className="text-sm text-stone-500">
+        <p className="text-sm text-slate-500">
           Update payment methods, change donation amounts, or cancel recurring donations
           through the Stripe billing portal.
         </p>

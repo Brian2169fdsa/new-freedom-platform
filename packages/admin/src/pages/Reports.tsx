@@ -32,7 +32,7 @@ const REPORT_TYPES: readonly ReportType[] = [
     label: 'Member Outcomes',
     description: 'Enrollment, graduation rates, and milestone achievements',
     icon: Users,
-    iconBg: 'bg-amber-100 text-amber-700',
+    iconBg: 'bg-blue-100 text-blue-700',
   },
   {
     id: 'employment',
@@ -145,7 +145,7 @@ function ReportBuilder({
     <div className="space-y-6">
       <button
         onClick={onClose}
-        className="text-sm text-stone-500 hover:text-stone-700 flex items-center gap-1"
+        className="text-sm text-slate-500 hover:text-slate-700 flex items-center gap-1"
       >
         &larr; Back to report types
       </button>
@@ -156,8 +156,8 @@ function ReportBuilder({
           <selectedType.icon className="h-6 w-6" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-stone-800">{selectedType.label} Report</h2>
-          <p className="text-sm text-stone-500">{selectedType.description}</p>
+          <h2 className="text-xl font-bold text-slate-800">{selectedType.label} Report</h2>
+          <p className="text-sm text-slate-500">{selectedType.description}</p>
         </div>
       </div>
 
@@ -165,14 +165,14 @@ function ReportBuilder({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Filter className="h-5 w-5 text-stone-400" />
+            <Filter className="h-5 w-5 text-slate-400" />
             Report Parameters
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="text-sm font-medium text-stone-700">Date From</label>
+              <label className="text-sm font-medium text-slate-700">Date From</label>
               <Input
                 type="date"
                 value={dateFrom}
@@ -181,7 +181,7 @@ function ReportBuilder({
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-stone-700">Date To</label>
+              <label className="text-sm font-medium text-slate-700">Date To</label>
               <Input
                 type="date"
                 value={dateTo}
@@ -190,11 +190,11 @@ function ReportBuilder({
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-stone-700">Lane</label>
+              <label className="text-sm font-medium text-slate-700">Lane</label>
               <select
                 value={laneFilter}
                 onChange={(e) => setLaneFilter(e.target.value as Lane | '')}
-                className="mt-1 w-full h-10 rounded-lg border border-stone-300 bg-white px-3 text-sm"
+                className="mt-1 w-full h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm"
               >
                 <option value="">All Lanes</option>
                 <option value="lane1">{LANE_NAMES.lane1}</option>
@@ -203,15 +203,15 @@ function ReportBuilder({
               </select>
             </div>
             <div>
-              <label className="text-sm font-medium text-stone-700">Center</label>
-              <select className="mt-1 w-full h-10 rounded-lg border border-stone-300 bg-white px-3 text-sm">
+              <label className="text-sm font-medium text-slate-700">Center</label>
+              <select className="mt-1 w-full h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm">
                 <option value="">All Centers</option>
                 <option value="main">New Freedom AZ - Main</option>
               </select>
             </div>
             <div>
-              <label className="text-sm font-medium text-stone-700">Case Manager</label>
-              <select className="mt-1 w-full h-10 rounded-lg border border-stone-300 bg-white px-3 text-sm">
+              <label className="text-sm font-medium text-slate-700">Case Manager</label>
+              <select className="mt-1 w-full h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm">
                 <option value="">All Case Managers</option>
               </select>
             </div>
@@ -258,12 +258,12 @@ function ReportBuilder({
             </div>
           </CardHeader>
           <CardContent>
-            <div className="border border-stone-200 rounded-lg p-6 space-y-4">
-              <div className="text-center border-b border-stone-200 pb-4">
-                <h3 className="text-lg font-bold text-stone-800">
+            <div className="border border-slate-200 rounded-lg p-6 space-y-4">
+              <div className="text-center border-b border-slate-200 pb-4">
+                <h3 className="text-lg font-bold text-slate-800">
                   {selectedType.label} Report
                 </h3>
-                <p className="text-sm text-stone-500">
+                <p className="text-sm text-slate-500">
                   New Freedom AZ &middot;{' '}
                   {dateFrom || 'Start'} to {dateTo || 'Present'}
                 </p>
@@ -271,25 +271,25 @@ function ReportBuilder({
 
               {/* Summary Stats */}
               <div className="grid grid-cols-4 gap-4">
-                <div className="text-center p-3 bg-stone-50 rounded-lg">
-                  <p className="text-xl font-bold text-stone-800">142</p>
-                  <p className="text-xs text-stone-500">Total Members</p>
+                <div className="text-center p-3 bg-slate-50 rounded-lg">
+                  <p className="text-xl font-bold text-slate-800">142</p>
+                  <p className="text-xs text-slate-500">Total Members</p>
                 </div>
-                <div className="text-center p-3 bg-stone-50 rounded-lg">
-                  <p className="text-xl font-bold text-stone-800">89</p>
-                  <p className="text-xs text-stone-500">Active</p>
+                <div className="text-center p-3 bg-slate-50 rounded-lg">
+                  <p className="text-xl font-bold text-slate-800">89</p>
+                  <p className="text-xs text-slate-500">Active</p>
                 </div>
-                <div className="text-center p-3 bg-stone-50 rounded-lg">
-                  <p className="text-xl font-bold text-stone-800">32</p>
-                  <p className="text-xs text-stone-500">Graduated</p>
+                <div className="text-center p-3 bg-slate-50 rounded-lg">
+                  <p className="text-xl font-bold text-slate-800">32</p>
+                  <p className="text-xs text-slate-500">Graduated</p>
                 </div>
-                <div className="text-center p-3 bg-stone-50 rounded-lg">
-                  <p className="text-xl font-bold text-stone-800">73%</p>
-                  <p className="text-xs text-stone-500">Success Rate</p>
+                <div className="text-center p-3 bg-slate-50 rounded-lg">
+                  <p className="text-xl font-bold text-slate-800">73%</p>
+                  <p className="text-xs text-slate-500">Success Rate</p>
                 </div>
               </div>
 
-              <p className="text-xs text-stone-400 text-center">
+              <p className="text-xs text-slate-400 text-center">
                 Report generated {new Date().toLocaleDateString()} - Data is illustrative
               </p>
             </div>
@@ -319,26 +319,26 @@ function ScheduleReportDialog({
       <DialogContent>
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium text-stone-700">Report Name</label>
+            <label className="text-sm font-medium text-slate-700">Report Name</label>
             <Input placeholder="e.g., Weekly Activity Summary" className="mt-1" />
           </div>
           <div>
-            <label className="text-sm font-medium text-stone-700">Report Type</label>
-            <select className="mt-1 w-full h-10 rounded-lg border border-stone-300 bg-white px-3 text-sm">
+            <label className="text-sm font-medium text-slate-700">Report Type</label>
+            <select className="mt-1 w-full h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm">
               {REPORT_TYPES.map((rt) => (
                 <option key={rt.id} value={rt.id}>{rt.label}</option>
               ))}
             </select>
           </div>
           <div>
-            <label className="text-sm font-medium text-stone-700">Frequency</label>
-            <select className="mt-1 w-full h-10 rounded-lg border border-stone-300 bg-white px-3 text-sm">
+            <label className="text-sm font-medium text-slate-700">Frequency</label>
+            <select className="mt-1 w-full h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm">
               <option value="weekly">Weekly</option>
               <option value="monthly">Monthly</option>
             </select>
           </div>
           <div>
-            <label className="text-sm font-medium text-stone-700">
+            <label className="text-sm font-medium text-slate-700">
               Recipients (comma-separated emails)
             </label>
             <Input placeholder="admin@newfreedom.org" className="mt-1" />
@@ -375,19 +375,19 @@ export default function Reports() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-stone-800">Reports</h1>
-          <p className="text-sm text-stone-500">Generate and schedule outcome reports</p>
+          <h1 className="text-2xl font-bold text-slate-800">Reports</h1>
+          <p className="text-sm text-slate-500">Generate and schedule outcome reports</p>
         </div>
       </div>
 
       {/* Report Type Grid */}
       <div>
-        <h2 className="text-sm font-semibold text-stone-500 uppercase mb-3">Select Report Type</h2>
+        <h2 className="text-sm font-semibold text-slate-500 uppercase mb-3">Select Report Type</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {REPORT_TYPES.map((rt) => (
             <Card
               key={rt.id}
-              className="hover:border-amber-300 transition-colors cursor-pointer"
+              className="hover:border-blue-300 transition-colors cursor-pointer"
               onClick={() => setSelectedType(rt)}
             >
               <CardContent className="p-5">
@@ -396,10 +396,10 @@ export default function Reports() {
                     <rt.icon className="h-5 w-5" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-stone-800">{rt.label}</p>
-                    <p className="text-xs text-stone-500 mt-0.5">{rt.description}</p>
+                    <p className="font-semibold text-slate-800">{rt.label}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">{rt.description}</p>
                   </div>
-                  <ChevronRight className="h-5 w-5 text-stone-300 shrink-0" />
+                  <ChevronRight className="h-5 w-5 text-slate-300 shrink-0" />
                 </div>
               </CardContent>
             </Card>
@@ -413,7 +413,7 @@ export default function Reports() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="flex items-center gap-2">
-                <Repeat className="h-5 w-5 text-stone-400" />
+                <Repeat className="h-5 w-5 text-slate-400" />
                 Scheduled Reports
               </CardTitle>
               <CardDescription>Automated report generation and delivery</CardDescription>
@@ -431,7 +431,7 @@ export default function Reports() {
               return (
                 <div
                   key={report.id}
-                  className="flex items-center gap-4 p-3 rounded-lg border border-stone-100 hover:bg-stone-50"
+                  className="flex items-center gap-4 p-3 rounded-lg border border-slate-100 hover:bg-slate-50"
                 >
                   {rt && (
                     <div className={`h-9 w-9 rounded-lg flex items-center justify-center shrink-0 ${rt.iconBg}`}>
@@ -439,8 +439,8 @@ export default function Reports() {
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-stone-700">{report.name}</p>
-                    <p className="text-xs text-stone-500">
+                    <p className="text-sm font-medium text-slate-700">{report.name}</p>
+                    <p className="text-xs text-slate-500">
                       {report.recipients.join(', ')}
                     </p>
                   </div>
@@ -448,11 +448,11 @@ export default function Reports() {
                     {report.frequency}
                   </Badge>
                   <div className="text-right">
-                    <p className="text-xs text-stone-500">
+                    <p className="text-xs text-slate-500">
                       <Clock className="h-3 w-3 inline mr-1" />
                       Next: {report.nextRun}
                     </p>
-                    <p className="text-xs text-stone-400">Last: {report.lastRun}</p>
+                    <p className="text-xs text-slate-400">Last: {report.lastRun}</p>
                   </div>
                   <Button size="sm" variant="ghost" className="text-red-500 hover:text-red-700">
                     <Trash2 className="h-3.5 w-3.5" />

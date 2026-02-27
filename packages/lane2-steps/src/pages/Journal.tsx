@@ -64,9 +64,9 @@ const GUIDED_PROMPTS: Record<number, string[]> = {
 function LoadingSkeleton() {
   return (
     <div className="space-y-4 animate-pulse">
-      <div className="h-48 bg-stone-100 rounded-xl" />
-      <div className="h-20 bg-stone-100 rounded-xl" />
-      <div className="h-32 bg-stone-100 rounded-xl" />
+      <div className="h-48 bg-slate-100 rounded-xl" />
+      <div className="h-20 bg-slate-100 rounded-xl" />
+      <div className="h-32 bg-slate-100 rounded-xl" />
     </div>
   );
 }
@@ -126,7 +126,7 @@ function MoodHeatmap({ checkIns }: { checkIns: CheckInData[] }) {
   }, [checkIns]);
 
   const getColor = (score: number | null): string => {
-    if (score === null) return 'bg-stone-100';
+    if (score === null) return 'bg-slate-100';
     if (score >= 5) return 'bg-green-400';
     if (score >= 4) return 'bg-lime-400';
     if (score >= 3) return 'bg-yellow-400';
@@ -136,7 +136,7 @@ function MoodHeatmap({ checkIns }: { checkIns: CheckInData[] }) {
 
   return (
     <div>
-      <h4 className="text-sm font-medium text-stone-700 mb-2">Mood History (30 Days)</h4>
+      <h4 className="text-sm font-medium text-slate-700 mb-2">Mood History (30 Days)</h4>
       <div className="flex flex-wrap gap-1">
         {days.map((d) => (
           <div
@@ -146,10 +146,10 @@ function MoodHeatmap({ checkIns }: { checkIns: CheckInData[] }) {
           />
         ))}
       </div>
-      <div className="flex items-center gap-2 mt-2 text-xs text-stone-400">
+      <div className="flex items-center gap-2 mt-2 text-xs text-slate-400">
         <span>Less</span>
         <div className="flex gap-0.5">
-          <div className="h-3 w-3 rounded-sm bg-stone-100" />
+          <div className="h-3 w-3 rounded-sm bg-slate-100" />
           <div className="h-3 w-3 rounded-sm bg-red-400" />
           <div className="h-3 w-3 rounded-sm bg-orange-400" />
           <div className="h-3 w-3 rounded-sm bg-yellow-400" />
@@ -185,16 +185,16 @@ function TrendChart({ data, label, maxValue, color }: TrendChartProps) {
   const trend = recent.length >= 2 ? recent[recent.length - 1].value - recent[0].value : 0;
 
   return (
-    <div className="bg-stone-50 rounded-lg p-3">
+    <div className="bg-slate-50 rounded-lg p-3">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-medium text-stone-600">{label}</span>
+        <span className="text-xs font-medium text-slate-600">{label}</span>
         <div className="flex items-center gap-1 text-xs">
           {trend > 0 ? (
             <TrendingUp className="h-3 w-3 text-green-600" />
           ) : trend < 0 ? (
             <TrendingDown className="h-3 w-3 text-red-500" />
           ) : null}
-          <span className="text-stone-500">avg {avg.toFixed(1)}</span>
+          <span className="text-slate-500">avg {avg.toFixed(1)}</span>
         </div>
       </div>
       <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-10">
@@ -354,7 +354,7 @@ export default function Journal() {
 
       {/* Daily Check-in */}
       {!hasCheckedInToday && (
-        <Card className="border-amber-200">
+        <Card className="border-blue-200">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base">Daily Wellness Check-in</CardTitle>
@@ -373,12 +373,12 @@ export default function Journal() {
                   }}
                   className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all flex-1 ${
                     checkInMood === opt.value
-                      ? 'bg-amber-100 border-2 border-amber-400'
-                      : 'bg-stone-50 border-2 border-transparent hover:bg-stone-100'
+                      ? 'bg-blue-100 border-2 border-blue-400'
+                      : 'bg-slate-50 border-2 border-transparent hover:bg-slate-100'
                   }`}
                 >
                   <span className="text-xl">{opt.emoji}</span>
-                  <span className="text-[10px] text-stone-600">{opt.label}</span>
+                  <span className="text-[10px] text-slate-600">{opt.label}</span>
                 </button>
               ))}
             </div>
@@ -392,9 +392,9 @@ export default function Journal() {
                 step={0.5}
                 value={sleepHours}
                 onChange={(e) => setSleepHours(parseFloat(e.target.value))}
-                className="flex-1 accent-amber-600"
+                className="flex-1 accent-blue-600"
               />
-              <span className="text-sm font-medium text-stone-700 w-8">{sleepHours}h</span>
+              <span className="text-sm font-medium text-slate-700 w-8">{sleepHours}h</span>
             </div>
             {/* Energy */}
             <div className="flex items-center gap-3">
@@ -405,22 +405,22 @@ export default function Journal() {
                 max={10}
                 value={energyLevel}
                 onChange={(e) => setEnergyLevel(parseInt(e.target.value, 10))}
-                className="flex-1 accent-amber-600"
+                className="flex-1 accent-blue-600"
               />
-              <span className="text-sm font-medium text-stone-700 w-8">{energyLevel}</span>
+              <span className="text-sm font-medium text-slate-700 w-8">{energyLevel}</span>
             </div>
             {/* Cravings */}
             <div className="flex items-center gap-3">
-              <span className="text-xs text-stone-500 font-medium shrink-0 w-4">C</span>
+              <span className="text-xs text-slate-500 font-medium shrink-0 w-4">C</span>
               <input
                 type="range"
                 min={0}
                 max={10}
                 value={cravingIntensity}
                 onChange={(e) => setCravingIntensity(parseInt(e.target.value, 10))}
-                className="flex-1 accent-amber-600"
+                className="flex-1 accent-blue-600"
               />
-              <span className="text-sm font-medium text-stone-700 w-8">{cravingIntensity}</span>
+              <span className="text-sm font-medium text-slate-700 w-8">{cravingIntensity}</span>
             </div>
             <Button onClick={handleCheckIn} disabled={!checkInMood || checkInSubmitting} className="w-full" size="sm">
               {checkInSubmitting ? 'Saving...' : 'Submit Check-in'}
@@ -439,7 +439,7 @@ export default function Journal() {
       {/* Trend Charts */}
       {(moodTrend.length >= 2 || sleepTrend.length >= 2 || cravingTrend.length >= 2) && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <TrendChart data={moodTrend} label="Mood" maxValue={5} color="#f59e0b" />
+          <TrendChart data={moodTrend} label="Mood" maxValue={5} color="#3b82f6" />
           <TrendChart data={sleepTrend} label="Sleep (hrs)" maxValue={12} color="#6366f1" />
           <TrendChart data={cravingTrend} label="Cravings" maxValue={10} color="#ef4444" />
         </div>
@@ -457,19 +457,19 @@ export default function Journal() {
                     <span className="text-2xl">{moodOpt?.emoji ?? '\u{1F4DD}'}</span>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-xs text-stone-400">{formatDate(entry.date)}</span>
+                        <span className="text-xs text-slate-400">{formatDate(entry.date)}</span>
                         {entry.relatedStep && (
                           <Badge variant="secondary" className="text-[10px]">
                             Step {entry.relatedStep}
                           </Badge>
                         )}
                         {entry.isPrivate ? (
-                          <EyeOff className="h-3 w-3 text-stone-300" />
+                          <EyeOff className="h-3 w-3 text-slate-300" />
                         ) : (
-                          <Eye className="h-3 w-3 text-stone-400" />
+                          <Eye className="h-3 w-3 text-slate-400" />
                         )}
                       </div>
-                      <p className="text-sm text-stone-700 mt-1 whitespace-pre-wrap line-clamp-4">
+                      <p className="text-sm text-slate-700 mt-1 whitespace-pre-wrap line-clamp-4">
                         {entry.content}
                       </p>
                       {entry.tags && entry.tags.length > 0 && (
@@ -477,7 +477,7 @@ export default function Journal() {
                           {entry.tags.map((tag) => (
                             <span
                               key={tag}
-                              className="text-[10px] bg-stone-100 text-stone-500 px-2 py-0.5 rounded-full"
+                              className="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full"
                             >
                               #{tag}
                             </span>
@@ -494,9 +494,9 @@ export default function Journal() {
       ) : (
         <Card>
           <CardContent className="p-8 text-center">
-            <Calendar className="h-10 w-10 text-stone-300 mx-auto mb-2" />
-            <p className="text-stone-500">Your journal is empty.</p>
-            <p className="text-sm text-stone-400 mt-1">Start writing to track your thoughts and feelings.</p>
+            <Calendar className="h-10 w-10 text-slate-300 mx-auto mb-2" />
+            <p className="text-slate-500">Your journal is empty.</p>
+            <p className="text-sm text-slate-400 mt-1">Start writing to track your thoughts and feelings.</p>
             <Button size="sm" className="mt-4" onClick={() => setShowEditor(true)}>
               <Plus className="h-4 w-4 mr-1" /> Write First Entry
             </Button>
@@ -512,7 +512,7 @@ export default function Journal() {
         <DialogContent className="space-y-4">
           {/* Mood */}
           <div>
-            <label className="text-sm font-medium text-stone-700 mb-2 block">How are you feeling?</label>
+            <label className="text-sm font-medium text-slate-700 mb-2 block">How are you feeling?</label>
             <div className="flex gap-2">
               {MOOD_OPTIONS.map((opt) => (
                 <button
@@ -523,12 +523,12 @@ export default function Journal() {
                   }}
                   className={`flex flex-col items-center gap-0.5 p-1.5 rounded-lg flex-1 ${
                     entryMood === opt.value
-                      ? 'bg-amber-100 border-2 border-amber-400'
-                      : 'bg-stone-50 border-2 border-transparent'
+                      ? 'bg-blue-100 border-2 border-blue-400'
+                      : 'bg-slate-50 border-2 border-transparent'
                   }`}
                 >
                   <span className="text-lg">{opt.emoji}</span>
-                  <span className="text-[9px] text-stone-500">{opt.label}</span>
+                  <span className="text-[9px] text-slate-500">{opt.label}</span>
                 </button>
               ))}
             </div>
@@ -536,7 +536,7 @@ export default function Journal() {
 
           {/* Guided Prompts */}
           <div>
-            <label className="text-sm font-medium text-stone-700 mb-2 block">
+            <label className="text-sm font-medium text-slate-700 mb-2 block">
               Guided Prompts (Step {currentStep})
             </label>
             <div className="space-y-1">
@@ -544,7 +544,7 @@ export default function Journal() {
                 <button
                   key={i}
                   onClick={() => setEntryContent((prev) => (prev ? `${prev}\n\n${prompt}\n` : `${prompt}\n`))}
-                  className="w-full text-left text-xs text-amber-700 bg-amber-50 hover:bg-amber-100 px-3 py-2 rounded-lg transition-colors"
+                  className="w-full text-left text-xs text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-lg transition-colors"
                 >
                   {prompt}
                 </button>
@@ -563,11 +563,11 @@ export default function Journal() {
 
           {/* Step Selector */}
           <div className="flex items-center gap-3">
-            <label className="text-sm font-medium text-stone-700 shrink-0">Related Step</label>
+            <label className="text-sm font-medium text-slate-700 shrink-0">Related Step</label>
             <select
               value={entryStep}
               onChange={(e) => setEntryStep(parseInt(e.target.value, 10))}
-              className="flex-1 h-9 rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-700 focus:ring-2 focus:ring-amber-500"
+              className="flex-1 h-9 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700 focus:ring-2 focus:ring-blue-500"
             >
               {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
                 <option key={n} value={n}>
@@ -587,7 +587,7 @@ export default function Journal() {
           {/* Privacy Toggle */}
           <button
             onClick={() => setEntryPrivate(!entryPrivate)}
-            className="flex items-center gap-2 text-sm text-stone-600 hover:text-stone-800"
+            className="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-800"
           >
             {entryPrivate ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             {entryPrivate ? 'Private (only you)' : 'Shared with mentor'}

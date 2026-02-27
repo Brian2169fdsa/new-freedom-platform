@@ -113,7 +113,7 @@ function CenterInfoSection({
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Building2 className="h-5 w-5 text-stone-400" />
+          <Building2 className="h-5 w-5 text-slate-400" />
           Center Information
         </CardTitle>
         <CardDescription>Basic information about your organization</CardDescription>
@@ -121,7 +121,7 @@ function CenterInfoSection({
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
-            <label className="text-sm font-medium text-stone-700">Center Name</label>
+            <label className="text-sm font-medium text-slate-700">Center Name</label>
             <Input
               value={center.name}
               onChange={(e) => update('name', e.target.value)}
@@ -129,7 +129,7 @@ function CenterInfoSection({
             />
           </div>
           <div className="md:col-span-2">
-            <label className="text-sm font-medium text-stone-700">Address</label>
+            <label className="text-sm font-medium text-slate-700">Address</label>
             <Input
               value={center.address}
               onChange={(e) => update('address', e.target.value)}
@@ -137,7 +137,7 @@ function CenterInfoSection({
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-stone-700">Phone</label>
+            <label className="text-sm font-medium text-slate-700">Phone</label>
             <Input
               value={center.phone}
               onChange={(e) => update('phone', e.target.value)}
@@ -145,7 +145,7 @@ function CenterInfoSection({
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-stone-700">Email</label>
+            <label className="text-sm font-medium text-slate-700">Email</label>
             <Input
               type="email"
               value={center.email}
@@ -154,7 +154,7 @@ function CenterInfoSection({
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-stone-700">Website</label>
+            <label className="text-sm font-medium text-slate-700">Website</label>
             <Input
               value={center.website}
               onChange={(e) => update('website', e.target.value)}
@@ -180,7 +180,7 @@ function FeatureTogglesSection({
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <ToggleLeft className="h-5 w-5 text-stone-400" />
+          <ToggleLeft className="h-5 w-5 text-slate-400" />
           Feature Toggles
         </CardTitle>
         <CardDescription>Enable or disable platform features</CardDescription>
@@ -189,24 +189,24 @@ function FeatureTogglesSection({
         <div className="space-y-6">
           {categories.map((cat) => (
             <div key={cat}>
-              <p className="text-xs font-semibold text-stone-400 uppercase mb-3">{cat}</p>
+              <p className="text-xs font-semibold text-slate-400 uppercase mb-3">{cat}</p>
               <div className="space-y-3">
                 {toggles
                   .filter((t) => t.category === cat)
                   .map((toggle) => (
                     <div
                       key={toggle.id}
-                      className="flex items-center justify-between p-3 rounded-lg border border-stone-100 hover:bg-stone-50"
+                      className="flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:bg-slate-50"
                     >
                       <div>
-                        <p className="text-sm font-medium text-stone-700">{toggle.label}</p>
-                        <p className="text-xs text-stone-500">{toggle.description}</p>
+                        <p className="text-sm font-medium text-slate-700">{toggle.label}</p>
+                        <p className="text-xs text-slate-500">{toggle.description}</p>
                       </div>
                       <button
                         onClick={() => onToggle(toggle.id)}
                         className={cn(
                           'relative h-6 w-11 rounded-full transition-colors',
-                          toggle.enabled ? 'bg-amber-600' : 'bg-stone-300',
+                          toggle.enabled ? 'bg-blue-600' : 'bg-slate-300',
                         )}
                       >
                         <div
@@ -239,7 +239,7 @@ function NotificationTemplatesSection() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Bell className="h-5 w-5 text-stone-400" />
+          <Bell className="h-5 w-5 text-slate-400" />
           Notification Templates
         </CardTitle>
         <CardDescription>Customize system notification messages</CardDescription>
@@ -249,11 +249,11 @@ function NotificationTemplatesSection() {
           {templates.map((tmpl) => (
             <div
               key={tmpl.id}
-              className="flex items-center justify-between p-3 rounded-lg border border-stone-100 hover:bg-stone-50"
+              className="flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:bg-slate-50"
             >
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-stone-700">{tmpl.label}</p>
-                <p className="text-xs text-stone-500 truncate">{tmpl.preview}</p>
+                <p className="text-sm font-medium text-slate-700">{tmpl.label}</p>
+                <p className="text-xs text-slate-500 truncate">{tmpl.preview}</p>
               </div>
               <Button size="sm" variant="ghost">Edit</Button>
             </div>
@@ -275,7 +275,7 @@ function SecuritySection({
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <ShieldCheck className="h-5 w-5 text-stone-400" />
+          <ShieldCheck className="h-5 w-5 text-slate-400" />
           Security Settings
         </CardTitle>
       </CardHeader>
@@ -283,7 +283,7 @@ function SecuritySection({
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium text-stone-700">Session Timeout (minutes)</label>
+              <label className="text-sm font-medium text-slate-700">Session Timeout (minutes)</label>
               <Input
                 type="number"
                 value={security.sessionTimeoutMinutes}
@@ -296,7 +296,7 @@ function SecuritySection({
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-stone-700">Min Password Length</label>
+              <label className="text-sm font-medium text-slate-700">Min Password Length</label>
               <Input
                 type="number"
                 value={security.minPasswordLength}
@@ -344,7 +344,7 @@ function ModerationThresholdsSection({
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Gauge className="h-5 w-5 text-stone-400" />
+          <Gauge className="h-5 w-5 text-slate-400" />
           Moderation Thresholds
         </CardTitle>
         <CardDescription>Configure automatic content moderation behavior</CardDescription>
@@ -353,10 +353,10 @@ function ModerationThresholdsSection({
         <div className="space-y-6">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-sm font-medium text-stone-700">
+              <label className="text-sm font-medium text-slate-700">
                 Auto-Flag Toxicity Score
               </label>
-              <span className="text-sm font-mono text-stone-600">
+              <span className="text-sm font-mono text-slate-600">
                 {thresholds.autoFlagScore.toFixed(2)}
               </span>
             </div>
@@ -369,18 +369,18 @@ function ModerationThresholdsSection({
               onChange={(e) =>
                 onChange({ ...thresholds, autoFlagScore: parseFloat(e.target.value) })
               }
-              className="w-full h-2 bg-stone-200 rounded-full appearance-none cursor-pointer accent-amber-600"
+              className="w-full h-2 bg-slate-200 rounded-full appearance-none cursor-pointer accent-blue-600"
             />
-            <p className="text-xs text-stone-500 mt-1">
+            <p className="text-xs text-slate-500 mt-1">
               Posts with toxicity score above this threshold will be automatically flagged for review.
             </p>
           </div>
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-sm font-medium text-stone-700">
+              <label className="text-sm font-medium text-slate-700">
                 Auto-Approve Threshold
               </label>
-              <span className="text-sm font-mono text-stone-600">
+              <span className="text-sm font-mono text-slate-600">
                 {thresholds.autoApproveScore.toFixed(2)}
               </span>
             </div>
@@ -393,9 +393,9 @@ function ModerationThresholdsSection({
               onChange={(e) =>
                 onChange({ ...thresholds, autoApproveScore: parseFloat(e.target.value) })
               }
-              className="w-full h-2 bg-stone-200 rounded-full appearance-none cursor-pointer accent-green-600"
+              className="w-full h-2 bg-slate-200 rounded-full appearance-none cursor-pointer accent-green-600"
             />
-            <p className="text-xs text-stone-500 mt-1">
+            <p className="text-xs text-slate-500 mt-1">
               Posts with toxicity score below this threshold will be automatically approved.
             </p>
           </div>
@@ -426,20 +426,20 @@ function DataExportSection() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Database className="h-5 w-5 text-stone-400" />
+          <Database className="h-5 w-5 text-slate-400" />
           Data Export
         </CardTitle>
         <CardDescription>Download a full backup of platform data</CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-stone-600 mb-4">
+        <p className="text-sm text-slate-600 mb-4">
           Export all platform data including user profiles, progress records, posts, and configuration.
           This may take several minutes for large datasets.
         </p>
         <Button variant="outline" onClick={handleExport} disabled={exporting}>
           {exporting ? (
             <>
-              <div className="h-4 w-4 border-2 border-stone-400 border-t-transparent rounded-full animate-spin mr-2" />
+              <div className="h-4 w-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin mr-2" />
               Preparing Export...
             </>
           ) : (
@@ -473,7 +473,7 @@ function ApiKeysSection() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Key className="h-5 w-5 text-stone-400" />
+          <Key className="h-5 w-5 text-slate-400" />
           API Keys
         </CardTitle>
         <CardDescription>Manage third-party API integrations</CardDescription>
@@ -483,17 +483,17 @@ function ApiKeysSection() {
           {MOCK_API_KEYS.map((apiKey) => (
             <div
               key={apiKey.id}
-              className="flex items-center gap-4 p-3 rounded-lg border border-stone-100"
+              className="flex items-center gap-4 p-3 rounded-lg border border-slate-100"
             >
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-stone-700">{apiKey.name}</p>
+                <p className="text-sm font-medium text-slate-700">{apiKey.name}</p>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <code className="text-xs font-mono text-stone-500">
+                  <code className="text-xs font-mono text-slate-500">
                     {visibleKeys.has(apiKey.id) ? apiKey.maskedKey.replace('...', '••••••••') : apiKey.maskedKey}
                   </code>
                   <button
                     onClick={() => toggleVisibility(apiKey.id)}
-                    className="text-stone-400 hover:text-stone-600"
+                    className="text-slate-400 hover:text-slate-600"
                   >
                     {visibleKeys.has(apiKey.id)
                       ? <EyeOff className="h-3.5 w-3.5" />
@@ -502,7 +502,7 @@ function ApiKeysSection() {
                   </button>
                 </div>
               </div>
-              <div className="text-right text-xs text-stone-500">
+              <div className="text-right text-xs text-slate-500">
                 <p>Created: {apiKey.createdAt}</p>
                 <p>Last used: {apiKey.lastUsed}</p>
               </div>
@@ -529,12 +529,12 @@ function ToggleRow({
 }) {
   return (
     <div className="flex items-center justify-between py-2">
-      <span className="text-sm text-stone-700">{label}</span>
+      <span className="text-sm text-slate-700">{label}</span>
       <button
         onClick={onToggle}
         className={cn(
           'relative h-6 w-11 rounded-full transition-colors',
-          enabled ? 'bg-amber-600' : 'bg-stone-300',
+          enabled ? 'bg-blue-600' : 'bg-slate-300',
         )}
       >
         <div
@@ -567,7 +567,7 @@ function ConfirmSaveDialog({
         <DialogTitle>Save Settings</DialogTitle>
       </DialogHeader>
       <DialogContent>
-        <p className="text-sm text-stone-600">
+        <p className="text-sm text-slate-600">
           Are you sure you want to save all settings changes? This will immediately affect platform behavior.
         </p>
       </DialogContent>
@@ -611,8 +611,8 @@ export default function AdminSettings() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-stone-800">Settings</h1>
-          <p className="text-sm text-stone-500">Platform configuration and management</p>
+          <h1 className="text-2xl font-bold text-slate-800">Settings</h1>
+          <p className="text-sm text-slate-500">Platform configuration and management</p>
         </div>
         <Button onClick={() => setConfirmOpen(true)} disabled={saving}>
           {saving ? (
