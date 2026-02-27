@@ -18,7 +18,17 @@ interface AuthState {
 export const useAuth = create<AuthState>((set, get) => {
   // Only listen to Firebase auth changes in non-demo mode
   if (!DEMO_MODE) {
+    // Safety timeout: if onAuthStateChanged never fires (e.g. invalid credentials,
+    // no network), mark as initialized after 4s so the app doesn't white-screen.
+    const initTimeout = setTimeout(() => {
+      const s = useAuth.getState();
+      if (!s.initialized) {
+        set({ loading: false, initialized: true });
+      }
+    }, 4000);
+
     onAuthChanged(async (firebaseUser) => {
+      clearTimeout(initTimeout);
       if (firebaseUser) {
         let userData: User | null = null;
         try {
