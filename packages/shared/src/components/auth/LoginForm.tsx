@@ -67,7 +67,7 @@ export function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-stone-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-slate-50 flex items-center justify-center px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">REPrieve</CardTitle>
@@ -75,8 +75,8 @@ export function LoginForm() {
         </CardHeader>
         <CardContent>
           {DEMO_MODE && (
-            <div className="mb-4 rounded-md bg-amber-50 border border-amber-200 p-3 text-center">
-              <p className="text-sm text-amber-800">Demo Mode — click any button to enter</p>
+            <div className="mb-4 rounded-md bg-blue-50 border border-blue-200 p-3 text-center">
+              <p className="text-sm text-blue-800">Demo Mode — click any button to enter</p>
             </div>
           )}
           <Tabs value={tab} onValueChange={setTab}>
@@ -141,10 +141,10 @@ export function LoginForm() {
 
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-stone-200" />
+              <span className="w-full border-t border-slate-200" />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="bg-white px-2 text-stone-400">or</span>
+              <span className="bg-white px-2 text-slate-400">or</span>
             </div>
           </div>
 

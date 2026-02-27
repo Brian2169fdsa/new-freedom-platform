@@ -317,10 +317,10 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
           <div
             className={`h-2 w-full rounded-full transition-colors ${
               i < current
-                ? 'bg-amber-600'
+                ? 'bg-blue-600'
                 : i === current
-                  ? 'bg-amber-400'
-                  : 'bg-stone-200'
+                  ? 'bg-blue-400'
+                  : 'bg-slate-200'
             }`}
           />
         </div>
@@ -352,7 +352,7 @@ function StepPersonalInfo() {
     <Card>
       <CardHeader>
         <CardTitle>Personal Information</CardTitle>
-        <p className="text-sm text-stone-500">
+        <p className="text-sm text-slate-500">
           Your contact details for the resume header. Only include what you are comfortable sharing.
         </p>
       </CardHeader>
@@ -360,7 +360,7 @@ function StepPersonalInfo() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {fields.map(({ key, label, type, placeholder }) => (
             <div key={key} className={key === 'email' ? 'sm:col-span-2' : ''}>
-              <label className="block text-sm font-medium text-stone-700 mb-1">{label}</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1">{label}</label>
               <Input
                 type={type}
                 placeholder={placeholder}
@@ -415,7 +415,7 @@ function StepSummary() {
     <Card>
       <CardHeader>
         <CardTitle>Professional Summary</CardTitle>
-        <p className="text-sm text-stone-500">
+        <p className="text-sm text-slate-500">
           A brief overview of your strengths and goals. Let AI help you write a compelling summary.
         </p>
       </CardHeader>
@@ -441,7 +441,7 @@ function StepSummary() {
               )}
               {generating ? 'Writing...' : 'Generate with AI'}
             </Button>
-            <span className="text-xs text-stone-400">
+            <span className="text-xs text-slate-400">
               AI will craft a strength-based summary for you
             </span>
           </div>
@@ -476,7 +476,7 @@ function StepSkills() {
     <Card>
       <CardHeader>
         <CardTitle>Skills</CardTitle>
-        <p className="text-sm text-stone-500">
+        <p className="text-sm text-slate-500">
           Highlight your abilities. Skills-first resumes work great for fair-chance employers.
         </p>
       </CardHeader>
@@ -490,7 +490,7 @@ function StepSkills() {
                   {skill}
                   <button
                     onClick={() => removeSkill(skill)}
-                    className="h-4 w-4 rounded-full flex items-center justify-center hover:bg-amber-200 transition-colors"
+                    className="h-4 w-4 rounded-full flex items-center justify-center hover:bg-blue-200 transition-colors"
                     aria-label={`Remove ${skill}`}
                   >
                     <X className="h-3 w-3" />
@@ -521,10 +521,10 @@ function StepSkills() {
 
           {/* Suggested skill categories */}
           <div className="space-y-4">
-            <p className="text-sm font-medium text-stone-600">Suggested Skills</p>
+            <p className="text-sm font-medium text-slate-600">Suggested Skills</p>
             {Object.entries(SUGGESTED_SKILLS).map(([category, categorySkills]) => (
               <div key={category}>
-                <p className="text-xs font-medium text-stone-500 mb-2 uppercase tracking-wide">
+                <p className="text-xs font-medium text-slate-500 mb-2 uppercase tracking-wide">
                   {category}
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -536,8 +536,8 @@ function StepSkills() {
                         onClick={() => (isSelected ? removeSkill(skill) : addSkill(skill))}
                         className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${
                           isSelected
-                            ? 'bg-amber-100 border-amber-300 text-amber-800'
-                            : 'bg-white border-stone-200 text-stone-600 hover:border-amber-300 hover:bg-amber-50'
+                            ? 'bg-blue-100 border-blue-300 text-blue-800'
+                            : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:bg-blue-50'
                         }`}
                       >
                         {isSelected ? <Check className="h-3 w-3 inline mr-1" /> : null}
@@ -571,7 +571,7 @@ function StepWorkExperience() {
     <Card>
       <CardHeader>
         <CardTitle>Work Experience</CardTitle>
-        <p className="text-sm text-stone-500">
+        <p className="text-sm text-slate-500">
           Optional. Add jobs or mark time gaps with a positive framing. Fair-chance employers value
           honesty and growth.
         </p>
@@ -579,7 +579,7 @@ function StepWorkExperience() {
       <CardContent>
         <div className="space-y-4">
           {workExperience.map((entry) => (
-            <div key={entry.id} className="border border-stone-200 rounded-lg p-4 space-y-3">
+            <div key={entry.id} className="border border-slate-200 rounded-lg p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <label className="flex items-center gap-2 text-sm">
                   <input
@@ -588,13 +588,13 @@ function StepWorkExperience() {
                     onChange={(e) =>
                       updateWorkEntry(entry.id, { isGapPeriod: e.target.checked })
                     }
-                    className="rounded border-stone-300 text-amber-600 focus:ring-amber-500"
+                    className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="text-stone-600">This is a gap period</span>
+                  <span className="text-slate-600">This is a gap period</span>
                 </label>
                 <button
                   onClick={() => removeWorkEntry(entry.id)}
-                  className="text-stone-400 hover:text-red-500 transition-colors"
+                  className="text-slate-400 hover:text-red-500 transition-colors"
                   aria-label="Remove entry"
                 >
                   <X className="h-4 w-4" />
@@ -604,13 +604,13 @@ function StepWorkExperience() {
               {entry.isGapPeriod ? (
                 <div className="space-y-3">
                   <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-1">
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
                       How to describe this period
                     </label>
                     <select
                       value={entry.gapLabel}
                       onChange={(e) => updateWorkEntry(entry.id, { gapLabel: e.target.value })}
-                      className="flex h-10 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                      className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       {GAP_LABELS.map((label) => (
                         <option key={label} value={label}>
@@ -620,7 +620,7 @@ function StepWorkExperience() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-1">
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
                       Activities during this period (optional)
                     </label>
                     <Textarea
@@ -632,7 +632,7 @@ function StepWorkExperience() {
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-stone-700 mb-1">From</label>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">From</label>
                       <Input
                         type="month"
                         value={entry.startDate}
@@ -640,7 +640,7 @@ function StepWorkExperience() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-stone-700 mb-1">To</label>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">To</label>
                       <Input
                         type="month"
                         value={entry.endDate}
@@ -653,7 +653,7 @@ function StepWorkExperience() {
                 <div className="space-y-3">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-stone-700 mb-1">
+                      <label className="block text-sm font-medium text-slate-700 mb-1">
                         Job Title
                       </label>
                       <Input
@@ -663,7 +663,7 @@ function StepWorkExperience() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-stone-700 mb-1">
+                      <label className="block text-sm font-medium text-slate-700 mb-1">
                         Company
                       </label>
                       <Input
@@ -675,7 +675,7 @@ function StepWorkExperience() {
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-stone-700 mb-1">
+                      <label className="block text-sm font-medium text-slate-700 mb-1">
                         Start Date
                       </label>
                       <Input
@@ -685,7 +685,7 @@ function StepWorkExperience() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-stone-700 mb-1">
+                      <label className="block text-sm font-medium text-slate-700 mb-1">
                         End Date
                       </label>
                       <div className="space-y-1">
@@ -695,7 +695,7 @@ function StepWorkExperience() {
                           disabled={entry.current}
                           onChange={(e) => updateWorkEntry(entry.id, { endDate: e.target.value })}
                         />
-                        <label className="flex items-center gap-1.5 text-xs text-stone-500">
+                        <label className="flex items-center gap-1.5 text-xs text-slate-500">
                           <input
                             type="checkbox"
                             checked={entry.current}
@@ -705,7 +705,7 @@ function StepWorkExperience() {
                                 endDate: e.target.checked ? '' : entry.endDate,
                               })
                             }
-                            className="rounded border-stone-300 text-amber-600 focus:ring-amber-500"
+                            className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                           />
                           Currently working here
                         </label>
@@ -713,7 +713,7 @@ function StepWorkExperience() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-1">
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
                       Description
                     </label>
                     <Textarea
@@ -753,19 +753,19 @@ function StepEducation() {
     <Card>
       <CardHeader>
         <CardTitle>Education & Certifications</CardTitle>
-        <p className="text-sm text-stone-500">
+        <p className="text-sm text-slate-500">
           Include GEDs, vocational training, certifications, and any programs you have completed.
         </p>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           {education.map((entry) => (
-            <div key={entry.id} className="border border-stone-200 rounded-lg p-4 space-y-3">
+            <div key={entry.id} className="border border-slate-200 rounded-lg p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <label className="block text-sm font-medium text-stone-700">Type</label>
+                <label className="block text-sm font-medium text-slate-700">Type</label>
                 <button
                   onClick={() => removeEducation(entry.id)}
-                  className="text-stone-400 hover:text-red-500 transition-colors"
+                  className="text-slate-400 hover:text-red-500 transition-colors"
                   aria-label="Remove entry"
                 >
                   <X className="h-4 w-4" />
@@ -776,7 +776,7 @@ function StepEducation() {
                 onChange={(e) =>
                   updateEducation(entry.id, { type: e.target.value as EducationEntry['type'] })
                 }
-                className="flex h-10 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 {EDUCATION_TYPES.map((t) => (
                   <option key={t.value} value={t.value}>
@@ -786,7 +786,7 @@ function StepEducation() {
               </select>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
                     Institution / Program
                   </label>
                   <Input
@@ -796,7 +796,7 @@ function StepEducation() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
                     Credential / Certificate
                   </label>
                   <Input
@@ -807,7 +807,7 @@ function StepEducation() {
                 </div>
               </div>
               <div className="w-1/2">
-                <label className="block text-sm font-medium text-stone-700 mb-1">
+                <label className="block text-sm font-medium text-slate-700 mb-1">
                   Year Completed
                 </label>
                 <Input
@@ -849,7 +849,7 @@ function StepReferences() {
     <Card>
       <CardHeader>
         <CardTitle>References</CardTitle>
-        <p className="text-sm text-stone-500">
+        <p className="text-sm text-slate-500">
           Optional. Case managers, mentors, program directors, or former supervisors make strong
           references.
         </p>
@@ -857,11 +857,11 @@ function StepReferences() {
       <CardContent>
         <div className="space-y-4">
           {references.map((ref) => (
-            <div key={ref.id} className="border border-stone-200 rounded-lg p-4 space-y-3">
+            <div key={ref.id} className="border border-slate-200 rounded-lg p-4 space-y-3">
               <div className="flex items-center justify-end">
                 <button
                   onClick={() => removeReference(ref.id)}
-                  className="text-stone-400 hover:text-red-500 transition-colors"
+                  className="text-slate-400 hover:text-red-500 transition-colors"
                   aria-label="Remove reference"
                 >
                   <X className="h-4 w-4" />
@@ -869,7 +869,7 @@ function StepReferences() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Name</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Name</label>
                   <Input
                     placeholder="Jane Smith"
                     value={ref.name}
@@ -877,7 +877,7 @@ function StepReferences() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
                     Relationship
                   </label>
                   <Input
@@ -887,7 +887,7 @@ function StepReferences() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Phone</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Phone</label>
                   <Input
                     type="tel"
                     placeholder="(602) 555-0123"
@@ -896,7 +896,7 @@ function StepReferences() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Email</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
                   <Input
                     type="email"
                     placeholder="jane@example.com"
@@ -953,20 +953,20 @@ function StepPreview() {
         <Button variant="outline" size="sm" onClick={handlePrint}>
           <Download className="h-4 w-4 mr-2" /> Save as PDF
         </Button>
-        <span className="text-xs text-stone-400">Use your browser&apos;s print dialog to save as PDF</span>
+        <span className="text-xs text-slate-400">Use your browser&apos;s print dialog to save as PDF</span>
       </div>
 
       {/* Print-friendly resume */}
       <div
         ref={previewRef}
-        className="bg-white border border-stone-200 rounded-lg p-6 sm:p-8 print:border-none print:shadow-none print:p-0 print:rounded-none"
+        className="bg-white border border-slate-200 rounded-lg p-6 sm:p-8 print:border-none print:shadow-none print:p-0 print:rounded-none"
       >
         {/* Header */}
-        <div className="text-center border-b-2 border-stone-300 pb-4 mb-5">
-          <h1 className="text-2xl font-bold text-stone-900 tracking-wide">
+        <div className="text-center border-b-2 border-slate-300 pb-4 mb-5">
+          <h1 className="text-2xl font-bold text-slate-900 tracking-wide">
             {fullName || 'Your Name'}
           </h1>
-          <div className="flex items-center justify-center flex-wrap gap-x-4 gap-y-1 mt-2 text-sm text-stone-600">
+          <div className="flex items-center justify-center flex-wrap gap-x-4 gap-y-1 mt-2 text-sm text-slate-600">
             {personalInfo.email && <span>{personalInfo.email}</span>}
             {personalInfo.phone && <span>{personalInfo.phone}</span>}
             {location && <span>{location}</span>}
@@ -976,22 +976,22 @@ function StepPreview() {
         {/* Summary */}
         {summary && (
           <div className="mb-5">
-            <h2 className="text-sm font-bold text-stone-800 uppercase tracking-wider border-b border-stone-200 pb-1 mb-2">
+            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider border-b border-slate-200 pb-1 mb-2">
               Professional Summary
             </h2>
-            <p className="text-sm text-stone-700 leading-relaxed">{summary}</p>
+            <p className="text-sm text-slate-700 leading-relaxed">{summary}</p>
           </div>
         )}
 
         {/* Skills */}
         {skills.length > 0 && (
           <div className="mb-5">
-            <h2 className="text-sm font-bold text-stone-800 uppercase tracking-wider border-b border-stone-200 pb-1 mb-2">
+            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider border-b border-slate-200 pb-1 mb-2">
               Skills
             </h2>
             <div className="flex flex-wrap gap-x-2 gap-y-1">
               {skills.map((skill, i) => (
-                <span key={skill} className="text-sm text-stone-700">
+                <span key={skill} className="text-sm text-slate-700">
                   {skill}
                   {i < skills.length - 1 ? ' \u2022' : ''}
                 </span>
@@ -1003,7 +1003,7 @@ function StepPreview() {
         {/* Experience */}
         {workExperience.length > 0 && (
           <div className="mb-5">
-            <h2 className="text-sm font-bold text-stone-800 uppercase tracking-wider border-b border-stone-200 pb-1 mb-2">
+            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider border-b border-slate-200 pb-1 mb-2">
               Experience
             </h2>
             <div className="space-y-3">
@@ -1018,22 +1018,22 @@ function StepPreview() {
                 return (
                   <div key={entry.id}>
                     <div className="flex items-baseline justify-between">
-                      <h3 className="text-sm font-semibold text-stone-800">
+                      <h3 className="text-sm font-semibold text-slate-800">
                         {entry.isGapPeriod
                           ? entry.gapLabel
                           : entry.title || 'Position'}
                       </h3>
                       {dateRange && (
-                        <span className="text-xs text-stone-500 flex-shrink-0 ml-4">
+                        <span className="text-xs text-slate-500 flex-shrink-0 ml-4">
                           {dateRange}
                         </span>
                       )}
                     </div>
                     {!entry.isGapPeriod && entry.company && (
-                      <p className="text-sm text-stone-600">{entry.company}</p>
+                      <p className="text-sm text-slate-600">{entry.company}</p>
                     )}
                     {entry.description && (
-                      <p className="text-sm text-stone-600 mt-1">{entry.description}</p>
+                      <p className="text-sm text-slate-600 mt-1">{entry.description}</p>
                     )}
                   </div>
                 );
@@ -1045,22 +1045,22 @@ function StepPreview() {
         {/* Education */}
         {education.length > 0 && (
           <div className="mb-5">
-            <h2 className="text-sm font-bold text-stone-800 uppercase tracking-wider border-b border-stone-200 pb-1 mb-2">
+            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider border-b border-slate-200 pb-1 mb-2">
               Education & Certifications
             </h2>
             <div className="space-y-2">
               {education.map((entry) => (
                 <div key={entry.id} className="flex items-baseline justify-between">
                   <div>
-                    <span className="text-sm font-semibold text-stone-800">
+                    <span className="text-sm font-semibold text-slate-800">
                       {entry.credential || 'Credential'}
                     </span>
                     {entry.institution && (
-                      <span className="text-sm text-stone-600"> - {entry.institution}</span>
+                      <span className="text-sm text-slate-600"> - {entry.institution}</span>
                     )}
                   </div>
                   {entry.year && (
-                    <span className="text-xs text-stone-500 flex-shrink-0 ml-4">
+                    <span className="text-xs text-slate-500 flex-shrink-0 ml-4">
                       {entry.year}
                     </span>
                   )}
@@ -1073,18 +1073,18 @@ function StepPreview() {
         {/* References */}
         {references.length > 0 && (
           <div>
-            <h2 className="text-sm font-bold text-stone-800 uppercase tracking-wider border-b border-stone-200 pb-1 mb-2">
+            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider border-b border-slate-200 pb-1 mb-2">
               References
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {references.map((ref) => (
                 <div key={ref.id}>
-                  <p className="text-sm font-semibold text-stone-800">{ref.name || 'Name'}</p>
+                  <p className="text-sm font-semibold text-slate-800">{ref.name || 'Name'}</p>
                   {ref.relationship && (
-                    <p className="text-xs text-stone-500">{ref.relationship}</p>
+                    <p className="text-xs text-slate-500">{ref.relationship}</p>
                   )}
-                  {ref.phone && <p className="text-xs text-stone-600">{ref.phone}</p>}
-                  {ref.email && <p className="text-xs text-stone-600">{ref.email}</p>}
+                  {ref.phone && <p className="text-xs text-slate-600">{ref.phone}</p>}
+                  {ref.email && <p className="text-xs text-slate-600">{ref.email}</p>}
                 </div>
               ))}
             </div>
@@ -1175,7 +1175,7 @@ export default function ResumeBuilder() {
       {/* Back link */}
       <Link
         to="/tools"
-        className="inline-flex items-center gap-1 text-sm text-amber-700 hover:text-amber-800 -mt-2 mb-2 print:hidden"
+        className="inline-flex items-center gap-1 text-sm text-blue-700 hover:text-blue-800 -mt-2 mb-2 print:hidden"
       >
         <ChevronLeft className="h-4 w-4" />
         Back to Tools
@@ -1185,9 +1185,9 @@ export default function ResumeBuilder() {
       <div className="print:hidden">
         <StepIndicator current={currentStep} total={STEPS.length} />
         <div className="flex items-center justify-between mt-2">
-          <p className="text-sm font-medium text-stone-700">
+          <p className="text-sm font-medium text-slate-700">
             Step {currentStep + 1} of {STEPS.length}:{' '}
-            <span className="text-amber-700">{STEPS[currentStep]}</span>
+            <span className="text-blue-700">{STEPS[currentStep]}</span>
           </p>
           <Button
             variant="ghost"

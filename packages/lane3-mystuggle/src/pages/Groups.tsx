@@ -70,7 +70,7 @@ const CATEGORY_COLORS: Record<GroupCategory, string> = {
   'Mental Health': 'bg-teal-50 text-teal-700 border-teal-200',
   Veterans: 'bg-indigo-50 text-indigo-700 border-indigo-200',
   "Women's": 'bg-rose-50 text-rose-700 border-rose-200',
-  'Faith-Based': 'bg-amber-50 text-amber-700 border-amber-200',
+  'Faith-Based': 'bg-blue-50 text-blue-700 border-blue-200',
 };
 
 const MOCK_GROUPS: readonly Omit<SupportGroup, 'id'>[] = [
@@ -252,7 +252,7 @@ function getLetterAvatar(name: string): string {
 
 function getAvatarColor(name: string): string {
   const colors = [
-    'bg-amber-100 text-amber-800',
+    'bg-blue-100 text-blue-800',
     'bg-blue-100 text-blue-800',
     'bg-green-100 text-green-800',
     'bg-purple-100 text-purple-800',
@@ -284,14 +284,14 @@ function LoadingSkeleton() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {[1, 2, 3, 4].map((i) => (
-        <div key={i} className="bg-white rounded-xl border border-stone-200 p-4 animate-pulse">
+        <div key={i} className="bg-white rounded-xl border border-slate-200 p-4 animate-pulse">
           <div className="flex items-start gap-3">
-            <div className="h-12 w-12 rounded-xl bg-stone-200 flex-shrink-0" />
+            <div className="h-12 w-12 rounded-xl bg-slate-200 flex-shrink-0" />
             <div className="flex-1 space-y-2">
-              <div className="h-4 w-32 bg-stone-200 rounded" />
-              <div className="h-3 w-20 bg-stone-100 rounded" />
-              <div className="h-3 w-full bg-stone-100 rounded" />
-              <div className="h-3 w-3/4 bg-stone-100 rounded" />
+              <div className="h-4 w-32 bg-slate-200 rounded" />
+              <div className="h-3 w-20 bg-slate-100 rounded" />
+              <div className="h-3 w-full bg-slate-100 rounded" />
+              <div className="h-3 w-3/4 bg-slate-100 rounded" />
             </div>
           </div>
         </div>
@@ -313,8 +313,8 @@ function CategoryPills({
         onClick={() => onSelect(null)}
         className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
           selected === null
-            ? 'bg-amber-500 text-white'
-            : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+            ? 'bg-blue-500 text-white'
+            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
         }`}
       >
         All
@@ -325,8 +325,8 @@ function CategoryPills({
           onClick={() => onSelect(selected === cat ? null : cat)}
           className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
             selected === cat
-              ? 'bg-amber-500 text-white'
-              : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+              ? 'bg-blue-500 text-white'
+              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
           }`}
         >
           {cat}
@@ -362,7 +362,7 @@ function GroupCard({
           : new Date(group.lastActiveAt as any)
       )
     : '';
-  const categoryStyle = CATEGORY_COLORS[group.category] || 'bg-stone-50 text-stone-600';
+  const categoryStyle = CATEGORY_COLORS[group.category] || 'bg-slate-50 text-slate-600';
   const avatarColor = getAvatarColor(group.name);
 
   const handleAction = (e: React.MouseEvent) => {
@@ -381,7 +381,7 @@ function GroupCard({
   return (
     <button
       onClick={() => onSelect(group)}
-      className="w-full bg-white rounded-xl border border-stone-200 p-4 text-left hover:border-amber-200 transition-colors"
+      className="w-full bg-white rounded-xl border border-slate-200 p-4 text-left hover:border-blue-200 transition-colors"
     >
       <div className="flex items-start gap-3">
         {/* Letter Avatar */}
@@ -394,9 +394,9 @@ function GroupCard({
         <div className="flex-1 min-w-0">
           {/* Name + badges */}
           <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="font-semibold text-stone-800 text-sm truncate">{group.name}</h3>
+            <h3 className="font-semibold text-slate-800 text-sm truncate">{group.name}</h3>
             {group.privacy === 'private' && (
-              <Lock className="h-3 w-3 text-stone-400 flex-shrink-0" />
+              <Lock className="h-3 w-3 text-slate-400 flex-shrink-0" />
             )}
           </div>
 
@@ -407,11 +407,11 @@ function GroupCard({
             >
               {group.category}
             </span>
-            <span className="flex items-center gap-1 text-xs text-stone-400">
+            <span className="flex items-center gap-1 text-xs text-slate-400">
               <Users className="h-3 w-3" />
               {group.memberIds.length}
             </span>
-            <span className="flex items-center gap-1 text-xs text-stone-400">
+            <span className="flex items-center gap-1 text-xs text-slate-400">
               {group.privacy === 'open' ? (
                 <Globe className="h-3 w-3" />
               ) : (
@@ -422,11 +422,11 @@ function GroupCard({
           </div>
 
           {/* Description */}
-          <p className="text-xs text-stone-500 mt-1.5 line-clamp-2">{group.description}</p>
+          <p className="text-xs text-slate-500 mt-1.5 line-clamp-2">{group.description}</p>
 
           {/* Footer */}
           <div className="flex items-center justify-between mt-3">
-            <span className="flex items-center gap-1 text-[10px] text-stone-400">
+            <span className="flex items-center gap-1 text-[10px] text-slate-400">
               <Clock className="h-3 w-3" />
               Active {lastActive}
             </span>
@@ -434,7 +434,7 @@ function GroupCard({
             {member ? (
               <span
                 onClick={handleAction}
-                className="px-3 py-1 bg-stone-100 text-stone-600 rounded-lg text-xs font-medium hover:bg-red-50 hover:text-red-600 transition-colors"
+                className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-medium hover:bg-red-50 hover:text-red-600 transition-colors"
               >
                 Joined
               </span>
@@ -445,7 +445,7 @@ function GroupCard({
             ) : (
               <span
                 onClick={handleAction}
-                className="px-3 py-1 bg-amber-500 text-white rounded-lg text-xs font-medium hover:bg-amber-600 transition-colors"
+                className="px-3 py-1 bg-blue-500 text-white rounded-lg text-xs font-medium hover:bg-blue-600 transition-colors"
               >
                 {group.privacy === 'private' ? 'Request' : 'Join'}
               </span>
@@ -470,7 +470,7 @@ function MemberListItem({ memberId }: { memberId: string }) {
       >
         {memberId.substring(0, 2).toUpperCase()}
       </div>
-      <span className="text-sm text-stone-700 truncate">Community Member</span>
+      <span className="text-sm text-slate-700 truncate">Community Member</span>
     </div>
   );
 }
@@ -493,7 +493,7 @@ function GroupDetail({
   const member = isMember(group, uid);
   const pending = isPending(group, uid);
   const avatarColor = getAvatarColor(group.name);
-  const categoryStyle = CATEGORY_COLORS[group.category] || 'bg-stone-50 text-stone-600';
+  const categoryStyle = CATEGORY_COLORS[group.category] || 'bg-slate-50 text-slate-600';
   const [showAllMembers, setShowAllMembers] = useState(false);
   const [activeSection, setActiveSection] = useState<'discussion' | 'info'>('discussion');
 
@@ -519,7 +519,7 @@ function GroupDetail({
       <div className="flex items-center gap-3">
         <button
           onClick={onBack}
-          className="p-2 rounded-lg hover:bg-stone-100 text-stone-600 transition-colors"
+          className="p-2 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors"
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
@@ -529,14 +529,14 @@ function GroupDetail({
           {getLetterAvatar(group.name)}
         </div>
         <div className="flex-1 min-w-0">
-          <h2 className="font-bold text-stone-800 text-base truncate">{group.name}</h2>
+          <h2 className="font-bold text-slate-800 text-base truncate">{group.name}</h2>
           <div className="flex items-center gap-2 mt-0.5">
             <span
               className={`px-2 py-0.5 rounded-full text-[10px] font-medium border ${categoryStyle}`}
             >
               {group.category}
             </span>
-            <span className="text-xs text-stone-400">
+            <span className="text-xs text-slate-400">
               {group.memberIds.length} members
             </span>
           </div>
@@ -548,7 +548,7 @@ function GroupDetail({
         {member ? (
           <button
             onClick={handleAction}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-stone-200 text-stone-600 rounded-xl text-sm font-medium hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-slate-200 text-slate-600 rounded-xl text-sm font-medium hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
           >
             <LogOut className="h-4 w-4" />
             Leave Group
@@ -561,7 +561,7 @@ function GroupDetail({
         ) : (
           <button
             onClick={handleAction}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-500 text-white rounded-xl text-sm font-medium hover:bg-amber-600 transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-500 text-white rounded-xl text-sm font-medium hover:bg-blue-600 transition-colors"
           >
             <UserPlus className="h-4 w-4" />
             {group.privacy === 'private' ? 'Request to Join' : 'Join Group'}
@@ -570,13 +570,13 @@ function GroupDetail({
       </div>
 
       {/* Section toggle */}
-      <div className="flex gap-1 bg-stone-100 rounded-lg p-1">
+      <div className="flex gap-1 bg-slate-100 rounded-lg p-1">
         <button
           onClick={() => setActiveSection('discussion')}
           className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium transition-colors ${
             activeSection === 'discussion'
-              ? 'bg-white text-stone-800 shadow-sm'
-              : 'text-stone-500 hover:text-stone-700'
+              ? 'bg-white text-slate-800 shadow-sm'
+              : 'text-slate-500 hover:text-slate-700'
           }`}
         >
           <MessageSquare className="h-3.5 w-3.5" />
@@ -586,8 +586,8 @@ function GroupDetail({
           onClick={() => setActiveSection('info')}
           className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium transition-colors ${
             activeSection === 'info'
-              ? 'bg-white text-stone-800 shadow-sm'
-              : 'text-stone-500 hover:text-stone-700'
+              ? 'bg-white text-slate-800 shadow-sm'
+              : 'text-slate-500 hover:text-slate-700'
           }`}
         >
           <ScrollText className="h-3.5 w-3.5" />
@@ -599,10 +599,10 @@ function GroupDetail({
         member ? (
           <GroupDiscussion groupId={group.id} uid={uid} userName="" />
         ) : (
-          <div className="bg-white rounded-xl border border-stone-200 p-8 text-center">
-            <Lock className="h-8 w-8 text-stone-300 mx-auto" />
-            <h3 className="font-medium text-stone-800 mt-3">Members Only</h3>
-            <p className="text-sm text-stone-500 mt-1">
+          <div className="bg-white rounded-xl border border-slate-200 p-8 text-center">
+            <Lock className="h-8 w-8 text-slate-300 mx-auto" />
+            <h3 className="font-medium text-slate-800 mt-3">Members Only</h3>
+            <p className="text-sm text-slate-500 mt-1">
               Join this group to participate in the discussion.
             </p>
           </div>
@@ -610,11 +610,11 @@ function GroupDetail({
       ) : (
         <div className="space-y-4">
           {/* Description */}
-          <div className="bg-white rounded-xl border border-stone-200 p-4">
-            <h3 className="font-semibold text-stone-800 text-sm mb-2">About</h3>
-            <p className="text-sm text-stone-600 leading-relaxed">{group.description}</p>
-            <div className="flex items-center gap-3 mt-3 pt-3 border-t border-stone-100">
-              <div className="flex items-center gap-1 text-xs text-stone-400">
+          <div className="bg-white rounded-xl border border-slate-200 p-4">
+            <h3 className="font-semibold text-slate-800 text-sm mb-2">About</h3>
+            <p className="text-sm text-slate-600 leading-relaxed">{group.description}</p>
+            <div className="flex items-center gap-3 mt-3 pt-3 border-t border-slate-100">
+              <div className="flex items-center gap-1 text-xs text-slate-400">
                 {group.privacy === 'open' ? (
                   <Globe className="h-3 w-3" />
                 ) : (
@@ -622,7 +622,7 @@ function GroupDetail({
                 )}
                 {group.privacy === 'open' ? 'Open Group' : 'Private Group'}
               </div>
-              <div className="flex items-center gap-1 text-xs text-stone-400">
+              <div className="flex items-center gap-1 text-xs text-slate-400">
                 <Users className="h-3 w-3" />
                 {group.memberIds.length} members
               </div>
@@ -631,20 +631,20 @@ function GroupDetail({
 
           {/* Rules */}
           {group.rules && (
-            <div className="bg-white rounded-xl border border-stone-200 p-4">
-              <h3 className="font-semibold text-stone-800 text-sm mb-2">Group Rules</h3>
-              <div className="text-sm text-stone-600 whitespace-pre-line leading-relaxed">
+            <div className="bg-white rounded-xl border border-slate-200 p-4">
+              <h3 className="font-semibold text-slate-800 text-sm mb-2">Group Rules</h3>
+              <div className="text-sm text-slate-600 whitespace-pre-line leading-relaxed">
                 {group.rules}
               </div>
             </div>
           )}
 
           {/* Members */}
-          <div className="bg-white rounded-xl border border-stone-200 p-4">
-            <h3 className="font-semibold text-stone-800 text-sm mb-2">
+          <div className="bg-white rounded-xl border border-slate-200 p-4">
+            <h3 className="font-semibold text-slate-800 text-sm mb-2">
               Members ({group.memberIds.length})
             </h3>
-            <div className="divide-y divide-stone-50">
+            <div className="divide-y divide-slate-50">
               {visibleMembers.map((memberId) => (
                 <MemberListItem key={memberId} memberId={memberId} />
               ))}
@@ -652,7 +652,7 @@ function GroupDetail({
             {group.memberIds.length > 10 && !showAllMembers && (
               <button
                 onClick={() => setShowAllMembers(true)}
-                className="flex items-center gap-1 mt-2 text-amber-600 text-xs font-medium hover:text-amber-700"
+                className="flex items-center gap-1 mt-2 text-blue-600 text-xs font-medium hover:text-blue-700"
               >
                 View all {group.memberIds.length} members
                 <ChevronRight className="h-3 w-3" />
@@ -730,20 +730,20 @@ function GroupDiscussion({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-6 w-6 text-amber-500 animate-spin" />
+        <Loader2 className="h-6 w-6 text-blue-500 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
+    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
       {/* Messages area */}
       <div className="h-80 overflow-y-auto p-4 space-y-3">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center">
-            <MessageSquare className="h-8 w-8 text-stone-300" />
-            <p className="text-sm text-stone-500 mt-2">No messages yet</p>
-            <p className="text-xs text-stone-400 mt-0.5">Be the first to say something</p>
+            <MessageSquare className="h-8 w-8 text-slate-300" />
+            <p className="text-sm text-slate-500 mt-2">No messages yet</p>
+            <p className="text-xs text-slate-400 mt-0.5">Be the first to say something</p>
           </div>
         ) : (
           messages.map((msg) => {
@@ -771,21 +771,21 @@ function GroupDiscussion({
                 </div>
                 <div className={`max-w-[75%] ${isOwn ? 'text-right' : 'text-left'}`}>
                   {!isOwn && (
-                    <p className="text-[10px] text-stone-400 mb-0.5">
+                    <p className="text-[10px] text-slate-400 mb-0.5">
                       {msg.authorName || 'Member'}
                     </p>
                   )}
                   <div
                     className={`inline-block rounded-2xl px-3.5 py-2 text-sm ${
                       isOwn
-                        ? 'bg-amber-700 text-white rounded-br-md'
-                        : 'bg-stone-100 text-stone-800 rounded-bl-md'
+                        ? 'bg-blue-700 text-white rounded-br-md'
+                        : 'bg-slate-100 text-slate-800 rounded-bl-md'
                     }`}
                   >
                     <p className="whitespace-pre-wrap">{msg.text}</p>
                   </div>
                   {timestamp && (
-                    <p className="text-[10px] text-stone-400 mt-0.5">{timestamp}</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">{timestamp}</p>
                   )}
                 </div>
               </div>
@@ -796,7 +796,7 @@ function GroupDiscussion({
       </div>
 
       {/* Input area */}
-      <div className="flex items-center gap-2 p-3 border-t border-stone-200 bg-stone-50">
+      <div className="flex items-center gap-2 p-3 border-t border-slate-200 bg-slate-50">
         <input
           type="text"
           value={newMessage}
@@ -804,12 +804,12 @@ function GroupDiscussion({
           onKeyDown={handleKeyDown}
           placeholder="Type a message..."
           disabled={sending}
-          className="flex-1 h-10 rounded-full border border-stone-300 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white disabled:opacity-50"
+          className="flex-1 h-10 rounded-full border border-slate-300 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white disabled:opacity-50"
         />
         <button
           onClick={handleSend}
           disabled={!newMessage.trim() || sending}
-          className="h-10 w-10 rounded-full bg-amber-500 text-white flex items-center justify-center hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+          className="h-10 w-10 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
         >
           {sending ? (
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -897,11 +897,11 @@ function CreateGroupModal({
       {/* Modal */}
       <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white flex items-center justify-between p-4 border-b border-stone-200 rounded-t-2xl z-10">
-          <h2 className="font-bold text-stone-800 text-base">Create Group</h2>
+        <div className="sticky top-0 bg-white flex items-center justify-between p-4 border-b border-slate-200 rounded-t-2xl z-10">
+          <h2 className="font-bold text-slate-800 text-base">Create Group</h2>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-stone-100 text-stone-400 transition-colors"
+            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
@@ -917,7 +917,7 @@ function CreateGroupModal({
 
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">
+            <label className="block text-sm font-medium text-slate-700 mb-1">
               Group Name <span className="text-red-400">*</span>
             </label>
             <input
@@ -926,13 +926,13 @@ function CreateGroupModal({
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., Phoenix Recovery Circle"
               maxLength={80}
-              className="w-full h-10 rounded-lg border border-stone-300 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className="w-full h-10 rounded-lg border border-slate-300 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">
+            <label className="block text-sm font-medium text-slate-700 mb-1">
               Description <span className="text-red-400">*</span>
             </label>
             <textarea
@@ -941,21 +941,21 @@ function CreateGroupModal({
               placeholder="What is this group about? Who should join?"
               rows={3}
               maxLength={500}
-              className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
-            <p className="text-[10px] text-stone-400 mt-0.5 text-right">
+            <p className="text-[10px] text-slate-400 mt-0.5 text-right">
               {description.length}/500
             </p>
           </div>
 
           {/* Category */}
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">Category</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Category</label>
             <div className="relative">
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as GroupCategory)}
-                className="w-full h-10 rounded-lg border border-stone-300 px-3 text-sm appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className="w-full h-10 rounded-lg border border-slate-300 px-3 text-sm appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
@@ -963,21 +963,21 @@ function CreateGroupModal({
                   </option>
                 ))}
               </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400 pointer-events-none" />
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
             </div>
           </div>
 
           {/* Privacy */}
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">Privacy</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Privacy</label>
             <div className="flex gap-3">
               <button
                 type="button"
                 onClick={() => setPrivacy('open')}
                 className={`flex-1 flex items-center gap-2 px-3 py-2.5 rounded-lg border text-sm transition-colors ${
                   privacy === 'open'
-                    ? 'border-amber-300 bg-amber-50 text-amber-800'
-                    : 'border-stone-200 text-stone-600 hover:border-stone-300'
+                    ? 'border-blue-300 bg-blue-50 text-blue-800'
+                    : 'border-slate-200 text-slate-600 hover:border-slate-300'
                 }`}
               >
                 <Globe className="h-4 w-4" />
@@ -991,8 +991,8 @@ function CreateGroupModal({
                 onClick={() => setPrivacy('private')}
                 className={`flex-1 flex items-center gap-2 px-3 py-2.5 rounded-lg border text-sm transition-colors ${
                   privacy === 'private'
-                    ? 'border-amber-300 bg-amber-50 text-amber-800'
-                    : 'border-stone-200 text-stone-600 hover:border-stone-300'
+                    ? 'border-blue-300 bg-blue-50 text-blue-800'
+                    : 'border-slate-200 text-slate-600 hover:border-slate-300'
                 }`}
               >
                 <Lock className="h-4 w-4" />
@@ -1006,8 +1006,8 @@ function CreateGroupModal({
 
           {/* Rules */}
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">
-              Group Rules <span className="text-stone-400 text-xs font-normal">(optional)</span>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Group Rules <span className="text-slate-400 text-xs font-normal">(optional)</span>
             </label>
             <textarea
               value={rules}
@@ -1015,7 +1015,7 @@ function CreateGroupModal({
               placeholder="Guidelines for group members..."
               rows={3}
               maxLength={1000}
-              className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
@@ -1023,7 +1023,7 @@ function CreateGroupModal({
           <button
             type="submit"
             disabled={creating}
-            className="w-full flex items-center justify-center gap-2 h-11 bg-amber-500 text-white rounded-xl text-sm font-semibold hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full flex items-center justify-center gap-2 h-11 bg-blue-500 text-white rounded-xl text-sm font-semibold hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {creating ? (
               <>
@@ -1193,14 +1193,14 @@ export default function Groups() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-stone-800">Support Groups</h1>
-          <p className="text-sm text-stone-500 mt-0.5">
+          <h1 className="text-xl font-bold text-slate-800">Support Groups</h1>
+          <p className="text-sm text-slate-500 mt-0.5">
             Find your people. You are not alone.
           </p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center gap-1.5 px-3 py-2 bg-amber-500 text-white rounded-lg text-xs font-medium hover:bg-amber-600 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-2 bg-blue-500 text-white rounded-lg text-xs font-medium hover:bg-blue-600 transition-colors"
         >
           <Plus className="h-4 w-4" />
           Create
@@ -1219,18 +1219,18 @@ export default function Groups() {
 
       {/* Search Bar */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search groups..."
-          className="w-full h-10 pl-10 pr-4 rounded-xl border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent bg-white"
+          className="w-full h-10 pl-10 pr-4 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent bg-white"
         />
         {searchQuery && (
           <button
             onClick={() => setSearchQuery('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
           >
             <X className="h-4 w-4" />
           </button>
@@ -1238,13 +1238,13 @@ export default function Groups() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-stone-100 rounded-lg p-1">
+      <div className="flex gap-1 bg-slate-100 rounded-lg p-1">
         <button
           onClick={() => setActiveTab('discover')}
           className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium transition-colors ${
             activeTab === 'discover'
-              ? 'bg-white text-stone-800 shadow-sm'
-              : 'text-stone-500 hover:text-stone-700'
+              ? 'bg-white text-slate-800 shadow-sm'
+              : 'text-slate-500 hover:text-slate-700'
           }`}
         >
           <Search className="h-3.5 w-3.5" />
@@ -1254,8 +1254,8 @@ export default function Groups() {
           onClick={() => setActiveTab('my-groups')}
           className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium transition-colors ${
             activeTab === 'my-groups'
-              ? 'bg-white text-stone-800 shadow-sm'
-              : 'text-stone-500 hover:text-stone-700'
+              ? 'bg-white text-slate-800 shadow-sm'
+              : 'text-slate-500 hover:text-slate-700'
           }`}
         >
           <Users className="h-3.5 w-3.5" />
@@ -1270,12 +1270,12 @@ export default function Groups() {
       {loading ? (
         <LoadingSkeleton />
       ) : filteredGroups.length === 0 ? (
-        <div className="bg-white rounded-xl border border-stone-200 p-8 text-center">
-          <Users className="h-10 w-10 text-stone-300 mx-auto" />
-          <h3 className="font-medium text-stone-800 mt-3">
+        <div className="bg-white rounded-xl border border-slate-200 p-8 text-center">
+          <Users className="h-10 w-10 text-slate-300 mx-auto" />
+          <h3 className="font-medium text-slate-800 mt-3">
             {activeTab === 'my-groups' ? 'No groups joined yet' : 'No groups found'}
           </h3>
-          <p className="text-sm text-stone-500 mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             {activeTab === 'my-groups'
               ? 'Browse the Discover tab to find groups that match your journey.'
               : searchQuery || selectedCategory
@@ -1285,7 +1285,7 @@ export default function Groups() {
           {activeTab === 'my-groups' && (
             <button
               onClick={() => setActiveTab('discover')}
-              className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 text-white rounded-lg text-xs font-medium hover:bg-amber-600 transition-colors"
+              className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 bg-blue-500 text-white rounded-lg text-xs font-medium hover:bg-blue-600 transition-colors"
             >
               <Search className="h-3.5 w-3.5" />
               Discover Groups

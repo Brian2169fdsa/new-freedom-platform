@@ -7,14 +7,14 @@ export function CrisisButton() {
 
   if (expanded) {
     return (
-      <div className="fixed bottom-20 md:bottom-4 right-4 z-50 bg-white rounded-xl shadow-lg border border-stone-200 p-4 w-72">
+      <div className="fixed bottom-20 md:bottom-4 right-4 z-50 bg-white rounded-xl shadow-lg border border-slate-200 p-4 w-72">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold text-stone-800">Need help now?</h3>
-          <button onClick={() => setExpanded(false)} className="text-stone-400 hover:text-stone-600">
+          <h3 className="font-semibold text-slate-800">Need help now?</h3>
+          <button onClick={() => setExpanded(false)} className="text-slate-400 hover:text-slate-600">
             <X className="h-4 w-4" />
           </button>
         </div>
-        <p className="text-xs text-stone-500 mb-3">
+        <p className="text-xs text-slate-500 mb-3">
           If you or someone you know is in crisis, help is available 24/7.
         </p>
         <div className="space-y-2">
@@ -27,7 +27,7 @@ export function CrisisButton() {
           </a>
           <a
             href={`sms:741741&body=HOME`}
-            className="flex items-center gap-2 w-full px-3 py-2 bg-amber-50 text-amber-700 rounded-lg text-sm font-medium hover:bg-amber-100"
+            className="flex items-center gap-2 w-full px-3 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-100"
           >
             <MessageSquare className="h-4 w-4" />
             {CRISIS_HOTLINE.text}

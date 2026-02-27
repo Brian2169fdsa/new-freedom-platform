@@ -44,7 +44,7 @@ export function OfflineIndicator() {
         aria-live="assertive"
         className="fixed top-0 left-0 right-0 z-[9999] animate-slide-down"
       >
-        <div className="flex items-center justify-center gap-2 bg-stone-800 text-white py-2 px-4 text-sm">
+        <div className="flex items-center justify-center gap-2 bg-slate-800 text-white py-2 px-4 text-sm">
           <WifiOff className="h-4 w-4 shrink-0" />
           <span>You are offline. Some features may be unavailable.</span>
         </div>

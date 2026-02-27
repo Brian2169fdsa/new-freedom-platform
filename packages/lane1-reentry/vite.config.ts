@@ -14,7 +14,7 @@ export default defineConfig({
         short_name: 'Re-Entry',
         description:
           'Case management, employment, and housing support for justice-involved individuals',
-        theme_color: '#b45309',
+        theme_color: '#2563eb',
         background_color: '#fafaf9',
         display: 'standalone',
         scope: '/',

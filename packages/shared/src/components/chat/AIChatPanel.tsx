@@ -50,15 +50,15 @@ export function AIChatPanel() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-stone-50">
+    <div className="flex flex-col h-full bg-slate-50">
       {/* Header */}
-      <div className="flex items-center gap-3 p-4 bg-white border-b border-stone-200">
-        <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-lg">
+      <div className="flex items-center gap-3 p-4 bg-white border-b border-slate-200">
+        <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-lg">
           {agentDisplay.avatar}
         </div>
         <div>
-          <h3 className="font-semibold text-stone-800 text-sm">{agentDisplay.name}</h3>
-          <p className="text-xs text-stone-500">{agentDisplay.description}</p>
+          <h3 className="font-semibold text-slate-800 text-sm">{agentDisplay.name}</h3>
+          <p className="text-xs text-slate-500">{agentDisplay.description}</p>
         </div>
       </div>
 
@@ -69,7 +69,7 @@ export function AIChatPanel() {
             message="Hi there! I'm here to help. Whether you need support with recovery, finding resources, building a resume, or just connecting with someone who understands — tell me what's on your mind."
             isUser={false}
             avatar={
-              <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-sm">
+              <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-sm">
                 {agentDisplay.avatar}
               </div>
             }
@@ -89,7 +89,7 @@ export function AIChatPanel() {
                   if (prevAssistant && prevAssistant.agentName !== msg.agentName && msgAgent) {
                     return (
                       <div className="flex justify-center my-2">
-                        <span className="text-xs text-stone-400 bg-stone-100 px-3 py-1 rounded-full">
+                        <span className="text-xs text-slate-400 bg-slate-100 px-3 py-1 rounded-full">
                           {msgAgent.avatar} Connected to {msgAgent.name}
                         </span>
                       </div>
@@ -103,7 +103,7 @@ export function AIChatPanel() {
                 isUser={msg.role === 'user'}
                 avatar={
                   msg.role === 'assistant' && msgAgent ? (
-                    <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-sm">
+                    <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-sm">
                       {msgAgent.avatar}
                     </div>
                   ) : undefined
@@ -113,7 +113,7 @@ export function AIChatPanel() {
           );
         })}
         {loading && (
-          <div className="flex items-center gap-2 text-stone-400 text-sm">
+          <div className="flex items-center gap-2 text-slate-400 text-sm">
             <div className="flex gap-1">
               <span className="animate-bounce">.</span>
               <span className="animate-bounce" style={{ animationDelay: '0.1s' }}>.</span>

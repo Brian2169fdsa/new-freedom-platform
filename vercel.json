@@ -1,6 +1,4 @@
 {
-  "buildCommand": "npx turbo build --filter=@reprieve/lane1-reentry",
-  "outputDirectory": "packages/lane1-reentry/dist",
   "installCommand": "npm install",
   "framework": null,
   "rewrites": [

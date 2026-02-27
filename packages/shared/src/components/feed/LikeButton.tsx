@@ -14,7 +14,7 @@ export function LikeButton({ liked, count, onToggle }: LikeButtonProps) {
       onClick={onToggle}
       className={cn(
         'flex items-center gap-1 text-sm transition-colors',
-        liked ? 'text-red-500' : 'text-stone-400 hover:text-red-500'
+        liked ? 'text-red-500' : 'text-slate-400 hover:text-red-500'
       )}
     >
       <Heart className="h-4 w-4" fill={liked ? 'currentColor' : 'none'} />

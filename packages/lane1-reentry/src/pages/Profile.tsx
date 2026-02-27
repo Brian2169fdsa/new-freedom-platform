@@ -83,14 +83,14 @@ function Toggle({
 }) {
   return (
     <div className="flex items-center justify-between py-3">
-      <span className="text-sm text-stone-700">{label}</span>
+      <span className="text-sm text-slate-700">{label}</span>
       <button
         type="button"
         role="switch"
         aria-checked={on}
         onClick={onToggle}
         className={`relative w-11 h-6 rounded-full cursor-pointer transition-colors duration-200 ${
-          on ? 'bg-amber-600' : 'bg-stone-300'
+          on ? 'bg-blue-600' : 'bg-slate-300'
         }`}
       >
         <div
@@ -157,15 +157,15 @@ function ProfileHeader({
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between">
               <div>
-                <h2 className="text-xl font-bold text-stone-800 truncate">
+                <h2 className="text-xl font-bold text-slate-800 truncate">
                   {user.displayName || 'New Member'}
                 </h2>
-                <div className="flex items-center gap-1.5 mt-1 text-sm text-stone-500">
+                <div className="flex items-center gap-1.5 mt-1 text-sm text-slate-500">
                   <Mail className="h-3.5 w-3.5" />
                   <span className="truncate">{user.email}</span>
                 </div>
                 {user.createdAt && (
-                  <div className="flex items-center gap-1.5 mt-1 text-xs text-stone-400">
+                  <div className="flex items-center gap-1.5 mt-1 text-xs text-slate-400">
                     <Calendar className="h-3 w-3" />
                     <span>Member since {formatDate(user.createdAt)}</span>
                   </div>
@@ -246,10 +246,10 @@ function EditProfileForm({
   };
 
   return (
-    <Card className="border-amber-200 bg-amber-50/30">
+    <Card className="border-blue-200 bg-blue-50/30">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
-          <Edit3 className="h-4 w-4 text-amber-600" />
+          <Edit3 className="h-4 w-4 text-blue-600" />
           Edit Profile
         </CardTitle>
         <CardDescription>Update your personal information</CardDescription>
@@ -265,7 +265,7 @@ function EditProfileForm({
         {/* Name row */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-xs font-medium text-stone-600 mb-1 block">
+            <label className="text-xs font-medium text-slate-600 mb-1 block">
               First Name
             </label>
             <Input
@@ -275,7 +275,7 @@ function EditProfileForm({
             />
           </div>
           <div>
-            <label className="text-xs font-medium text-stone-600 mb-1 block">
+            <label className="text-xs font-medium text-slate-600 mb-1 block">
               Last Name
             </label>
             <Input
@@ -288,7 +288,7 @@ function EditProfileForm({
 
         {/* Phone */}
         <div>
-          <label className="text-xs font-medium text-stone-600 mb-1 block">
+          <label className="text-xs font-medium text-slate-600 mb-1 block">
             Phone Number
           </label>
           <Input
@@ -302,7 +302,7 @@ function EditProfileForm({
         {/* Location row */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-xs font-medium text-stone-600 mb-1 block">
+            <label className="text-xs font-medium text-slate-600 mb-1 block">
               City
             </label>
             <Input
@@ -312,7 +312,7 @@ function EditProfileForm({
             />
           </div>
           <div>
-            <label className="text-xs font-medium text-stone-600 mb-1 block">
+            <label className="text-xs font-medium text-slate-600 mb-1 block">
               State
             </label>
             <Input
@@ -325,7 +325,7 @@ function EditProfileForm({
 
         {/* Bio */}
         <div>
-          <label className="text-xs font-medium text-stone-600 mb-1 block">
+          <label className="text-xs font-medium text-slate-600 mb-1 block">
             About Me
           </label>
           <textarea
@@ -333,13 +333,13 @@ function EditProfileForm({
             onChange={(e) => updateField('bio', e.target.value)}
             placeholder="Tell us a little about yourself and your journey..."
             rows={3}
-            className="flex w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50"
           />
         </div>
 
         {/* Sobriety date */}
         <div>
-          <label className="text-xs font-medium text-stone-600 mb-1 block">
+          <label className="text-xs font-medium text-slate-600 mb-1 block">
             Sobriety Date
           </label>
           <Input
@@ -362,7 +362,7 @@ function EditProfileForm({
           <Button
             onClick={handleSave}
             disabled={saving}
-            className="flex-1 bg-amber-600 hover:bg-amber-700"
+            className="flex-1 bg-blue-600 hover:bg-blue-700"
           >
             {saving ? (
               <>
@@ -451,8 +451,8 @@ function RecoveryStatsCard({ user }: { readonly user: User }) {
       label: 'Days Sober',
       value: sobrietyDays ?? '--',
       icon: Calendar,
-      color: 'bg-amber-50 text-amber-700',
-      iconColor: 'text-amber-600',
+      color: 'bg-blue-50 text-blue-700',
+      iconColor: 'text-blue-600',
     },
     {
       label: 'Check-in Streak',
@@ -479,8 +479,8 @@ function RecoveryStatsCard({ user }: { readonly user: User }) {
       label: 'Steps Completed',
       value: stepProgress.length,
       icon: Award,
-      color: 'bg-stone-100 text-stone-700',
-      iconColor: 'text-stone-600',
+      color: 'bg-slate-100 text-slate-700',
+      iconColor: 'text-slate-600',
     },
   ];
 
@@ -488,7 +488,7 @@ function RecoveryStatsCard({ user }: { readonly user: User }) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
-          <Award className="h-4 w-4 text-amber-600" />
+          <Award className="h-4 w-4 text-blue-600" />
           Recovery Stats
         </CardTitle>
         <CardDescription>Your progress at a glance</CardDescription>
@@ -530,8 +530,8 @@ function AchievementsPreview({ userId }: { readonly userId: string }) {
 
   const rankColors: Record<string, string> = {
     bronze: 'bg-orange-100 text-orange-700 border-orange-200',
-    silver: 'bg-stone-100 text-stone-600 border-stone-200',
-    gold: 'bg-amber-100 text-amber-700 border-amber-200',
+    silver: 'bg-slate-100 text-slate-600 border-slate-200',
+    gold: 'bg-blue-100 text-blue-700 border-blue-200',
     platinum: 'bg-indigo-100 text-indigo-700 border-indigo-200',
   };
 
@@ -540,12 +540,12 @@ function AchievementsPreview({ userId }: { readonly userId: string }) {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-base">
-            <Award className="h-4 w-4 text-amber-600" />
+            <Award className="h-4 w-4 text-blue-600" />
             Achievements
           </CardTitle>
           <Link
             to="/achievements"
-            className="text-xs font-medium text-amber-600 hover:text-amber-700 flex items-center gap-0.5"
+            className="text-xs font-medium text-blue-600 hover:text-blue-700 flex items-center gap-0.5"
           >
             View All
             <ChevronRight className="h-3.5 w-3.5" />
@@ -556,9 +556,9 @@ function AchievementsPreview({ userId }: { readonly userId: string }) {
       <CardContent>
         {achievements.length === 0 ? (
           <div className="text-center py-6">
-            <Award className="h-10 w-10 text-stone-300 mx-auto mb-2" />
-            <p className="text-sm text-stone-500">No achievements yet</p>
-            <p className="text-xs text-stone-400 mt-1">
+            <Award className="h-10 w-10 text-slate-300 mx-auto mb-2" />
+            <p className="text-sm text-slate-500">No achievements yet</p>
+            <p className="text-xs text-slate-400 mt-1">
               Complete goals and milestones to earn achievements
             </p>
           </div>
@@ -567,12 +567,12 @@ function AchievementsPreview({ userId }: { readonly userId: string }) {
             {achievements.map((achievement) => (
               <div
                 key={achievement.id}
-                className="flex flex-col items-center p-3 rounded-xl bg-stone-50 border border-stone-200 text-center"
+                className="flex flex-col items-center p-3 rounded-xl bg-slate-50 border border-slate-200 text-center"
               >
-                <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center mb-2">
+                <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center mb-2">
                   <span className="text-lg">{achievement.icon || '🏆'}</span>
                 </div>
-                <p className="text-xs font-medium text-stone-700 leading-tight">
+                <p className="text-xs font-medium text-slate-700 leading-tight">
                   {achievement.title}
                 </p>
                 {achievement.rank && (
@@ -585,7 +585,7 @@ function AchievementsPreview({ userId }: { readonly userId: string }) {
                     {achievement.rank}
                   </Badge>
                 )}
-                <p className="text-[10px] text-stone-400 mt-1">
+                <p className="text-[10px] text-slate-400 mt-1">
                   {formatDate(achievement.earnedAt)}
                 </p>
               </div>
@@ -684,11 +684,11 @@ function SettingsSection({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <Bell className="h-4 w-4 text-amber-600" />
+            <Bell className="h-4 w-4 text-blue-600" />
             Notification Preferences
           </CardTitle>
         </CardHeader>
-        <CardContent className="divide-y divide-stone-100">
+        <CardContent className="divide-y divide-slate-100">
           <Toggle
             label="Push Notifications"
             on={settings.notifications.push}
@@ -711,11 +711,11 @@ function SettingsSection({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <Shield className="h-4 w-4 text-amber-600" />
+            <Shield className="h-4 w-4 text-blue-600" />
             Privacy Settings
           </CardTitle>
         </CardHeader>
-        <CardContent className="divide-y divide-stone-100">
+        <CardContent className="divide-y divide-slate-100">
           <Toggle
             label="Profile Visible to Others"
             on={settings.privacy.profileVisible}
@@ -738,7 +738,7 @@ function SettingsSection({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <Settings className="h-4 w-4 text-amber-600" />
+            <Settings className="h-4 w-4 text-blue-600" />
             Language
           </CardTitle>
         </CardHeader>
@@ -752,8 +752,8 @@ function SettingsSection({
               }}
               className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 language === 'en'
-                  ? 'bg-amber-600 text-white'
-                  : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
               English
@@ -766,8 +766,8 @@ function SettingsSection({
               }}
               className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 language === 'es'
-                  ? 'bg-amber-600 text-white'
-                  : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
               Espa&ntilde;ol
@@ -780,7 +780,7 @@ function SettingsSection({
       <Button
         onClick={handleSaveSettings}
         disabled={saving}
-        className="w-full bg-amber-600 hover:bg-amber-700"
+        className="w-full bg-blue-600 hover:bg-blue-700"
       >
         {saving ? (
           <>
@@ -804,7 +804,7 @@ function SettingsSection({
       <Button
         variant="outline"
         onClick={handleSignOut}
-        className="w-full border-stone-300 text-stone-700 hover:bg-stone-100"
+        className="w-full border-slate-300 text-slate-700 hover:bg-slate-100"
       >
         <LogOut className="h-4 w-4 mr-2" />
         Sign Out
@@ -842,19 +842,19 @@ function DangerZone({ user }: { readonly user: User }) {
   };
 
   return (
-    <Card className="border-stone-200">
+    <Card className="border-slate-200">
       <CardHeader>
         <button
           type="button"
           onClick={() => setExpanded((prev) => !prev)}
           className="flex items-center justify-between w-full text-left"
         >
-          <CardTitle className="flex items-center gap-2 text-base text-stone-500">
+          <CardTitle className="flex items-center gap-2 text-base text-slate-500">
             <AlertTriangle className="h-4 w-4" />
             Danger Zone
           </CardTitle>
           <ChevronRight
-            className={`h-4 w-4 text-stone-400 transition-transform duration-200 ${
+            className={`h-4 w-4 text-slate-400 transition-transform duration-200 ${
               expanded ? 'rotate-90' : ''
             }`}
           />
@@ -865,7 +865,7 @@ function DangerZone({ user }: { readonly user: User }) {
         <CardContent className="pt-0">
           {!confirmOpen ? (
             <div className="space-y-3">
-              <p className="text-xs text-stone-500">
+              <p className="text-xs text-slate-500">
                 Permanently delete your account and all associated data. This
                 action cannot be undone.
               </p>
@@ -899,7 +899,7 @@ function DangerZone({ user }: { readonly user: User }) {
               )}
 
               <div>
-                <label className="text-xs font-medium text-stone-600 mb-1 block">
+                <label className="text-xs font-medium text-slate-600 mb-1 block">
                   Type <strong>DELETE</strong> to confirm
                 </label>
                 <Input
@@ -962,8 +962,8 @@ export default function Profile() {
     return (
       <PageContainer title="Profile">
         <div className="flex flex-col items-center justify-center py-20">
-          <div className="h-12 w-12 rounded-full border-4 border-amber-200 border-t-amber-600 animate-spin" />
-          <p className="mt-4 text-sm text-stone-500">Loading profile...</p>
+          <div className="h-12 w-12 rounded-full border-4 border-blue-200 border-t-blue-600 animate-spin" />
+          <p className="mt-4 text-sm text-slate-500">Loading profile...</p>
         </div>
       </PageContainer>
     );
@@ -1003,7 +1003,7 @@ export default function Profile() {
         <DangerZone user={user} />
 
         {/* Footer */}
-        <p className="text-center text-xs text-stone-400 pb-4">
+        <p className="text-center text-xs text-slate-400 pb-4">
           REPrieve v0.1.0
         </p>
       </div>

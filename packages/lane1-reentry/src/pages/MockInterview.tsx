@@ -67,12 +67,12 @@ const INDUSTRY_OPTIONS: readonly {
   readonly icon: typeof Warehouse;
   readonly color: string;
 }[] = [
-  { value: 'warehouse', label: 'Warehouse', icon: Warehouse, color: 'bg-amber-100 text-amber-700' },
+  { value: 'warehouse', label: 'Warehouse', icon: Warehouse, color: 'bg-blue-100 text-blue-700' },
   { value: 'food_service', label: 'Food Service', icon: Utensils, color: 'bg-orange-100 text-orange-700' },
   { value: 'construction', label: 'Construction', icon: HardHat, color: 'bg-yellow-100 text-yellow-700' },
   { value: 'retail', label: 'Retail', icon: ShoppingBag, color: 'bg-emerald-100 text-emerald-700' },
   { value: 'transportation', label: 'Transportation', icon: Truck, color: 'bg-blue-100 text-blue-700' },
-  { value: 'general', label: 'General', icon: Briefcase, color: 'bg-stone-100 text-stone-700' },
+  { value: 'general', label: 'General', icon: Briefcase, color: 'bg-slate-100 text-slate-700' },
 ] as const;
 
 const DIFFICULTY_OPTIONS: readonly {
@@ -376,14 +376,14 @@ function IndustrySelector({
             onClick={() => onSelect(value)}
             className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${
               isSelected
-                ? 'border-amber-500 bg-amber-50 shadow-sm'
-                : 'border-stone-200 bg-white hover:border-amber-300 hover:bg-amber-50/50'
+                ? 'border-blue-500 bg-blue-50 shadow-sm'
+                : 'border-slate-200 bg-white hover:border-blue-300 hover:bg-blue-50/50'
             }`}
           >
             <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${color}`}>
               <Icon className="h-5 w-5" />
             </div>
-            <span className={`text-sm font-medium ${isSelected ? 'text-amber-800' : 'text-stone-700'}`}>
+            <span className={`text-sm font-medium ${isSelected ? 'text-blue-800' : 'text-slate-700'}`}>
               {label}
             </span>
           </button>
@@ -414,22 +414,22 @@ function DifficultySelector({
             onClick={() => onSelect(value)}
             className={`w-full flex items-center gap-3 p-3 rounded-lg border-2 transition-all text-left ${
               isSelected
-                ? 'border-amber-500 bg-amber-50'
-                : 'border-stone-200 bg-white hover:border-amber-300'
+                ? 'border-blue-500 bg-blue-50'
+                : 'border-slate-200 bg-white hover:border-blue-300'
             }`}
           >
             <div
               className={`h-4 w-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                isSelected ? 'border-amber-500' : 'border-stone-300'
+                isSelected ? 'border-blue-500' : 'border-slate-300'
               }`}
             >
-              {isSelected && <div className="h-2 w-2 rounded-full bg-amber-500" />}
+              {isSelected && <div className="h-2 w-2 rounded-full bg-blue-500" />}
             </div>
             <div>
-              <p className={`text-sm font-medium ${isSelected ? 'text-amber-800' : 'text-stone-700'}`}>
+              <p className={`text-sm font-medium ${isSelected ? 'text-blue-800' : 'text-slate-700'}`}>
                 {label}
               </p>
-              <p className="text-xs text-stone-500">{description}</p>
+              <p className="text-xs text-slate-500">{description}</p>
             </div>
           </button>
         );
@@ -449,7 +449,7 @@ function ProgressIndicator({ current, total }: { current: number; total: number 
         <div
           key={i}
           className={`h-2 flex-1 rounded-full transition-colors ${
-            i < current ? 'bg-amber-600' : i === current ? 'bg-amber-400' : 'bg-stone-200'
+            i < current ? 'bg-blue-600' : i === current ? 'bg-blue-400' : 'bg-slate-200'
           }`}
         />
       ))}
@@ -465,24 +465,24 @@ function CoachingTipSection({ tip }: { tip: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="border border-amber-200 rounded-lg bg-amber-50/50 overflow-hidden">
+    <div className="border border-blue-200 rounded-lg bg-blue-50/50 overflow-hidden">
       <button
         onClick={() => setIsOpen((prev) => !prev)}
-        className="w-full flex items-center justify-between p-3 text-left hover:bg-amber-50 transition-colors"
+        className="w-full flex items-center justify-between p-3 text-left hover:bg-blue-50 transition-colors"
       >
         <div className="flex items-center gap-2">
-          <Lightbulb className="h-4 w-4 text-amber-600 flex-shrink-0" />
-          <span className="text-sm font-medium text-amber-800">Coaching Tip</span>
+          <Lightbulb className="h-4 w-4 text-blue-600 flex-shrink-0" />
+          <span className="text-sm font-medium text-blue-800">Coaching Tip</span>
         </div>
         {isOpen ? (
-          <ChevronUp className="h-4 w-4 text-amber-600" />
+          <ChevronUp className="h-4 w-4 text-blue-600" />
         ) : (
-          <ChevronDown className="h-4 w-4 text-amber-600" />
+          <ChevronDown className="h-4 w-4 text-blue-600" />
         )}
       </button>
       {isOpen && (
         <div className="px-3 pb-3 pt-0">
-          <p className="text-sm text-amber-900 leading-relaxed">{tip}</p>
+          <p className="text-sm text-blue-900 leading-relaxed">{tip}</p>
         </div>
       )}
     </div>
@@ -535,13 +535,13 @@ function AIFeedbackSection({
 
   if (feedback) {
     return (
-      <Card className="border-purple-200 bg-gradient-to-br from-purple-50 to-amber-50">
+      <Card className="border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
             <Sparkles className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
             <div>
               <p className="text-sm font-medium text-purple-800 mb-1">AI Coach Feedback</p>
-              <p className="text-sm text-stone-700 leading-relaxed">{feedback}</p>
+              <p className="text-sm text-slate-700 leading-relaxed">{feedback}</p>
             </div>
           </div>
         </CardContent>
@@ -567,7 +567,7 @@ function AIFeedbackSection({
       </Button>
       {error && <p className="text-xs text-red-600">{error}</p>}
       {!answer.trim() && (
-        <p className="text-xs text-stone-400">Write your answer first to get personalized feedback.</p>
+        <p className="text-xs text-slate-400">Write your answer first to get personalized feedback.</p>
       )}
     </div>
   );
@@ -588,15 +588,15 @@ function SetupScreen({
   return (
     <div className="space-y-6">
       {/* Welcome Card */}
-      <Card className="bg-gradient-to-br from-amber-50 to-stone-50 border-amber-200">
+      <Card className="bg-gradient-to-br from-blue-50 to-slate-50 border-blue-200">
         <CardContent className="p-5">
           <div className="flex items-start gap-4">
-            <div className="h-12 w-12 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
-              <Mic className="h-6 w-6 text-amber-700" />
+            <div className="h-12 w-12 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+              <Mic className="h-6 w-6 text-blue-700" />
             </div>
             <div>
-              <h3 className="font-semibold text-stone-800 mb-1">Welcome to Mock Interview Practice</h3>
-              <p className="text-sm text-stone-600 leading-relaxed">
+              <h3 className="font-semibold text-slate-800 mb-1">Welcome to Mock Interview Practice</h3>
+              <p className="text-sm text-slate-600 leading-relaxed">
                 Practicing interviews is one of the best ways to build confidence. Here, you will go through
                 real interview questions one at a time, with helpful coaching tips along the way. There are
                 no wrong answers -- this is your safe space to practice and improve.
@@ -621,10 +621,10 @@ function SetupScreen({
               { step: '5', text: 'Review your results and save your practice session.' },
             ].map(({ step, text }) => (
               <div key={step} className="flex items-start gap-3">
-                <span className="h-6 w-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold flex-shrink-0">
+                <span className="h-6 w-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold flex-shrink-0">
                   {step}
                 </span>
-                <p className="text-sm text-stone-600">{text}</p>
+                <p className="text-sm text-slate-600">{text}</p>
               </div>
             ))}
           </div>
@@ -669,7 +669,7 @@ function SetupScreen({
       </Button>
 
       {!industry && (
-        <p className="text-center text-xs text-stone-400">Select an industry to begin.</p>
+        <p className="text-center text-xs text-slate-400">Select an industry to begin.</p>
       )}
     </div>
   );
@@ -795,13 +795,13 @@ function SessionScreen({
       {/* Progress */}
       <div>
         <ProgressIndicator current={currentIndex} total={questions.length} />
-        <p className="text-sm font-medium text-stone-600 mt-2">
+        <p className="text-sm font-medium text-slate-600 mt-2">
           Question {currentIndex + 1} of {questions.length}
         </p>
       </div>
 
       {/* Question Card */}
-      <Card className="border-amber-200 bg-gradient-to-br from-amber-50 to-white">
+      <Card className="border-blue-200 bg-gradient-to-br from-blue-50 to-white">
         <CardContent className="p-5">
           <div className="flex items-start gap-3">
             {currentQuestion.isTricky && (
@@ -809,7 +809,7 @@ function SessionScreen({
                 Tricky
               </Badge>
             )}
-            <p className="text-lg font-medium text-stone-800 leading-relaxed">
+            <p className="text-lg font-medium text-slate-800 leading-relaxed">
               {currentQuestion.question}
             </p>
           </div>
@@ -818,7 +818,7 @@ function SessionScreen({
 
       {/* Answer Area */}
       <div>
-        <label className="block text-sm font-medium text-stone-700 mb-2">Your Answer</label>
+        <label className="block text-sm font-medium text-slate-700 mb-2">Your Answer</label>
         <Textarea
           rows={5}
           placeholder="Type your answer here. Take your time -- there is no timer. Think about what you would actually say in the interview..."
@@ -827,7 +827,7 @@ function SessionScreen({
           className="resize-y"
         />
         {currentAnswer.trim().length > 0 && (
-          <p className="text-xs text-stone-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             {currentAnswer.trim().split(/\s+/).length} words
           </p>
         )}
@@ -930,15 +930,15 @@ function ResultsScreen({
   return (
     <div className="space-y-6">
       {/* Congratulations Card */}
-      <Card className="bg-gradient-to-br from-amber-50 to-yellow-50 border-amber-200">
+      <Card className="bg-gradient-to-br from-blue-50 to-yellow-50 border-blue-200">
         <CardContent className="p-6 text-center">
-          <div className="h-16 w-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">
-            <Trophy className="h-8 w-8 text-amber-600" />
+          <div className="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
+            <Trophy className="h-8 w-8 text-blue-600" />
           </div>
-          <h3 className="text-xl font-bold text-stone-800 mb-2">Great Job! Interview Complete</h3>
-          <p className="text-sm text-stone-600">
+          <h3 className="text-xl font-bold text-slate-800 mb-2">Great Job! Interview Complete</h3>
+          <p className="text-sm text-slate-600">
             You just practiced {answeredCount} interview question{answeredCount !== 1 ? 's' : ''} for{' '}
-            <span className="font-medium text-amber-700">{industryLabel}</span>. Every practice session
+            <span className="font-medium text-blue-700">{industryLabel}</span>. Every practice session
             makes you stronger and more prepared. Keep it up!
           </p>
         </CardContent>
@@ -952,16 +952,16 @@ function ResultsScreen({
         <CardContent>
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
-              <p className="text-2xl font-bold text-amber-600">{answers.length}</p>
-              <p className="text-xs text-stone-500">Questions</p>
+              <p className="text-2xl font-bold text-blue-600">{answers.length}</p>
+              <p className="text-xs text-slate-500">Questions</p>
             </div>
             <div>
               <p className="text-2xl font-bold text-green-600">{answeredCount}</p>
-              <p className="text-xs text-stone-500">Answered</p>
+              <p className="text-xs text-slate-500">Answered</p>
             </div>
             <div>
               <p className="text-2xl font-bold text-purple-600">{feedbackCount}</p>
-              <p className="text-xs text-stone-500">AI Feedback</p>
+              <p className="text-xs text-slate-500">AI Feedback</p>
             </div>
           </div>
         </CardContent>
@@ -976,20 +976,20 @@ function ResultsScreen({
         <CardContent>
           <div className="space-y-4">
             {answers.map((entry, idx) => (
-              <div key={idx} className="border border-stone-200 rounded-lg p-4 space-y-2">
+              <div key={idx} className="border border-slate-200 rounded-lg p-4 space-y-2">
                 <div className="flex items-start gap-2">
-                  <span className="h-6 w-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
+                  <span className="h-6 w-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
                     {idx + 1}
                   </span>
-                  <p className="text-sm font-medium text-stone-800">{entry.question}</p>
+                  <p className="text-sm font-medium text-slate-800">{entry.question}</p>
                 </div>
                 {entry.answer.trim() ? (
                   <div className="ml-8">
-                    <p className="text-sm text-stone-600 bg-stone-50 rounded-lg p-3">{entry.answer}</p>
+                    <p className="text-sm text-slate-600 bg-slate-50 rounded-lg p-3">{entry.answer}</p>
                   </div>
                 ) : (
                   <div className="ml-8">
-                    <p className="text-sm text-stone-400 italic">No answer provided</p>
+                    <p className="text-sm text-slate-400 italic">No answer provided</p>
                   </div>
                 )}
                 {entry.aiFeedback && (
@@ -1010,7 +1010,7 @@ function ResultsScreen({
       <Card>
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <Star className="h-5 w-5 text-amber-500" />
+            <Star className="h-5 w-5 text-blue-500" />
             Tips for Fair-Chance Interviews
           </CardTitle>
           <CardDescription>
@@ -1021,8 +1021,8 @@ function ResultsScreen({
           <ul className="space-y-3">
             {GENERAL_COACHING_TIPS.map((tip, idx) => (
               <li key={idx} className="flex items-start gap-3">
-                <CheckCircle2 className="h-4 w-4 text-amber-500 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-stone-600">{tip}</p>
+                <CheckCircle2 className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-slate-600">{tip}</p>
               </li>
             ))}
           </ul>
@@ -1058,7 +1058,7 @@ function ResultsScreen({
         </p>
       )}
       {!firebaseUser && (
-        <p className="text-xs text-stone-400 text-center">Log in to save your practice sessions.</p>
+        <p className="text-xs text-slate-400 text-center">Log in to save your practice sessions.</p>
       )}
     </div>
   );
@@ -1102,7 +1102,7 @@ export default function MockInterview() {
       {/* Back link */}
       <Link
         to="/tools"
-        className="inline-flex items-center gap-1 text-sm text-amber-700 hover:text-amber-800 -mt-2 mb-2"
+        className="inline-flex items-center gap-1 text-sm text-blue-700 hover:text-blue-800 -mt-2 mb-2"
       >
         <ChevronLeft className="h-4 w-4" />
         Back to Tools

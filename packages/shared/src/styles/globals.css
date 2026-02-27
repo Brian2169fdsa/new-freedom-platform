@@ -4,30 +4,30 @@
 
 @layer base {
   :root {
-    /* Warm earth tone palette */
-    --color-amber-50: #fffbeb;
-    --color-amber-100: #fef3c7;
-    --color-amber-200: #fde68a;
-    --color-amber-500: #f59e0b;
-    --color-amber-600: #d97706;
-    --color-amber-700: #b45309;
-    --color-amber-800: #92400e;
+    /* Blue corporate palette */
+    --color-brand-50: #eff6ff;
+    --color-brand-100: #dbeafe;
+    --color-brand-200: #bfdbfe;
+    --color-brand-500: #3b82f6;
+    --color-brand-600: #2563eb;
+    --color-brand-700: #1d4ed8;
+    --color-brand-800: #1e40af;
 
-    --color-sage-50: #f0fdf4;
-    --color-sage-100: #dcfce7;
-    --color-sage-500: #6b8f71;
-    --color-sage-600: #5a7a5f;
-    --color-sage-700: #4a6a4f;
+    --color-success-50: #f0fdf4;
+    --color-success-100: #dcfce7;
+    --color-success-500: #22c55e;
+    --color-success-600: #16a34a;
+    --color-success-700: #15803d;
 
-    --color-terracotta-50: #fef2f2;
-    --color-terracotta-100: #fee2e2;
-    --color-terracotta-500: #c2724e;
-    --color-terracotta-600: #a85d3a;
-    --color-terracotta-700: #8e4e2e;
+    --color-danger-50: #fef2f2;
+    --color-danger-100: #fee2e2;
+    --color-danger-500: #ef4444;
+    --color-danger-600: #dc2626;
+    --color-danger-700: #b91c1c;
   }
 
   body {
-    @apply bg-stone-50 text-stone-800 antialiased;
+    @apply bg-slate-50 text-slate-800 antialiased;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   }
 
@@ -38,7 +38,7 @@
 
   /* Focus styles */
   *:focus-visible {
-    @apply outline-none ring-2 ring-amber-500 ring-offset-2;
+    @apply outline-none ring-2 ring-blue-500 ring-offset-2;
   }
 }
 

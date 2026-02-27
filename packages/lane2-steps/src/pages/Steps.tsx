@@ -64,7 +64,7 @@ const MODULE_TYPE_COLORS: Record<string, string> = {
   video: 'bg-blue-100 text-blue-700',
   reading: 'bg-emerald-100 text-emerald-700',
   assessment: 'bg-purple-100 text-purple-700',
-  reflection: 'bg-amber-100 text-amber-700',
+  reflection: 'bg-blue-100 text-blue-700',
   discussion: 'bg-orange-100 text-orange-700',
 };
 
@@ -72,7 +72,7 @@ function LoadingSkeleton() {
   return (
     <div className="space-y-3 animate-pulse">
       {Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="h-24 bg-stone-100 rounded-xl" />
+        <div key={i} className="h-24 bg-slate-100 rounded-xl" />
       ))}
     </div>
   );
@@ -91,7 +91,7 @@ function VideoViewer({ module, progress, onSaveProgress }: VideoViewerProps) {
 
   return (
     <div className="space-y-4">
-      <div className="aspect-video bg-stone-900 rounded-lg overflow-hidden relative">
+      <div className="aspect-video bg-slate-900 rounded-lg overflow-hidden relative">
         {module.content.videoURL ? (
           <video
             src={module.content.videoURL}
@@ -105,7 +105,7 @@ function VideoViewer({ module, progress, onSaveProgress }: VideoViewerProps) {
             onEnded={() => onSaveProgress(module.duration * 60)}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-stone-400">
+          <div className="w-full h-full flex items-center justify-center text-slate-400">
             <div className="text-center">
               <Play className="h-12 w-12 mx-auto mb-2" />
               <p className="text-sm">Video content loading...</p>
@@ -114,7 +114,7 @@ function VideoViewer({ module, progress, onSaveProgress }: VideoViewerProps) {
           </div>
         )}
       </div>
-      <div className="flex items-center justify-between text-sm text-stone-500">
+      <div className="flex items-center justify-between text-sm text-slate-500">
         <span>{Math.floor(currentTime / 60)}:{String(currentTime % 60).padStart(2, '0')} watched</span>
         <span>{module.duration} min total</span>
       </div>
@@ -131,9 +131,9 @@ function ReadingViewer({ module }: ReadingViewerProps) {
   return (
     <div className="prose prose-stone prose-sm max-w-none">
       {content ? (
-        <div className="whitespace-pre-wrap leading-relaxed text-stone-700">{content}</div>
+        <div className="whitespace-pre-wrap leading-relaxed text-slate-700">{content}</div>
       ) : (
-        <div className="text-center py-8 text-stone-400">
+        <div className="text-center py-8 text-slate-400">
           <BookOpen className="h-10 w-10 mx-auto mb-2" />
           <p>Reading material will be available soon.</p>
         </div>
@@ -176,7 +176,7 @@ function AssessmentViewer({ module, onSubmitScore }: AssessmentViewerProps) {
     <div className="space-y-6">
       {questions.map((q, qIdx) => (
         <div key={qIdx} className="space-y-3">
-          <p className="font-medium text-stone-800 text-sm">
+          <p className="font-medium text-slate-800 text-sm">
             {qIdx + 1}. {q.question}
           </p>
           <div className="space-y-2">
@@ -198,8 +198,8 @@ function AssessmentViewer({ module, onSubmitScore }: AssessmentViewerProps) {
                       : isWrong
                         ? 'bg-red-50 border-red-300 text-red-800'
                         : isSelected
-                          ? 'bg-amber-50 border-amber-300 text-amber-800'
-                          : 'bg-white border-stone-200 text-stone-700 hover:bg-stone-50'
+                          ? 'bg-blue-50 border-blue-300 text-blue-800'
+                          : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                   }`}
                 >
                   {opt}
@@ -247,9 +247,9 @@ function ReflectionViewer({ module, existingText, onSave }: ReflectionViewerProp
 
   return (
     <div className="space-y-4">
-      <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-        <p className="text-sm text-amber-800 font-medium mb-1">Reflection Prompt</p>
-        <p className="text-sm text-amber-700">
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <p className="text-sm text-blue-800 font-medium mb-1">Reflection Prompt</p>
+        <p className="text-sm text-blue-700">
           {module.content.text || 'Take a moment to reflect on what this step means to you. How does it relate to your personal journey? What changes do you want to make?'}
         </p>
       </div>
@@ -261,7 +261,7 @@ function ReflectionViewer({ module, existingText, onSave }: ReflectionViewerProp
         className="resize-none"
       />
       <div className="flex items-center justify-between">
-        <span className="text-xs text-stone-400">{text.length} characters</span>
+        <span className="text-xs text-slate-400">{text.length} characters</span>
         <Button onClick={handleSave} disabled={text.trim().length === 0} size="sm">
           <Send className="h-3 w-3 mr-1" />
           {saved ? 'Saved!' : 'Save Reflection'}
@@ -382,10 +382,10 @@ export default function Steps() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div className="flex-1 min-w-0">
-            <p className="text-xs text-stone-400 font-medium">
+            <p className="text-xs text-slate-400 font-medium">
               Step {activeModule.stepNum} - {STEP_DATA[activeModule.stepNum - 1]?.title}
             </p>
-            <h3 className="font-semibold text-stone-800 truncate">{mod.title}</h3>
+            <h3 className="font-semibold text-slate-800 truncate">{mod.title}</h3>
           </div>
           {isCompleted && <Badge variant="success">Completed</Badge>}
         </div>
@@ -472,7 +472,7 @@ export default function Steps() {
               <Card
                 className={`transition-all ${
                   status === 'locked' ? 'opacity-50' : 'cursor-pointer hover:shadow-md'
-                } ${isExpanded ? 'border-amber-300 shadow-md' : ''}`}
+                } ${isExpanded ? 'border-blue-300 shadow-md' : ''}`}
               >
                 <CardContent className="p-4">
                   <button
@@ -487,8 +487,8 @@ export default function Steps() {
                           status === 'completed'
                             ? 'bg-green-100 text-green-700'
                             : status === 'available'
-                              ? 'bg-amber-100 text-amber-700'
-                              : 'bg-stone-100 text-stone-400'
+                              ? 'bg-blue-100 text-blue-700'
+                              : 'bg-slate-100 text-slate-400'
                         }`}
                       >
                         {status === 'completed' ? (
@@ -503,7 +503,7 @@ export default function Steps() {
                       {/* Step Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-stone-800">
+                          <h3 className="font-semibold text-slate-800">
                             Step {step.number}: {step.title}
                           </h3>
                           {status === 'completed' && <Badge variant="success">Done</Badge>}
@@ -511,23 +511,23 @@ export default function Steps() {
                             <Badge>Current</Badge>
                           )}
                         </div>
-                        <p className="text-xs text-stone-500 mt-0.5 line-clamp-1">{step.principle}</p>
+                        <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">{step.principle}</p>
                         {status !== 'locked' && (
                           <div className="mt-2">
-                            <div className="h-1.5 bg-stone-100 rounded-full overflow-hidden">
+                            <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
                               <div
-                                className="h-full bg-amber-500 rounded-full transition-all duration-300"
+                                className="h-full bg-blue-500 rounded-full transition-all duration-300"
                                 style={{ width: `${pct}%` }}
                               />
                             </div>
-                            <span className="text-[10px] text-stone-400 mt-0.5">{pct}% complete</span>
+                            <span className="text-[10px] text-slate-400 mt-0.5">{pct}% complete</span>
                           </div>
                         )}
                       </div>
 
                       {/* Expand Arrow */}
                       {status !== 'locked' && (
-                        <div className="shrink-0 text-stone-400">
+                        <div className="shrink-0 text-slate-400">
                           {isExpanded ? (
                             <ChevronUp className="h-5 w-5" />
                           ) : (
@@ -540,8 +540,8 @@ export default function Steps() {
 
                   {/* Expanded Module List */}
                   {isExpanded && (
-                    <div className="mt-4 pt-4 border-t border-stone-100 space-y-1">
-                      <p className="text-xs text-stone-500 mb-3 leading-relaxed">
+                    <div className="mt-4 pt-4 border-t border-slate-100 space-y-1">
+                      <p className="text-xs text-slate-500 mb-3 leading-relaxed">
                         {step.description}
                       </p>
                       {course && course.modules && course.modules.length > 0 ? (
@@ -549,7 +549,7 @@ export default function Steps() {
                           .sort((a, b) => a.order - b.order)
                           .map((mod) => {
                             const Icon = MODULE_TYPE_ICONS[mod.type] ?? Circle;
-                            const colorClass = MODULE_TYPE_COLORS[mod.type] ?? 'bg-stone-100 text-stone-600';
+                            const colorClass = MODULE_TYPE_COLORS[mod.type] ?? 'bg-slate-100 text-slate-600';
                             const prog = progressMap.get(`${course.id}_${mod.id}`);
                             const modCompleted = prog?.status === 'completed';
 
@@ -557,18 +557,18 @@ export default function Steps() {
                               <button
                                 key={mod.id}
                                 onClick={() => setActiveModule({ stepNum: step.number, module: mod })}
-                                className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-stone-50 transition-colors text-left"
+                                className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors text-left"
                               >
                                 <div className={`h-8 w-8 rounded-lg flex items-center justify-center shrink-0 ${colorClass}`}>
                                   <Icon className="h-4 w-4" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <p className={`text-sm font-medium ${modCompleted ? 'text-stone-400 line-through' : 'text-stone-700'}`}>
+                                  <p className={`text-sm font-medium ${modCompleted ? 'text-slate-400 line-through' : 'text-slate-700'}`}>
                                     {mod.title}
                                   </p>
-                                  <div className="flex items-center gap-2 text-xs text-stone-400">
+                                  <div className="flex items-center gap-2 text-xs text-slate-400">
                                     <span className="capitalize">{mod.type}</span>
-                                    <span className="inline-block h-1 w-1 rounded-full bg-stone-300" />
+                                    <span className="inline-block h-1 w-1 rounded-full bg-slate-300" />
                                     <Clock className="h-3 w-3" />
                                     <span>{mod.duration} min</span>
                                   </div>
@@ -576,13 +576,13 @@ export default function Steps() {
                                 {modCompleted ? (
                                   <CheckCircle className="h-5 w-5 text-green-500 shrink-0" />
                                 ) : (
-                                  <Circle className="h-5 w-5 text-stone-300 shrink-0" />
+                                  <Circle className="h-5 w-5 text-slate-300 shrink-0" />
                                 )}
                               </button>
                             );
                           })
                       ) : (
-                        <div className="text-center py-6 text-stone-400">
+                        <div className="text-center py-6 text-slate-400">
                           <BookOpen className="h-8 w-8 mx-auto mb-2" />
                           <p className="text-sm">Course content coming soon</p>
                           <p className="text-xs mt-1">

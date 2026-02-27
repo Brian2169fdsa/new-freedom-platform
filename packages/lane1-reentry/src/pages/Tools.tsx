@@ -27,7 +27,7 @@ const tools = [
     label: 'Document Vault',
     description: 'Store IDs, certificates, court papers',
     path: '/tools/documents',
-    color: 'bg-amber-100 text-amber-700',
+    color: 'bg-blue-100 text-blue-700',
   },
   {
     icon: FileText,
@@ -89,11 +89,11 @@ function QuickStat({ icon, label, value, loading }: QuickStatProps) {
     <div className="flex flex-col items-center justify-center p-3 text-center">
       <div className="mb-1.5">{icon}</div>
       {loading ? (
-        <div className="animate-pulse h-7 w-8 rounded bg-stone-200 mb-1" />
+        <div className="animate-pulse h-7 w-8 rounded bg-slate-200 mb-1" />
       ) : (
-        <p className="text-xl font-bold text-stone-800">{value}</p>
+        <p className="text-xl font-bold text-slate-800">{value}</p>
       )}
-      <p className="text-[11px] text-stone-500 leading-tight">{label}</p>
+      <p className="text-[11px] text-slate-500 leading-tight">{label}</p>
     </div>
   );
 }
@@ -140,11 +140,11 @@ export default function Tools() {
   return (
     <PageContainer title="Tools" subtitle="Everything you need in one place">
       {/* Quick Stats */}
-      <Card className="bg-gradient-to-br from-amber-50 to-stone-50 border-amber-200">
+      <Card className="bg-gradient-to-br from-blue-50 to-slate-50 border-blue-200">
         <CardContent className="p-2">
-          <div className="grid grid-cols-3 divide-x divide-stone-200">
+          <div className="grid grid-cols-3 divide-x divide-slate-200">
             <QuickStat
-              icon={<FileCheck className="h-5 w-5 text-amber-600" />}
+              icon={<FileCheck className="h-5 w-5 text-blue-600" />}
               label="Documents"
               value={documents.length}
               loading={docsLoading}
@@ -178,10 +178,10 @@ export default function Tools() {
                     <tool.icon className="h-6 w-6" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-stone-800">{tool.label}</h3>
-                    <p className="text-sm text-stone-500">{tool.description}</p>
+                    <h3 className="font-medium text-slate-800">{tool.label}</h3>
+                    <p className="text-sm text-slate-500">{tool.description}</p>
                   </div>
-                  <ChevronRight className="h-5 w-5 text-stone-300 group-hover:text-amber-500 transition-colors flex-shrink-0" />
+                  <ChevronRight className="h-5 w-5 text-slate-300 group-hover:text-blue-500 transition-colors flex-shrink-0" />
                 </div>
               </CardContent>
             </Card>

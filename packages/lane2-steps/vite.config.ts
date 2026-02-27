@@ -14,7 +14,7 @@ export default defineConfig({
         short_name: 'Steps',
         description:
           'Interactive 12-step LMS with Joe McDonald curriculum for recovery engagement',
-        theme_color: '#b45309',
+        theme_color: '#2563eb',
         background_color: '#fafaf9',
         display: 'standalone',
         scope: '/',

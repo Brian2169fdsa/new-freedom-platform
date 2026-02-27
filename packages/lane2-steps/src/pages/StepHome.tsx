@@ -69,10 +69,10 @@ const STEP_TITLES: Record<number, string> = {
 function LoadingSkeleton() {
   return (
     <div className="space-y-4 animate-pulse">
-      <div className="h-24 bg-stone-100 rounded-xl" />
-      <div className="h-40 bg-stone-100 rounded-xl" />
-      <div className="h-32 bg-stone-100 rounded-xl" />
-      <div className="h-20 bg-stone-100 rounded-xl" />
+      <div className="h-24 bg-slate-100 rounded-xl" />
+      <div className="h-40 bg-slate-100 rounded-xl" />
+      <div className="h-32 bg-slate-100 rounded-xl" />
+      <div className="h-20 bg-slate-100 rounded-xl" />
     </div>
   );
 }
@@ -255,11 +255,11 @@ export default function StepHome() {
       {/* Sobriety Counter + Streak */}
       <div className="grid grid-cols-2 gap-3">
         {sobrietyDays !== null && (
-          <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+          <Card className="bg-gradient-to-br from-blue-50 to-orange-50 border-blue-200">
             <CardContent className="p-4 text-center">
-              <Calendar className="h-5 w-5 text-amber-600 mx-auto mb-1" />
-              <p className="text-3xl font-bold text-amber-800">{sobrietyDays}</p>
-              <p className="text-xs text-amber-600 font-medium">Days Sober</p>
+              <Calendar className="h-5 w-5 text-blue-600 mx-auto mb-1" />
+              <p className="text-3xl font-bold text-blue-800">{sobrietyDays}</p>
+              <p className="text-xs text-blue-600 font-medium">Days Sober</p>
             </CardContent>
           </Card>
         )}
@@ -279,12 +279,12 @@ export default function StepHome() {
         </CardHeader>
         <CardContent>
           <div className="flex justify-between text-sm mb-2">
-            <span className="text-stone-500">{stepsCompleted} of 12 steps completed</span>
-            <span className="font-semibold text-amber-700">{overallProgress}%</span>
+            <span className="text-slate-500">{stepsCompleted} of 12 steps completed</span>
+            <span className="font-semibold text-blue-700">{overallProgress}%</span>
           </div>
-          <div className="h-3 bg-stone-100 rounded-full overflow-hidden">
+          <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-amber-400 to-amber-600 rounded-full transition-all duration-500"
+              className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full transition-all duration-500"
               style={{ width: `${overallProgress}%` }}
             />
           </div>
@@ -292,7 +292,7 @@ export default function StepHome() {
       </Card>
 
       {/* Current Step Card */}
-      <Card className="bg-gradient-to-br from-amber-50 via-white to-emerald-50 border-amber-300 shadow-md">
+      <Card className="bg-gradient-to-br from-blue-50 via-white to-emerald-50 border-blue-300 shadow-md">
         <CardHeader>
           <Badge className="w-fit">Step {currentStep} of 12</Badge>
           <CardTitle className="text-xl">
@@ -313,7 +313,7 @@ export default function StepHome() {
 
       {/* Daily Wellness Check-in */}
       {!hasCheckedInToday && (
-        <Card className="border-amber-200">
+        <Card className="border-blue-200">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-base">Daily Check-in</CardTitle>
@@ -324,7 +324,7 @@ export default function StepHome() {
           <CardContent className="space-y-5">
             {/* Mood Selector */}
             <div>
-              <label className="text-sm font-medium text-stone-700 mb-2 block">Mood</label>
+              <label className="text-sm font-medium text-slate-700 mb-2 block">Mood</label>
               <div className="flex gap-2 justify-between">
                 {MOOD_OPTIONS.map((opt) => (
                   <button
@@ -335,12 +335,12 @@ export default function StepHome() {
                     }}
                     className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all flex-1 ${
                       checkInMood === opt.value
-                        ? 'bg-amber-100 border-2 border-amber-400 shadow-sm'
-                        : 'bg-stone-50 border-2 border-transparent hover:bg-stone-100'
+                        ? 'bg-blue-100 border-2 border-blue-400 shadow-sm'
+                        : 'bg-slate-50 border-2 border-transparent hover:bg-slate-100'
                     }`}
                   >
                     <span className="text-2xl">{opt.emoji}</span>
-                    <span className="text-[10px] text-stone-600 font-medium">{opt.label}</span>
+                    <span className="text-[10px] text-slate-600 font-medium">{opt.label}</span>
                   </button>
                 ))}
               </div>
@@ -349,10 +349,10 @@ export default function StepHome() {
             {/* Sleep Hours */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium text-stone-700 flex items-center gap-1.5">
+                <label className="text-sm font-medium text-slate-700 flex items-center gap-1.5">
                   <Moon className="h-4 w-4 text-indigo-500" /> Sleep
                 </label>
-                <span className="text-sm font-semibold text-stone-800">{sleepHours}h</span>
+                <span className="text-sm font-semibold text-slate-800">{sleepHours}h</span>
               </div>
               <input
                 type="range"
@@ -361,9 +361,9 @@ export default function StepHome() {
                 step={0.5}
                 value={sleepHours}
                 onChange={(e) => setSleepHours(parseFloat(e.target.value))}
-                className="w-full accent-amber-600"
+                className="w-full accent-blue-600"
               />
-              <div className="flex justify-between text-xs text-stone-400 mt-1">
+              <div className="flex justify-between text-xs text-slate-400 mt-1">
                 <span>0h</span>
                 <span>12h</span>
               </div>
@@ -372,10 +372,10 @@ export default function StepHome() {
             {/* Energy Level */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium text-stone-700 flex items-center gap-1.5">
+                <label className="text-sm font-medium text-slate-700 flex items-center gap-1.5">
                   <Zap className="h-4 w-4 text-yellow-500" /> Energy
                 </label>
-                <span className="text-sm font-semibold text-stone-800">{energyLevel}/10</span>
+                <span className="text-sm font-semibold text-slate-800">{energyLevel}/10</span>
               </div>
               <input
                 type="range"
@@ -383,15 +383,15 @@ export default function StepHome() {
                 max={10}
                 value={energyLevel}
                 onChange={(e) => setEnergyLevel(parseInt(e.target.value, 10))}
-                className="w-full accent-amber-600"
+                className="w-full accent-blue-600"
               />
             </div>
 
             {/* Craving Intensity */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium text-stone-700">Craving Intensity</label>
-                <span className="text-sm font-semibold text-stone-800">{cravingIntensity}/10</span>
+                <label className="text-sm font-medium text-slate-700">Craving Intensity</label>
+                <span className="text-sm font-semibold text-slate-800">{cravingIntensity}/10</span>
               </div>
               <input
                 type="range"
@@ -399,9 +399,9 @@ export default function StepHome() {
                 max={10}
                 value={cravingIntensity}
                 onChange={(e) => setCravingIntensity(parseInt(e.target.value, 10))}
-                className="w-full accent-amber-600"
+                className="w-full accent-blue-600"
               />
-              <div className="flex justify-between text-xs text-stone-400 mt-1">
+              <div className="flex justify-between text-xs text-slate-400 mt-1">
                 <span>None</span>
                 <span>Intense</span>
               </div>
@@ -437,9 +437,9 @@ export default function StepHome() {
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base flex items-center gap-2">
-              <BookOpen className="h-4 w-4 text-amber-600" /> Recent Journal
+              <BookOpen className="h-4 w-4 text-blue-600" /> Recent Journal
             </CardTitle>
-            <Link to="/journal" className="text-sm text-amber-700 hover:underline flex items-center gap-1">
+            <Link to="/journal" className="text-sm text-blue-700 hover:underline flex items-center gap-1">
               View All <ChevronRight className="h-3 w-3" />
             </Link>
           </div>
@@ -452,19 +452,19 @@ export default function StepHome() {
                 return (
                   <div
                     key={entry.id}
-                    className="flex items-start gap-3 p-3 bg-stone-50 rounded-lg"
+                    className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg"
                   >
                     <span className="text-lg">{moodOpt?.emoji ?? '\u{1F4DD}'}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-stone-700 line-clamp-2">{entry.content}</p>
-                      <p className="text-xs text-stone-400 mt-1">{formatDate(entry.date)}</p>
+                      <p className="text-sm text-slate-700 line-clamp-2">{entry.content}</p>
+                      <p className="text-xs text-slate-400 mt-1">{formatDate(entry.date)}</p>
                     </div>
                   </div>
                 );
               })}
             </div>
           ) : (
-            <p className="text-sm text-stone-400 text-center py-4">
+            <p className="text-sm text-slate-400 text-center py-4">
               No journal entries yet. Start writing to track your journey.
             </p>
           )}
@@ -476,9 +476,9 @@ export default function StepHome() {
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base flex items-center gap-2">
-              <Trophy className="h-4 w-4 text-amber-600" /> Recent Achievements
+              <Trophy className="h-4 w-4 text-blue-600" /> Recent Achievements
             </CardTitle>
-            <Link to="/achievements" className="text-sm text-amber-700 hover:underline flex items-center gap-1">
+            <Link to="/achievements" className="text-sm text-blue-700 hover:underline flex items-center gap-1">
               View All <ChevronRight className="h-3 w-3" />
             </Link>
           </div>
@@ -488,17 +488,17 @@ export default function StepHome() {
             <div className="grid grid-cols-4 gap-3">
               {achievements.map((badge) => (
                 <div key={badge.id} className="flex flex-col items-center text-center">
-                  <div className="h-12 w-12 bg-amber-100 rounded-full flex items-center justify-center mb-1">
+                  <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center mb-1">
                     <span className="text-xl">{badge.icon || '\u{1F3C6}'}</span>
                   </div>
-                  <p className="text-[10px] text-stone-600 font-medium line-clamp-2">
+                  <p className="text-[10px] text-slate-600 font-medium line-clamp-2">
                     {badge.title}
                   </p>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-sm text-stone-400 text-center py-4">
+            <p className="text-sm text-slate-400 text-center py-4">
               Complete steps and streaks to earn achievements!
             </p>
           )}

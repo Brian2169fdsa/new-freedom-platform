@@ -97,11 +97,11 @@ const PERSONAS: readonly Persona[] = [
     name: 'Resume Coach',
     description: 'Employment prep, interview tips & resumes',
     icon: Briefcase,
-    color: 'bg-amber-500',
-    bgColor: 'bg-amber-50',
-    borderColor: 'border-amber-200',
-    textColor: 'text-amber-700',
-    lightBg: 'bg-amber-100',
+    color: 'bg-blue-500',
+    bgColor: 'bg-blue-50',
+    borderColor: 'border-blue-200',
+    textColor: 'text-blue-700',
+    lightBg: 'bg-blue-100',
     systemContext:
       'You are a career coach specializing in fair-chance employment for individuals with justice involvement. Help with resume writing, interview preparation, job search strategies, and navigating background check conversations with empathy and practical advice.',
   },
@@ -208,7 +208,7 @@ function CrisisAlertBanner() {
 function HandoffNotice({ agentName }: { readonly agentName: string }) {
   return (
     <div className="flex justify-center my-3">
-      <Badge className="bg-amber-100 text-amber-800 border border-amber-200 px-3 py-1 text-xs">
+      <Badge className="bg-blue-100 text-blue-800 border border-blue-200 px-3 py-1 text-xs">
         <Bot className="h-3 w-3 mr-1.5 inline" />
         You have been connected to {agentName}
       </Badge>
@@ -224,11 +224,11 @@ function TypingIndicator({ persona }: { readonly persona: Persona }) {
       >
         <Bot className={`h-4 w-4 ${persona.textColor}`} />
       </div>
-      <div className="bg-stone-100 rounded-2xl rounded-bl-md px-4 py-3">
+      <div className="bg-slate-100 rounded-2xl rounded-bl-md px-4 py-3">
         <div className="flex items-center gap-1.5">
-          <div className="w-2 h-2 rounded-full bg-stone-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-          <div className="w-2 h-2 rounded-full bg-stone-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-          <div className="w-2 h-2 rounded-full bg-stone-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+          <div className="w-2 h-2 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+          <div className="w-2 h-2 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+          <div className="w-2 h-2 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '300ms' }} />
         </div>
       </div>
     </div>
@@ -249,11 +249,11 @@ function MessageBubble({
       {/* Avatar */}
       <div
         className={`flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full ${
-          isUser ? 'bg-amber-100' : persona.lightBg
+          isUser ? 'bg-blue-100' : persona.lightBg
         }`}
       >
         {isUser ? (
-          <User className="h-4 w-4 text-amber-700" />
+          <User className="h-4 w-4 text-blue-700" />
         ) : (
           <Bot className={`h-4 w-4 ${persona.textColor}`} />
         )}
@@ -263,8 +263,8 @@ function MessageBubble({
       <div
         className={`max-w-[80%] rounded-2xl px-4 py-3 ${
           isUser
-            ? 'bg-amber-700 text-white rounded-br-md'
-            : 'bg-stone-100 text-stone-800 rounded-bl-md'
+            ? 'bg-blue-700 text-white rounded-br-md'
+            : 'bg-slate-100 text-slate-800 rounded-bl-md'
         }`}
       >
         {!isUser && message.agentName && (
@@ -288,8 +288,8 @@ function EmptyState({ persona }: { readonly persona: Persona }) {
       >
         <Icon className={`h-8 w-8 ${persona.textColor}`} />
       </div>
-      <h3 className="text-lg font-semibold text-stone-800 mb-1">{persona.name}</h3>
-      <p className="text-sm text-stone-500 max-w-sm">{persona.description}</p>
+      <h3 className="text-lg font-semibold text-slate-800 mb-1">{persona.name}</h3>
+      <p className="text-sm text-slate-500 max-w-sm">{persona.description}</p>
     </div>
   );
 }
@@ -452,8 +452,8 @@ export default function AIChat() {
             <MessageSquare className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-stone-800">AI Assistant</h1>
-            <p className="text-xs text-stone-500">
+            <h1 className="text-xl font-bold text-slate-800">AI Assistant</h1>
+            <p className="text-xs text-slate-500">
               {user?.profile?.firstName
                 ? `Here for you, ${user.profile.firstName}`
                 : 'Your personal support team'}
@@ -506,7 +506,7 @@ export default function AIChat() {
           )}
 
           {/* ── Input Area ────────────────────────────────────────── */}
-          <div className="p-4 border-t border-stone-100">
+          <div className="p-4 border-t border-slate-100">
             <div className="flex items-center gap-2">
               <Input
                 ref={inputRef}
@@ -532,13 +532,13 @@ export default function AIChat() {
                 )}
               </Button>
             </div>
-            <p className="text-xs text-stone-400 mt-2 text-center">
+            <p className="text-xs text-slate-400 mt-2 text-center">
               AI responses are supportive guidance, not professional advice.
               {' '}
               In an emergency, call{' '}
               <a
                 href={`tel:${CRISIS_HOTLINE.phone}`}
-                className="text-amber-600 hover:text-amber-700 font-medium underline"
+                className="text-blue-600 hover:text-blue-700 font-medium underline"
               >
                 {CRISIS_HOTLINE.phone}
               </a>

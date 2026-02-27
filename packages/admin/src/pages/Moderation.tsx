@@ -25,7 +25,7 @@ const MODERATION_TABS: { value: ModerationStatus; label: string; icon: React.Ele
 ];
 
 const STATUS_COLORS: Record<ModerationStatus, { bg: string; text: string }> = {
-  pending: { bg: 'bg-amber-100', text: 'text-amber-800' },
+  pending: { bg: 'bg-blue-100', text: 'text-blue-800' },
   flagged: { bg: 'bg-orange-100', text: 'text-orange-800' },
   approved: { bg: 'bg-green-100', text: 'text-green-800' },
   removed: { bg: 'bg-red-100', text: 'text-red-800' },
@@ -42,13 +42,13 @@ function ToxicityBar({ score }: { readonly score: number }) {
 
   return (
     <div className="flex items-center gap-2">
-      <div className="w-20 h-1.5 bg-stone-100 rounded-full overflow-hidden">
+      <div className="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full transition-all ${color}`}
           style={{ width: `${percentage}%` }}
         />
       </div>
-      <span className="text-xs text-stone-500">{percentage}% ({label})</span>
+      <span className="text-xs text-slate-500">{percentage}% ({label})</span>
     </div>
   );
 }
@@ -69,7 +69,7 @@ function QueueCard({ post, author, onAction }: QueueCardProps) {
     : author?.displayName ?? 'Unknown User';
 
   return (
-    <Card className="hover:border-stone-300 transition-colors">
+    <Card className="hover:border-slate-300 transition-colors">
       <CardContent className="p-5">
         <div className="space-y-3">
           {/* Author + Timestamp */}
@@ -81,8 +81,8 @@ function QueueCard({ post, author, onAction }: QueueCardProps) {
                 size="sm"
               />
               <div>
-                <p className="text-sm font-medium text-stone-700">{authorName}</p>
-                <p className="text-xs text-stone-400">{formatRelative(post.createdAt)}</p>
+                <p className="text-sm font-medium text-slate-700">{authorName}</p>
+                <p className="text-xs text-slate-400">{formatRelative(post.createdAt)}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -96,13 +96,13 @@ function QueueCard({ post, author, onAction }: QueueCardProps) {
           </div>
 
           {/* Content */}
-          <p className="text-sm text-stone-700 line-clamp-3">{post.content}</p>
+          <p className="text-sm text-slate-700 line-clamp-3">{post.content}</p>
 
           {/* Media preview */}
           {post.mediaURLs && post.mediaURLs.length > 0 && (
             <div className="flex gap-2">
               {post.mediaURLs.slice(0, 3).map((url, i) => (
-                <div key={i} className="h-16 w-16 rounded-lg bg-stone-100 overflow-hidden">
+                <div key={i} className="h-16 w-16 rounded-lg bg-slate-100 overflow-hidden">
                   <img src={url} alt="" className="h-full w-full object-cover" />
                 </div>
               ))}
@@ -110,13 +110,13 @@ function QueueCard({ post, author, onAction }: QueueCardProps) {
           )}
 
           {/* Stats */}
-          <div className="flex items-center gap-4 text-xs text-stone-500">
+          <div className="flex items-center gap-4 text-xs text-slate-500">
             <span>{post.likes.length} likes</span>
             <span>{post.commentCount} comments</span>
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-2 pt-2 border-t border-stone-100">
+          <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
             {post.moderationStatus === 'pending' || post.moderationStatus === 'flagged' ? (
               <>
                 <Button
@@ -166,7 +166,7 @@ function QueueCard({ post, author, onAction }: QueueCardProps) {
                 </Button>
               </>
             ) : (
-              <span className="text-xs text-stone-400">
+              <span className="text-xs text-slate-400">
                 {post.moderationStatus === 'approved' ? 'Approved' : 'Removed'} by moderator
               </span>
             )}
@@ -207,7 +207,7 @@ function ConfirmActionDialog({ open, action, postId, onConfirm, onCancel }: Conf
         </DialogTitle>
       </DialogHeader>
       <DialogContent>
-        <p className="text-sm text-stone-600">
+        <p className="text-sm text-slate-600">
           {descriptions[action] ?? 'Are you sure you want to perform this action?'}
         </p>
       </DialogContent>
@@ -241,7 +241,7 @@ function AutoModStats({ posts }: { readonly posts: readonly Post[] }) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <BarChart3 className="h-5 w-5 text-stone-400" />
+          <BarChart3 className="h-5 w-5 text-slate-400" />
           Auto-Moderation Stats
         </CardTitle>
         <CardDescription>Perspective API toxicity analysis</CardDescription>
@@ -250,19 +250,19 @@ function AutoModStats({ posts }: { readonly posts: readonly Post[] }) {
         <div className="grid grid-cols-3 gap-4">
           <div className="text-center">
             <p className="text-2xl font-bold text-red-600">{high}</p>
-            <p className="text-xs text-stone-500">High Toxicity</p>
+            <p className="text-xs text-slate-500">High Toxicity</p>
           </div>
           <div className="text-center">
             <p className="text-2xl font-bold text-orange-600">{medium}</p>
-            <p className="text-xs text-stone-500">Medium</p>
+            <p className="text-xs text-slate-500">Medium</p>
           </div>
           <div className="text-center">
             <p className="text-2xl font-bold text-green-600">{low}</p>
-            <p className="text-xs text-stone-500">Low</p>
+            <p className="text-xs text-slate-500">Low</p>
           </div>
         </div>
         <div className="mt-4">
-          <p className="text-xs text-stone-400">
+          <p className="text-xs text-slate-400">
             {withScore.length} of {posts.length} posts analyzed
           </p>
         </div>
@@ -323,11 +323,11 @@ export default function Moderation() {
   if (postsLoading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-52 bg-stone-200 rounded animate-pulse" />
-        <div className="h-12 w-96 bg-stone-100 rounded animate-pulse" />
+        <div className="h-8 w-52 bg-slate-200 rounded animate-pulse" />
+        <div className="h-12 w-96 bg-slate-100 rounded animate-pulse" />
         <div className="space-y-4">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-40 bg-stone-100 rounded-xl animate-pulse" />
+            <div key={i} className="h-40 bg-slate-100 rounded-xl animate-pulse" />
           ))}
         </div>
       </div>
@@ -338,8 +338,8 @@ export default function Moderation() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-stone-800">Content Moderation</h1>
-        <p className="text-sm text-stone-500">
+        <h1 className="text-2xl font-bold text-slate-800">Content Moderation</h1>
+        <p className="text-sm text-slate-500">
           Review and manage community content across all lanes
         </p>
       </div>
@@ -359,7 +359,7 @@ export default function Moderation() {
                   'ml-1 text-xs rounded-full px-1.5 py-0.5',
                   tab.value === 'pending' && tabCounts[tab.value] > 0
                     ? 'bg-red-100 text-red-700'
-                    : 'bg-stone-200 text-stone-600',
+                    : 'bg-slate-200 text-slate-600',
                 )}>
                   {tabCounts[tab.value]}
                 </span>
@@ -373,8 +373,8 @@ export default function Moderation() {
             {filteredPosts.length === 0 ? (
               <Card>
                 <CardContent className="p-12 text-center">
-                  <Shield className="h-12 w-12 text-stone-300 mx-auto mb-3" />
-                  <p className="text-stone-500">No {tab.label.toLowerCase()} content.</p>
+                  <Shield className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+                  <p className="text-slate-500">No {tab.label.toLowerCase()} content.</p>
                 </CardContent>
               </Card>
             ) : (
@@ -400,7 +400,7 @@ export default function Moderation() {
           <CardDescription>Members who have appealed content removal decisions</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-stone-400 text-center py-6">
+          <p className="text-sm text-slate-400 text-center py-6">
             No pending appeal requests.
           </p>
         </CardContent>

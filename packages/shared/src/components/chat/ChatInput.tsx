@@ -28,7 +28,7 @@ export function ChatInput({ onSend, placeholder = 'Type a message...', disabled 
   };
 
   return (
-    <div className="flex items-center gap-2 p-3 bg-white border-t border-stone-200">
+    <div className="flex items-center gap-2 p-3 bg-white border-t border-slate-200">
       <input
         ref={inputRef}
         type="text"
@@ -37,7 +37,7 @@ export function ChatInput({ onSend, placeholder = 'Type a message...', disabled 
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={disabled}
-        className="flex-1 h-10 rounded-full border border-stone-300 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent disabled:opacity-50"
+        className="flex-1 h-10 rounded-full border border-slate-300 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
       />
       <Button
         size="icon"

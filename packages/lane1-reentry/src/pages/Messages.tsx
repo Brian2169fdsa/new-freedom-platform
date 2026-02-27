@@ -92,26 +92,26 @@ function ConversationCard({ conversation, currentUserId, onSelect }: Conversatio
   return (
     <button
       onClick={() => onSelect(conversation)}
-      className="w-full text-left focus:outline-none focus:ring-2 focus:ring-amber-500 rounded-xl"
+      className="w-full text-left focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-xl"
     >
-      <Card className="hover:bg-stone-50 transition-colors cursor-pointer">
+      <Card className="hover:bg-slate-50 transition-colors cursor-pointer">
         <CardContent className="p-4 flex items-center gap-3">
           <Avatar fallback={initials} size="md" />
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-stone-800 truncate">{displayName}</p>
-              <span className="text-xs text-stone-400 whitespace-nowrap ml-2">
+              <p className="text-sm font-semibold text-slate-800 truncate">{displayName}</p>
+              <span className="text-xs text-slate-400 whitespace-nowrap ml-2">
                 {formatTimestamp(conversation.lastMessageAt)}
               </span>
             </div>
-            <p className="text-xs text-stone-500 truncate mt-0.5">
+            <p className="text-xs text-slate-500 truncate mt-0.5">
               {truncate(conversation.lastMessage || '', 60)}
             </p>
           </div>
 
           {unread > 0 && (
-            <span className="flex-shrink-0 inline-flex items-center justify-center h-5 min-w-[1.25rem] px-1.5 rounded-full bg-amber-600 text-white text-[10px] font-bold">
+            <span className="flex-shrink-0 inline-flex items-center justify-center h-5 min-w-[1.25rem] px-1.5 rounded-full bg-blue-600 text-white text-[10px] font-bold">
               {unread > 99 ? '99+' : unread}
             </span>
           )}
@@ -134,8 +134,8 @@ function ChatBubble({ message, isOwn }: ChatBubbleProps) {
       <div
         className={`max-w-[80%] rounded-2xl px-4 py-2.5 ${
           isOwn
-            ? 'bg-amber-600 text-white rounded-br-md'
-            : 'bg-stone-200 text-stone-800 rounded-bl-md'
+            ? 'bg-blue-600 text-white rounded-br-md'
+            : 'bg-slate-200 text-slate-800 rounded-bl-md'
         }`}
       >
         {hasAttachment && (
@@ -144,7 +144,7 @@ function ChatBubble({ message, isOwn }: ChatBubbleProps) {
             target="_blank"
             rel="noopener noreferrer"
             className={`flex items-center gap-1.5 text-xs mb-1.5 underline ${
-              isOwn ? 'text-amber-200' : 'text-amber-700'
+              isOwn ? 'text-blue-200' : 'text-blue-700'
             }`}
           >
             <Paperclip className="h-3 w-3" />
@@ -156,7 +156,7 @@ function ChatBubble({ message, isOwn }: ChatBubbleProps) {
         )}
         <p
           className={`text-[10px] mt-1 ${
-            isOwn ? 'text-amber-200' : 'text-stone-400'
+            isOwn ? 'text-blue-200' : 'text-slate-400'
           } text-right`}
         >
           {formatMessageTime(message.createdAt)}
@@ -230,7 +230,7 @@ function NewMessageDialog({
       <DialogContent>
         <div className="space-y-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <Input
               value={contactSearch}
               onChange={(e) => setContactSearch(e.target.value)}
@@ -242,10 +242,10 @@ function NewMessageDialog({
           <div className="max-h-60 overflow-y-auto space-y-1">
             {loadingContacts ? (
               <div className="flex items-center justify-center py-8">
-                <div className="h-6 w-6 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
+                <div className="h-6 w-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
               </div>
             ) : filtered.length === 0 ? (
-              <p className="text-sm text-stone-400 text-center py-6">
+              <p className="text-sm text-slate-400 text-center py-6">
                 {contactSearch ? 'No matches found' : 'No contacts available'}
               </p>
             ) : (
@@ -256,15 +256,15 @@ function NewMessageDialog({
                     onStartConversation(contact.id, contact.displayName);
                     onOpenChange(false);
                   }}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-stone-50 transition-colors text-left"
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50 transition-colors text-left"
                 >
                   <Avatar fallback={contact.displayName.charAt(0).toUpperCase()} size="sm" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-stone-800 truncate">
+                    <p className="text-sm font-medium text-slate-800 truncate">
                       {contact.displayName}
                     </p>
                     {contact.role && (
-                      <p className="text-xs text-stone-400 capitalize">{contact.role}</p>
+                      <p className="text-xs text-slate-400 capitalize">{contact.role}</p>
                     )}
                   </div>
                 </button>
@@ -507,19 +507,19 @@ export default function Messages() {
   // ================================================
   if (activeConversation) {
     return (
-      <div className="h-[calc(100vh-8rem)] flex flex-col bg-white rounded-xl border border-stone-200 overflow-hidden">
+      <div className="h-[calc(100vh-8rem)] flex flex-col bg-white rounded-xl border border-slate-200 overflow-hidden">
         {/* Header */}
-        <div className="flex items-center gap-3 px-4 py-3 border-b border-stone-200 bg-stone-50 flex-shrink-0">
+        <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-200 bg-slate-50 flex-shrink-0">
           <button
             onClick={() => setActiveConversation(null)}
-            className="p-1.5 rounded-lg hover:bg-stone-200 transition-colors text-stone-600"
+            className="p-1.5 rounded-lg hover:bg-slate-200 transition-colors text-slate-600"
             aria-label="Back to conversations"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
           <Avatar fallback={activeConvName.charAt(0).toUpperCase()} size="sm" />
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold text-stone-800 truncate">{activeConvName}</p>
+            <p className="text-sm font-semibold text-slate-800 truncate">{activeConvName}</p>
           </div>
         </div>
 
@@ -528,15 +528,15 @@ export default function Messages() {
           {loadingMessages ? (
             <div className="flex items-center justify-center h-full">
               <div className="flex flex-col items-center gap-3">
-                <div className="h-8 w-8 rounded-full border-2 border-amber-600 border-t-transparent animate-spin" />
-                <p className="text-sm text-stone-400">Loading messages...</p>
+                <div className="h-8 w-8 rounded-full border-2 border-blue-600 border-t-transparent animate-spin" />
+                <p className="text-sm text-slate-400">Loading messages...</p>
               </div>
             </div>
           ) : messages.length === 0 ? (
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
-                <MessageSquare className="h-10 w-10 text-stone-300 mx-auto mb-3" />
-                <p className="text-sm text-stone-400">No messages yet. Say hello!</p>
+                <MessageSquare className="h-10 w-10 text-slate-300 mx-auto mb-3" />
+                <p className="text-sm text-slate-400">No messages yet. Say hello!</p>
               </div>
             </div>
           ) : (
@@ -550,7 +550,7 @@ export default function Messages() {
         </div>
 
         {/* Input bar */}
-        <div className="flex items-center gap-2 px-4 py-3 border-t border-stone-200 bg-stone-50 flex-shrink-0">
+        <div className="flex items-center gap-2 px-4 py-3 border-t border-slate-200 bg-slate-50 flex-shrink-0">
           {/* Hidden file input */}
           <input
             ref={fileInputRef}
@@ -561,7 +561,7 @@ export default function Messages() {
           />
           <button
             onClick={handleFileSelect}
-            className="flex-shrink-0 p-2 rounded-lg text-stone-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
+            className="flex-shrink-0 p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
             aria-label="Attach file"
           >
             <Paperclip className="h-5 w-5" />
@@ -596,8 +596,8 @@ export default function Messages() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4 flex-shrink-0">
         <div>
-          <h2 className="text-2xl font-bold text-stone-800">Messages</h2>
-          <p className="text-sm text-stone-500 mt-1">Stay connected with your support team</p>
+          <h2 className="text-2xl font-bold text-slate-800">Messages</h2>
+          <p className="text-sm text-slate-500 mt-1">Stay connected with your support team</p>
         </div>
         <Button
           size="sm"
@@ -609,7 +609,7 @@ export default function Messages() {
 
       {/* Search */}
       <div className="relative mb-4 flex-shrink-0">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
         <Input
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -623,27 +623,27 @@ export default function Messages() {
         {loadingConversations ? (
           <div className="flex items-center justify-center py-16">
             <div className="flex flex-col items-center gap-3">
-              <div className="h-8 w-8 rounded-full border-2 border-amber-600 border-t-transparent animate-spin" />
-              <p className="text-sm text-stone-400">Loading conversations...</p>
+              <div className="h-8 w-8 rounded-full border-2 border-blue-600 border-t-transparent animate-spin" />
+              <p className="text-sm text-slate-400">Loading conversations...</p>
             </div>
           </div>
         ) : filteredConversations.length === 0 ? (
           <div className="flex items-center justify-center py-16">
             <div className="text-center px-6">
-              <div className="h-16 w-16 rounded-full bg-stone-100 flex items-center justify-center mx-auto mb-4">
-                <MessageSquare className="h-8 w-8 text-stone-300" />
+              <div className="h-16 w-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
+                <MessageSquare className="h-8 w-8 text-slate-300" />
               </div>
               {searchQuery.trim() ? (
                 <>
-                  <p className="text-base font-medium text-stone-600">No results found</p>
-                  <p className="text-sm text-stone-400 mt-1">
+                  <p className="text-base font-medium text-slate-600">No results found</p>
+                  <p className="text-sm text-slate-400 mt-1">
                     Try a different search term
                   </p>
                 </>
               ) : (
                 <>
-                  <p className="text-base font-medium text-stone-600">No conversations yet</p>
-                  <p className="text-sm text-stone-400 mt-1">
+                  <p className="text-base font-medium text-slate-600">No conversations yet</p>
+                  <p className="text-sm text-slate-400 mt-1">
                     Your case manager will reach out soon, or start a new message.
                   </p>
                   <Button

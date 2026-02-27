@@ -18,7 +18,7 @@ export function Avatar({ src, alt, fallback, size = 'md', className, ...props }:
   return (
     <div
       className={cn(
-        'relative rounded-full overflow-hidden bg-amber-100 flex items-center justify-center',
+        'relative rounded-full overflow-hidden bg-blue-100 flex items-center justify-center',
         sizeClasses[size],
         className
       )}
@@ -27,7 +27,7 @@ export function Avatar({ src, alt, fallback, size = 'md', className, ...props }:
       {src ? (
         <img src={src} alt={alt || ''} className="h-full w-full object-cover" />
       ) : (
-        <span className="font-medium text-amber-700">
+        <span className="font-medium text-blue-700">
           {fallback || alt?.charAt(0)?.toUpperCase() || '?'}
         </span>
       )}

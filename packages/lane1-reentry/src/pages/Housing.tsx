@@ -118,13 +118,13 @@ const TYPE_BADGE_STYLES: Record<HousingType, string> = {
   sober_living: 'bg-green-100 text-green-800',
   transitional: 'bg-blue-100 text-blue-800',
   affordable: 'bg-purple-100 text-purple-800',
-  shelter: 'bg-amber-100 text-amber-800',
+  shelter: 'bg-blue-100 text-blue-800',
   section_8: 'bg-teal-100 text-teal-800',
 };
 
 const AVAILABILITY_CONFIG: Record<AvailabilityStatus, { label: string; style: string; icon: typeof CheckCircle2 }> = {
   available: { label: 'Available', style: 'text-green-700 bg-green-50', icon: CheckCircle2 },
-  waitlist: { label: 'Waitlist', style: 'text-amber-700 bg-amber-50', icon: AlertCircle },
+  waitlist: { label: 'Waitlist', style: 'text-blue-700 bg-blue-50', icon: AlertCircle },
   full: { label: 'Full', style: 'text-red-700 bg-red-50', icon: XCircle },
 };
 
@@ -621,12 +621,12 @@ function FilterBar({
   const [filtersExpanded, setFiltersExpanded] = useState(false);
 
   return (
-    <Card className="bg-gradient-to-br from-amber-50 to-stone-50 border-amber-200">
+    <Card className="bg-gradient-to-br from-blue-50 to-slate-50 border-blue-200">
       <CardContent className="p-4">
         <div className="space-y-3">
           {/* Search Input */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <Input
               placeholder="Search by name, address, or keyword..."
               value={searchQuery}
@@ -638,7 +638,7 @@ function FilterBar({
           {/* Toggle filters on mobile */}
           <button
             onClick={() => setFiltersExpanded((prev) => !prev)}
-            className="flex items-center gap-2 text-sm font-medium text-amber-700 hover:text-amber-800 transition-colors sm:hidden"
+            className="flex items-center gap-2 text-sm font-medium text-blue-700 hover:text-blue-800 transition-colors sm:hidden"
           >
             <Filter className="h-4 w-4" />
             {filtersExpanded ? 'Hide Filters' : 'Show Filters'}
@@ -653,7 +653,7 @@ function FilterBar({
           <div className={`space-y-3 ${filtersExpanded ? 'block' : 'hidden'} sm:block`}>
             {/* Housing Type Filter Pills */}
             <div>
-              <label className="block text-xs font-medium text-stone-500 uppercase tracking-wide mb-1.5">
+              <label className="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-1.5">
                 Housing Type
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -663,8 +663,8 @@ function FilterBar({
                     onClick={() => onTypeToggle(typeFilter.value)}
                     className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${
                       selectedTypes.has(typeFilter.value)
-                        ? 'bg-amber-600 border-amber-600 text-white'
-                        : 'bg-white border-stone-200 text-stone-600 hover:border-amber-300 hover:bg-amber-50'
+                        ? 'bg-blue-600 border-blue-600 text-white'
+                        : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:bg-blue-50'
                     }`}
                   >
                     {typeFilter.label}
@@ -677,7 +677,7 @@ function FilterBar({
             <div className="flex flex-wrap items-end gap-4">
               {/* Price Range */}
               <div>
-                <label className="block text-xs font-medium text-stone-500 uppercase tracking-wide mb-1.5">
+                <label className="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-1.5">
                   Price Range ($/month)
                 </label>
                 <div className="flex items-center gap-2">
@@ -689,7 +689,7 @@ function FilterBar({
                     className="w-24 h-8 text-xs"
                     min={0}
                   />
-                  <span className="text-stone-400 text-xs">to</span>
+                  <span className="text-slate-400 text-xs">to</span>
                   <Input
                     type="number"
                     placeholder="Max"
@@ -703,7 +703,7 @@ function FilterBar({
 
               {/* Distance Radius */}
               <div>
-                <label className="block text-xs font-medium text-stone-500 uppercase tracking-wide mb-1.5">
+                <label className="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-1.5">
                   Distance
                 </label>
                 <div className="flex flex-wrap gap-1.5">
@@ -713,8 +713,8 @@ function FilterBar({
                       onClick={() => onDistanceChange(d)}
                       className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${
                         distanceRadius === d
-                          ? 'bg-amber-600 border-amber-600 text-white'
-                          : 'bg-white border-stone-200 text-stone-600 hover:border-amber-300 hover:bg-amber-50'
+                          ? 'bg-blue-600 border-blue-600 text-white'
+                          : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:bg-blue-50'
                       }`}
                     >
                       {d} mi
@@ -746,7 +746,7 @@ function AmenityIcon({ amenity, size = 'sm' }: AmenityIconProps) {
 
   return (
     <span
-      className="inline-flex items-center gap-1 text-stone-500"
+      className="inline-flex items-center gap-1 text-slate-500"
       title={config.label}
     >
       <IconComponent className={iconSize} />
@@ -777,10 +777,10 @@ function HousingCard({ listing, isSaved, onToggleSave, onOpenDetail }: HousingCa
           {/* Header Row */}
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-stone-800 text-base leading-tight">
+              <h3 className="font-semibold text-slate-800 text-base leading-tight">
                 {listing.name}
               </h3>
-              <p className="text-sm text-stone-600 mt-0.5">
+              <p className="text-sm text-slate-600 mt-0.5">
                 {listing.address}, {listing.city}
               </p>
             </div>
@@ -788,8 +788,8 @@ function HousingCard({ listing, isSaved, onToggleSave, onOpenDetail }: HousingCa
               onClick={() => onToggleSave(listing.id)}
               className={`flex-shrink-0 p-1.5 rounded-lg transition-colors ${
                 isSaved
-                  ? 'text-amber-600 bg-amber-50 hover:bg-amber-100'
-                  : 'text-stone-300 hover:text-amber-500 hover:bg-stone-50'
+                  ? 'text-blue-600 bg-blue-50 hover:bg-blue-100'
+                  : 'text-slate-300 hover:text-blue-500 hover:bg-slate-50'
               }`}
               aria-label={isSaved ? 'Remove from saved listings' : 'Save listing'}
             >
@@ -802,7 +802,7 @@ function HousingCard({ listing, isSaved, onToggleSave, onOpenDetail }: HousingCa
           </div>
 
           {/* Meta Info */}
-          <div className="flex flex-wrap items-center gap-2 text-sm text-stone-500">
+          <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500">
             <span className="inline-flex items-center gap-1">
               <DollarSign className="h-3.5 w-3.5" />
               {formatPrice(listing)}
@@ -888,15 +888,15 @@ function HousingDetailModal({ listing, open, onOpenChange, isSaved, onToggleSave
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogHeader>
         <DialogTitle>{listing.name}</DialogTitle>
-        <p className="text-sm text-stone-500 mt-1">
+        <p className="text-sm text-slate-500 mt-1">
           {listing.address}, {listing.city}
         </p>
       </DialogHeader>
       <DialogContent>
         <div className="space-y-5">
           {/* Photo placeholder */}
-          <div className="bg-stone-100 rounded-lg h-40 flex items-center justify-center">
-            <div className="text-center text-stone-400">
+          <div className="bg-slate-100 rounded-lg h-40 flex items-center justify-center">
+            <div className="text-center text-slate-400">
               <ImageOff className="h-8 w-8 mx-auto mb-2" />
               <p className="text-xs">Photos coming soon</p>
             </div>
@@ -904,15 +904,15 @@ function HousingDetailModal({ listing, open, onOpenChange, isSaved, onToggleSave
 
           {/* Quick Info */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-stone-50 rounded-lg p-3 text-center">
-              <DollarSign className="h-4 w-4 mx-auto text-stone-400 mb-1" />
-              <p className="text-sm font-semibold text-stone-800">{formatPrice(listing)}</p>
-              <p className="text-[11px] text-stone-500">Price</p>
+            <div className="bg-slate-50 rounded-lg p-3 text-center">
+              <DollarSign className="h-4 w-4 mx-auto text-slate-400 mb-1" />
+              <p className="text-sm font-semibold text-slate-800">{formatPrice(listing)}</p>
+              <p className="text-[11px] text-slate-500">Price</p>
             </div>
-            <div className="bg-stone-50 rounded-lg p-3 text-center">
-              <MapPin className="h-4 w-4 mx-auto text-stone-400 mb-1" />
-              <p className="text-sm font-semibold text-stone-800">{formatDistance(listing.distance)}</p>
-              <p className="text-[11px] text-stone-500">Distance</p>
+            <div className="bg-slate-50 rounded-lg p-3 text-center">
+              <MapPin className="h-4 w-4 mx-auto text-slate-400 mb-1" />
+              <p className="text-sm font-semibold text-slate-800">{formatDistance(listing.distance)}</p>
+              <p className="text-[11px] text-slate-500">Distance</p>
             </div>
           </div>
 
@@ -923,14 +923,14 @@ function HousingDetailModal({ listing, open, onOpenChange, isSaved, onToggleSave
                 <AvailIcon className="h-3 w-3" />
                 {availConfig.label}
               </span>
-              <span className="text-xs text-stone-500">
+              <span className="text-xs text-slate-500">
                 {listing.currentOccupancy}/{listing.capacity} occupied ({occupancyPercent}%)
               </span>
             </div>
-            <div className="w-full bg-stone-200 rounded-full h-2">
+            <div className="w-full bg-slate-200 rounded-full h-2">
               <div
                 className={`h-2 rounded-full transition-all ${
-                  occupancyPercent >= 90 ? 'bg-red-500' : occupancyPercent >= 70 ? 'bg-amber-500' : 'bg-green-500'
+                  occupancyPercent >= 90 ? 'bg-red-500' : occupancyPercent >= 70 ? 'bg-blue-500' : 'bg-green-500'
                 }`}
                 style={{ width: `${occupancyPercent}%` }}
               />
@@ -949,19 +949,19 @@ function HousingDetailModal({ listing, open, onOpenChange, isSaved, onToggleSave
 
           {/* Description */}
           <div>
-            <h4 className="text-sm font-medium text-stone-700 mb-1.5">About</h4>
-            <p className="text-sm text-stone-600 leading-relaxed">{listing.description}</p>
+            <h4 className="text-sm font-medium text-slate-700 mb-1.5">About</h4>
+            <p className="text-sm text-slate-600 leading-relaxed">{listing.description}</p>
           </div>
 
           {/* Amenities */}
           {listing.amenities.length > 0 && (
             <div>
-              <h4 className="text-sm font-medium text-stone-700 mb-1.5">Amenities</h4>
+              <h4 className="text-sm font-medium text-slate-700 mb-1.5">Amenities</h4>
               <div className="flex flex-wrap gap-2">
                 {listing.amenities.map((amenity) => (
                   <span
                     key={amenity}
-                    className="inline-flex items-center gap-1.5 bg-stone-50 border border-stone-200 rounded-lg px-2.5 py-1.5 text-xs text-stone-600"
+                    className="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-600"
                   >
                     <AmenityIcon amenity={amenity} />
                     {AMENITY_CONFIG[amenity].label}
@@ -974,11 +974,11 @@ function HousingDetailModal({ listing, open, onOpenChange, isSaved, onToggleSave
           {/* Rules */}
           {listing.rules.length > 0 && (
             <div>
-              <h4 className="text-sm font-medium text-stone-700 mb-1.5">House Rules</h4>
+              <h4 className="text-sm font-medium text-slate-700 mb-1.5">House Rules</h4>
               <ul className="space-y-1.5">
                 {listing.rules.map((rule) => (
-                  <li key={rule} className="flex items-start gap-2 text-sm text-stone-600">
-                    <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-amber-400 flex-shrink-0" />
+                  <li key={rule} className="flex items-start gap-2 text-sm text-slate-600">
+                    <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-blue-400 flex-shrink-0" />
                     {rule}
                   </li>
                 ))}
@@ -989,10 +989,10 @@ function HousingDetailModal({ listing, open, onOpenChange, isSaved, onToggleSave
           {/* Requirements */}
           {listing.requirements.length > 0 && (
             <div>
-              <h4 className="text-sm font-medium text-stone-700 mb-1.5">Requirements</h4>
+              <h4 className="text-sm font-medium text-slate-700 mb-1.5">Requirements</h4>
               <ul className="space-y-1.5">
                 {listing.requirements.map((req) => (
-                  <li key={req} className="flex items-start gap-2 text-sm text-stone-600">
+                  <li key={req} className="flex items-start gap-2 text-sm text-slate-600">
                     <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-blue-400 flex-shrink-0" />
                     {req}
                   </li>
@@ -1002,15 +1002,15 @@ function HousingDetailModal({ listing, open, onOpenChange, isSaved, onToggleSave
           )}
 
           {/* Contact Info */}
-          <div className="bg-stone-50 rounded-lg p-4">
-            <h4 className="text-sm font-medium text-stone-700 mb-2">Contact Information</h4>
-            <div className="space-y-1.5 text-sm text-stone-600">
+          <div className="bg-slate-50 rounded-lg p-4">
+            <h4 className="text-sm font-medium text-slate-700 mb-2">Contact Information</h4>
+            <div className="space-y-1.5 text-sm text-slate-600">
               <p className="flex items-center gap-2">
-                <Phone className="h-3.5 w-3.5 text-stone-400" />
+                <Phone className="h-3.5 w-3.5 text-slate-400" />
                 {listing.contactPhone}
               </p>
               <p className="flex items-center gap-2">
-                <ExternalLink className="h-3.5 w-3.5 text-stone-400" />
+                <ExternalLink className="h-3.5 w-3.5 text-slate-400" />
                 {listing.contactEmail}
               </p>
             </div>
@@ -1070,31 +1070,31 @@ interface ViewTabsProps {
 
 function ViewTabs({ activeTab, onTabChange, savedCount, totalCount }: ViewTabsProps) {
   return (
-    <div className="flex items-center gap-1 p-1 rounded-lg bg-stone-100">
+    <div className="flex items-center gap-1 p-1 rounded-lg bg-slate-100">
       <button
         onClick={() => onTabChange('search')}
         className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
           activeTab === 'search'
-            ? 'bg-white text-stone-800 shadow-sm'
-            : 'text-stone-500 hover:text-stone-700'
+            ? 'bg-white text-slate-800 shadow-sm'
+            : 'text-slate-500 hover:text-slate-700'
         }`}
       >
         <Search className="h-4 w-4" />
         Search
-        <span className="text-xs text-stone-400">({totalCount})</span>
+        <span className="text-xs text-slate-400">({totalCount})</span>
       </button>
       <button
         onClick={() => onTabChange('saved')}
         className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
           activeTab === 'saved'
-            ? 'bg-white text-stone-800 shadow-sm'
-            : 'text-stone-500 hover:text-stone-700'
+            ? 'bg-white text-slate-800 shadow-sm'
+            : 'text-slate-500 hover:text-slate-700'
         }`}
       >
         <Heart className="h-4 w-4" />
         Saved
         {savedCount > 0 && (
-          <span className="inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-amber-100 text-amber-800 text-xs font-medium px-1.5">
+          <span className="inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-blue-100 text-blue-800 text-xs font-medium px-1.5">
             {savedCount}
           </span>
         )}
@@ -1114,13 +1114,13 @@ interface EmptyStateProps {
 function EmptyState({ variant }: EmptyStateProps) {
   if (variant === 'no-saved') {
     return (
-      <Card className="border-dashed border-stone-300">
+      <Card className="border-dashed border-slate-300">
         <CardContent className="p-8 text-center">
-          <div className="mx-auto mb-4 h-14 w-14 rounded-full bg-amber-50 flex items-center justify-center">
-            <Bookmark className="h-7 w-7 text-amber-400" />
+          <div className="mx-auto mb-4 h-14 w-14 rounded-full bg-blue-50 flex items-center justify-center">
+            <Bookmark className="h-7 w-7 text-blue-400" />
           </div>
-          <h3 className="font-semibold text-stone-700 mb-1">No saved listings yet</h3>
-          <p className="text-sm text-stone-500 max-w-sm mx-auto">
+          <h3 className="font-semibold text-slate-700 mb-1">No saved listings yet</h3>
+          <p className="text-sm text-slate-500 max-w-sm mx-auto">
             Tap the bookmark icon on any housing listing to save it here for easy access later.
             Having options is the first step toward finding your next home.
           </p>
@@ -1130,13 +1130,13 @@ function EmptyState({ variant }: EmptyStateProps) {
   }
 
   return (
-    <Card className="border-dashed border-stone-300">
+    <Card className="border-dashed border-slate-300">
       <CardContent className="p-8 text-center">
-        <div className="mx-auto mb-4 h-14 w-14 rounded-full bg-amber-50 flex items-center justify-center">
-          <Search className="h-7 w-7 text-amber-400" />
+        <div className="mx-auto mb-4 h-14 w-14 rounded-full bg-blue-50 flex items-center justify-center">
+          <Search className="h-7 w-7 text-blue-400" />
         </div>
-        <h3 className="font-semibold text-stone-700 mb-1">No listings match your filters</h3>
-        <p className="text-sm text-stone-500 max-w-sm mx-auto">
+        <h3 className="font-semibold text-slate-700 mb-1">No listings match your filters</h3>
+        <p className="text-sm text-slate-500 max-w-sm mx-auto">
           Try adjusting your search, filters, or distance radius.
           New housing options are added regularly. Keep looking — your next home is out there.
         </p>
@@ -1258,14 +1258,14 @@ export default function Housing() {
       {/* Back link */}
       <Link
         to="/tools"
-        className="inline-flex items-center gap-1 text-sm text-amber-700 hover:text-amber-800 -mt-2 mb-2"
+        className="inline-flex items-center gap-1 text-sm text-blue-700 hover:text-blue-800 -mt-2 mb-2"
       >
         <ChevronLeft className="h-4 w-4" />
         Back to Tools
       </Link>
 
       {/* Encouraging banner */}
-      <Card className="bg-gradient-to-r from-amber-600 to-amber-700 border-amber-700 text-white">
+      <Card className="bg-gradient-to-r from-blue-600 to-blue-700 border-blue-700 text-white">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
             <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
@@ -1273,7 +1273,7 @@ export default function Housing() {
             </div>
             <div>
               <h3 className="font-semibold text-white text-sm">A safe place to call home</h3>
-              <p className="text-amber-100 text-sm mt-0.5">
+              <p className="text-blue-100 text-sm mt-0.5">
                 Stable housing is the foundation for everything else. Browse sober living homes,
                 shelters, transitional programs, and affordable apartments across the Phoenix metro area.
                 Many of these organizations specifically serve people rebuilding their lives.
@@ -1307,7 +1307,7 @@ export default function Housing() {
 
       {/* Results Count */}
       {displayedListings.length > 0 && (
-        <p className="text-sm text-stone-500">
+        <p className="text-sm text-slate-500">
           Showing {displayedListings.length}{' '}
           {displayedListings.length === 1 ? 'listing' : 'listings'}
           {activeTab === 'saved' ? ' you saved' : ''}

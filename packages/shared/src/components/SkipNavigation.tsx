@@ -34,13 +34,13 @@ function SkipNavLink({ targetId, label }: SkipNavLinkProps): React.JSX.Element {
         'focus:top-0 focus:z-[9999]',
         'focus:block focus:overflow-visible',
         // Styling when visible
-        'focus:bg-amber-500 focus:text-white',
+        'focus:bg-blue-500 focus:text-white',
         'focus:px-6 focus:py-3',
         'focus:text-sm focus:font-semibold',
         'focus:no-underline',
         'focus:shadow-lg',
         // Focus ring for additional visibility
-        'focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2',
+        'focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2',
         // Smooth transition for appearance
         'transition-all duration-150',
       ].join(' ')}

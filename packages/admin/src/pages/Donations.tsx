@@ -37,8 +37,8 @@ function StatCard({ label, value, change, changeType, icon: Icon, iconBg }: Stat
           <Icon className="h-6 w-6" />
         </div>
         <div className="flex-1">
-          <p className="text-2xl font-bold text-stone-800">{value}</p>
-          <p className="text-xs text-stone-500">{label}</p>
+          <p className="text-2xl font-bold text-slate-800">{value}</p>
+          <p className="text-xs text-slate-500">{label}</p>
         </div>
         {change && (
           <div className={cn(
@@ -114,31 +114,31 @@ function CampaignCard({ campaign }: { readonly campaign: Campaign }) {
   const isComplete = campaign.raised >= campaign.goal;
 
   return (
-    <div className="p-4 rounded-lg border border-stone-100 hover:bg-stone-50 transition-colors">
+    <div className="p-4 rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors">
       <div className="flex items-center justify-between mb-2">
-        <p className="text-sm font-medium text-stone-700">{campaign.name}</p>
+        <p className="text-sm font-medium text-slate-700">{campaign.name}</p>
         <Badge variant={campaign.active ? (isComplete ? 'success' : 'default') : 'secondary'}>
           {isComplete ? 'Goal Met' : campaign.active ? 'Active' : 'Ended'}
         </Badge>
       </div>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-lg font-bold text-stone-800">
+        <span className="text-lg font-bold text-slate-800">
           ${campaign.raised.toLocaleString()}
         </span>
-        <span className="text-sm text-stone-500">
+        <span className="text-sm text-slate-500">
           of ${campaign.goal.toLocaleString()}
         </span>
       </div>
-      <div className="h-2 bg-stone-100 rounded-full overflow-hidden mb-2">
+      <div className="h-2 bg-slate-100 rounded-full overflow-hidden mb-2">
         <div
           className={cn(
             'h-full rounded-full transition-all',
-            isComplete ? 'bg-green-500' : 'bg-amber-600',
+            isComplete ? 'bg-green-500' : 'bg-blue-600',
           )}
           style={{ width: `${progress}%` }}
         />
       </div>
-      <div className="flex items-center justify-between text-xs text-stone-500">
+      <div className="flex items-center justify-between text-xs text-slate-500">
         <span>{campaign.donorCount} donors</span>
         <span>{progress}% of goal</span>
       </div>
@@ -165,25 +165,25 @@ function CreateCampaignDialog({
       <DialogContent>
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium text-stone-700">Campaign Name</label>
+            <label className="text-sm font-medium text-slate-700">Campaign Name</label>
             <Input placeholder="e.g., Spring Re-Entry Fund" className="mt-1" />
           </div>
           <div>
-            <label className="text-sm font-medium text-stone-700">Goal Amount ($)</label>
+            <label className="text-sm font-medium text-slate-700">Goal Amount ($)</label>
             <Input type="number" placeholder="10000" className="mt-1" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium text-stone-700">Start Date</label>
+              <label className="text-sm font-medium text-slate-700">Start Date</label>
               <Input type="date" className="mt-1" />
             </div>
             <div>
-              <label className="text-sm font-medium text-stone-700">End Date (optional)</label>
+              <label className="text-sm font-medium text-slate-700">End Date (optional)</label>
               <Input type="date" className="mt-1" />
             </div>
           </div>
           <div>
-            <label className="text-sm font-medium text-stone-700">Description</label>
+            <label className="text-sm font-medium text-slate-700">Description</label>
             <Input placeholder="Campaign description..." className="mt-1" />
           </div>
         </div>
@@ -296,10 +296,10 @@ export default function Donations() {
   if (donationsLoading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-40 bg-stone-200 rounded animate-pulse" />
+        <div className="h-8 w-40 bg-slate-200 rounded animate-pulse" />
         <div className="grid grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-24 bg-stone-100 rounded-xl animate-pulse" />
+            <div key={i} className="h-24 bg-slate-100 rounded-xl animate-pulse" />
           ))}
         </div>
       </div>
@@ -310,8 +310,8 @@ export default function Donations() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-stone-800">Donations</h1>
-        <p className="text-sm text-stone-500">Financial overview and campaign management</p>
+        <h1 className="text-2xl font-bold text-slate-800">Donations</h1>
+        <p className="text-sm text-slate-500">Financial overview and campaign management</p>
       </div>
 
       {/* Stat Cards */}
@@ -334,7 +334,7 @@ export default function Donations() {
           label="All Time"
           value={`$${stats.allTime.toLocaleString()}`}
           icon={Heart}
-          iconBg="bg-amber-100 text-amber-700"
+          iconBg="bg-blue-100 text-blue-700"
         />
         <StatCard
           label="Recurring Donors"
@@ -370,7 +370,7 @@ export default function Donations() {
                   }}
                   formatter={(value: number) => [`$${value.toLocaleString()}`, 'Total']}
                 />
-                <Bar dataKey="total" fill="#b45309" radius={[4, 4, 0, 0]} name="Donations" />
+                <Bar dataKey="total" fill="#2563eb" radius={[4, 4, 0, 0]} name="Donations" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -385,7 +385,7 @@ export default function Donations() {
           </CardHeader>
           <CardContent>
             <div className="mb-3 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input
                 placeholder="Search donors..."
                 value={search}
@@ -395,32 +395,32 @@ export default function Donations() {
             </div>
             <div className="max-h-80 overflow-y-auto">
               {recentDonations.length === 0 ? (
-                <p className="text-sm text-stone-400 text-center py-6">No donations found.</p>
+                <p className="text-sm text-slate-400 text-center py-6">No donations found.</p>
               ) : (
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-stone-200">
-                      <th className="py-2 text-left text-xs font-semibold text-stone-500 uppercase">Donor</th>
-                      <th className="py-2 text-left text-xs font-semibold text-stone-500 uppercase">Amount</th>
-                      <th className="py-2 text-left text-xs font-semibold text-stone-500 uppercase">Date</th>
-                      <th className="py-2 text-left text-xs font-semibold text-stone-500 uppercase">Status</th>
+                    <tr className="border-b border-slate-200">
+                      <th className="py-2 text-left text-xs font-semibold text-slate-500 uppercase">Donor</th>
+                      <th className="py-2 text-left text-xs font-semibold text-slate-500 uppercase">Amount</th>
+                      <th className="py-2 text-left text-xs font-semibold text-slate-500 uppercase">Date</th>
+                      <th className="py-2 text-left text-xs font-semibold text-slate-500 uppercase">Status</th>
                     </tr>
                   </thead>
                   <tbody>
                     {recentDonations.map((don) => {
                       const donor = don.donorId ? userMap.get(don.donorId) : null;
                       return (
-                        <tr key={don.id} className="border-b border-stone-100">
-                          <td className="py-2.5 text-sm text-stone-700">
+                        <tr key={don.id} className="border-b border-slate-100">
+                          <td className="py-2.5 text-sm text-slate-700">
                             {donor?.displayName ?? 'Anonymous'}
                             {don.isRecurring && (
                               <Repeat className="h-3 w-3 inline ml-1 text-purple-500" />
                             )}
                           </td>
-                          <td className="py-2.5 text-sm font-medium text-stone-800">
+                          <td className="py-2.5 text-sm font-medium text-slate-800">
                             ${don.amount.toFixed(2)}
                           </td>
-                          <td className="py-2.5 text-xs text-stone-500">
+                          <td className="py-2.5 text-xs text-slate-500">
                             {formatDate(don.createdAt)}
                           </td>
                           <td className="py-2.5">
@@ -480,7 +480,7 @@ export default function Donations() {
           </CardHeader>
           <CardContent>
             {recurringDonors.length === 0 ? (
-              <p className="text-sm text-stone-400 text-center py-6">No recurring donors.</p>
+              <p className="text-sm text-slate-400 text-center py-6">No recurring donors.</p>
             ) : (
               <div className="space-y-2 max-h-64 overflow-y-auto">
                 {recurringDonors.slice(0, 20).map((don) => {
@@ -488,12 +488,12 @@ export default function Donations() {
                   return (
                     <div
                       key={don.id}
-                      className="flex items-center justify-between py-2 border-b border-stone-100 last:border-0"
+                      className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0"
                     >
-                      <span className="text-sm text-stone-700">
+                      <span className="text-sm text-slate-700">
                         {donor?.displayName ?? 'Anonymous'}
                       </span>
-                      <span className="text-sm font-medium text-stone-800">
+                      <span className="text-sm font-medium text-slate-800">
                         ${don.amount.toFixed(2)}/mo
                       </span>
                     </div>
@@ -508,7 +508,7 @@ export default function Donations() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-stone-400" />
+              <TrendingUp className="h-5 w-5 text-slate-400" />
               Disbursement Tracking
             </CardTitle>
             <CardDescription>How funds are allocated</CardDescription>
@@ -550,16 +550,16 @@ function DisbursementRow({
   return (
     <div>
       <div className="flex items-center justify-between mb-1">
-        <span className="text-sm text-stone-700">{label}</span>
-        <span className="text-sm font-medium text-stone-800">${amount.toLocaleString()}</span>
+        <span className="text-sm text-slate-700">{label}</span>
+        <span className="text-sm font-medium text-slate-800">${amount.toLocaleString()}</span>
       </div>
-      <div className="h-2 bg-stone-100 rounded-full overflow-hidden">
+      <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
         <div
-          className="h-full bg-amber-600 rounded-full transition-all"
+          className="h-full bg-blue-600 rounded-full transition-all"
           style={{ width: `${percent}%` }}
         />
       </div>
-      <p className="text-xs text-stone-400 mt-0.5">{percent}% of total</p>
+      <p className="text-xs text-slate-400 mt-0.5">{percent}% of total</p>
     </div>
   );
 }

@@ -49,7 +49,7 @@ function CaseManagerCard({ manager, caseloadCount, onClick }: CaseManagerCardPro
   const cap = capacityLabel(caseloadCount);
   return (
     <Card
-      className="hover:border-amber-300 transition-colors cursor-pointer"
+      className="hover:border-blue-300 transition-colors cursor-pointer"
       onClick={onClick}
     >
       <CardContent className="p-5">
@@ -57,20 +57,20 @@ function CaseManagerCard({ manager, caseloadCount, onClick }: CaseManagerCardPro
           <Avatar src={manager.photoURL} alt={manager.displayName} size="lg" />
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between">
-              <p className="font-semibold text-stone-800 truncate">{manager.displayName}</p>
+              <p className="font-semibold text-slate-800 truncate">{manager.displayName}</p>
               <Badge variant={cap.variant}>{cap.text}</Badge>
             </div>
-            <p className="text-sm text-stone-500">{manager.email}</p>
+            <p className="text-sm text-slate-500">{manager.email}</p>
 
             {/* Caseload bar */}
             <div className="mt-3">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs text-stone-500">Caseload</span>
-                <span className="text-xs font-medium text-stone-700">
+                <span className="text-xs text-slate-500">Caseload</span>
+                <span className="text-xs font-medium text-slate-700">
                   {caseloadCount} / {MAX_CASELOAD}
                 </span>
               </div>
-              <div className="h-2 bg-stone-100 rounded-full overflow-hidden">
+              <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all ${capacityColor(caseloadCount)}`}
                   style={{ width: `${Math.min((caseloadCount / MAX_CASELOAD) * 100, 100)}%` }}
@@ -79,7 +79,7 @@ function CaseManagerCard({ manager, caseloadCount, onClick }: CaseManagerCardPro
             </div>
 
             {/* Quick stats */}
-            <div className="flex items-center gap-4 mt-3 text-xs text-stone-500">
+            <div className="flex items-center gap-4 mt-3 text-xs text-slate-500">
               <span className="flex items-center gap-1">
                 <MessageSquare className="h-3.5 w-3.5" />
                 Messages
@@ -90,7 +90,7 @@ function CaseManagerCard({ manager, caseloadCount, onClick }: CaseManagerCardPro
               </span>
             </div>
           </div>
-          <ChevronRight className="h-5 w-5 text-stone-300 shrink-0 mt-1" />
+          <ChevronRight className="h-5 w-5 text-slate-300 shrink-0 mt-1" />
         </div>
       </CardContent>
     </Card>
@@ -147,7 +147,7 @@ function AssignDialog({ open, onClose, manager, unassignedMembers }: AssignDialo
       <DialogContent>
         <div className="space-y-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <Input
               placeholder="Search unassigned members..."
               value={searchQuery}
@@ -157,7 +157,7 @@ function AssignDialog({ open, onClose, manager, unassignedMembers }: AssignDialo
           </div>
           <div className="max-h-60 overflow-y-auto space-y-1">
             {filtered.length === 0 ? (
-              <p className="text-sm text-stone-400 text-center py-4">
+              <p className="text-sm text-slate-400 text-center py-4">
                 No unassigned members found.
               </p>
             ) : (
@@ -166,19 +166,19 @@ function AssignDialog({ open, onClose, manager, unassignedMembers }: AssignDialo
                   key={m.uid}
                   className={cn(
                     'flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors',
-                    selected.has(m.uid) ? 'bg-amber-50' : 'hover:bg-stone-50',
+                    selected.has(m.uid) ? 'bg-blue-50' : 'hover:bg-slate-50',
                   )}
                 >
                   <input
                     type="checkbox"
                     checked={selected.has(m.uid)}
                     onChange={() => toggleMember(m.uid)}
-                    className="rounded border-stone-300"
+                    className="rounded border-slate-300"
                   />
                   <Avatar src={m.photoURL} alt={m.displayName} size="sm" />
                   <div>
-                    <p className="text-sm font-medium text-stone-700">{m.displayName}</p>
-                    <p className="text-xs text-stone-500">{m.email}</p>
+                    <p className="text-sm font-medium text-slate-700">{m.displayName}</p>
+                    <p className="text-xs text-slate-500">{m.email}</p>
                   </div>
                 </label>
               ))
@@ -212,7 +212,7 @@ function ManagerDetail({ manager, assignedMembers, onBack, onAssign }: ManagerDe
     <div className="space-y-6">
       <button
         onClick={onBack}
-        className="text-sm text-stone-500 hover:text-stone-700 flex items-center gap-1"
+        className="text-sm text-slate-500 hover:text-slate-700 flex items-center gap-1"
       >
         &larr; Back to all managers
       </button>
@@ -221,8 +221,8 @@ function ManagerDetail({ manager, assignedMembers, onBack, onAssign }: ManagerDe
         <div className="flex items-center gap-4">
           <Avatar src={manager.photoURL} alt={manager.displayName} size="lg" />
           <div>
-            <h2 className="text-xl font-bold text-stone-800">{manager.displayName}</h2>
-            <p className="text-sm text-stone-500">{manager.email}</p>
+            <h2 className="text-xl font-bold text-slate-800">{manager.displayName}</h2>
+            <p className="text-sm text-slate-500">{manager.email}</p>
           </div>
         </div>
         <Button onClick={onAssign}>
@@ -238,7 +238,7 @@ function ManagerDetail({ manager, assignedMembers, onBack, onAssign }: ManagerDe
         </CardHeader>
         <CardContent>
           {assignedMembers.length === 0 ? (
-            <p className="text-sm text-stone-400 text-center py-6">
+            <p className="text-sm text-slate-400 text-center py-6">
               No members assigned yet.
             </p>
           ) : (
@@ -246,12 +246,12 @@ function ManagerDetail({ manager, assignedMembers, onBack, onAssign }: ManagerDe
               {assignedMembers.map((m) => (
                 <div
                   key={m.uid}
-                  className="flex items-center gap-3 p-3 rounded-lg border border-stone-100 hover:bg-stone-50"
+                  className="flex items-center gap-3 p-3 rounded-lg border border-slate-100 hover:bg-slate-50"
                 >
                   <Avatar src={m.photoURL} alt={m.displayName} size="sm" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-stone-700">{m.displayName}</p>
-                    <p className="text-xs text-stone-500">{m.email}</p>
+                    <p className="text-sm font-medium text-slate-700">{m.displayName}</p>
+                    <p className="text-xs text-slate-500">{m.email}</p>
                   </div>
                   <Badge variant={
                     m.reentry?.enrollmentStatus === 'active' ? 'success' :
@@ -260,7 +260,7 @@ function ManagerDetail({ manager, assignedMembers, onBack, onAssign }: ManagerDe
                   }>
                     {m.reentry?.enrollmentStatus ?? 'active'}
                   </Badge>
-                  <span className="text-xs text-stone-400">
+                  <span className="text-xs text-slate-400">
                     Joined {formatDate(m.createdAt)}
                   </span>
                 </div>
@@ -310,12 +310,12 @@ function ActivityLogEntry({
   readonly time: string;
 }) {
   return (
-    <div className="flex items-center gap-3 py-2 border-b border-stone-100 last:border-0">
-      <div className="h-8 w-8 rounded-full bg-stone-100 flex items-center justify-center">
-        <Icon className="h-4 w-4 text-stone-500" />
+    <div className="flex items-center gap-3 py-2 border-b border-slate-100 last:border-0">
+      <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center">
+        <Icon className="h-4 w-4 text-slate-500" />
       </div>
-      <p className="text-sm text-stone-700 flex-1">{text}</p>
-      <span className="text-xs text-stone-400">{time}</span>
+      <p className="text-sm text-slate-700 flex-1">{text}</p>
+      <span className="text-xs text-slate-400">{time}</span>
     </div>
   );
 }
@@ -373,10 +373,10 @@ export default function CaseManagers() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-48 bg-stone-200 rounded animate-pulse" />
+        <div className="h-8 w-48 bg-slate-200 rounded animate-pulse" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-36 bg-stone-100 rounded-xl animate-pulse" />
+            <div key={i} className="h-36 bg-slate-100 rounded-xl animate-pulse" />
           ))}
         </div>
       </div>
@@ -409,8 +409,8 @@ export default function CaseManagers() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-stone-800">Case Managers</h1>
-          <p className="text-sm text-stone-500">
+          <h1 className="text-2xl font-bold text-slate-800">Case Managers</h1>
+          <p className="text-sm text-slate-500">
             {caseManagers.length} managers, {unassignedMembers.length} unassigned members
           </p>
         </div>
@@ -428,7 +428,7 @@ export default function CaseManagers() {
 
       {/* Search */}
       <div className="relative max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
         <Input
           placeholder="Search case managers..."
           value={search}
@@ -442,7 +442,7 @@ export default function CaseManagers() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-stone-400" />
+              <BarChart3 className="h-5 w-5 text-slate-400" />
               Caseload Distribution
             </CardTitle>
           </CardHeader>
@@ -461,7 +461,7 @@ export default function CaseManagers() {
                       fontSize: '13px',
                     }}
                   />
-                  <Bar dataKey="caseload" fill="#b45309" radius={[4, 4, 0, 0]} name="Active Cases" />
+                  <Bar dataKey="caseload" fill="#2563eb" radius={[4, 4, 0, 0]} name="Active Cases" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -473,7 +473,7 @@ export default function CaseManagers() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filteredManagers.length === 0 ? (
           <Card className="col-span-full">
-            <CardContent className="p-8 text-center text-stone-400">
+            <CardContent className="p-8 text-center text-slate-400">
               No case managers found.
             </CardContent>
           </Card>

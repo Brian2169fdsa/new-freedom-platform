@@ -159,10 +159,10 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
               className={`
                 flex items-center justify-center w-10 h-10 rounded-full border-2 text-sm font-semibold transition-colors duration-200
                 ${isCompleted
-                  ? 'bg-amber-600 border-amber-600 text-white'
+                  ? 'bg-blue-600 border-blue-600 text-white'
                   : isCurrent
-                    ? 'bg-amber-100 border-amber-600 text-amber-700'
-                    : 'bg-stone-100 border-stone-300 text-stone-400'
+                    ? 'bg-blue-100 border-blue-600 text-blue-700'
+                    : 'bg-slate-100 border-slate-300 text-slate-400'
                 }
               `}
             >
@@ -180,7 +180,7 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
               <div
                 className={`
                   w-10 h-0.5 mx-1 transition-colors duration-200
-                  ${isActive && step < currentStep ? 'bg-amber-600' : 'bg-stone-300'}
+                  ${isActive && step < currentStep ? 'bg-blue-600' : 'bg-slate-300'}
                 `}
               />
             )}
@@ -205,8 +205,8 @@ function StepPersonalInfo({
   return (
     <>
       <CardHeader className="text-center pb-2">
-        <CardTitle className="text-xl text-stone-800">Personal Information</CardTitle>
-        <CardDescription className="text-stone-500">
+        <CardTitle className="text-xl text-slate-800">Personal Information</CardTitle>
+        <CardDescription className="text-slate-500">
           Let's start with the basics. This helps us personalize your experience.
         </CardDescription>
       </CardHeader>
@@ -214,43 +214,43 @@ function StepPersonalInfo({
         {/* First / Last name */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">First Name *</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">First Name *</label>
             <Input
               placeholder="First name"
               value={data.firstName}
               onChange={(e) => onChange({ firstName: e.target.value })}
-              className="border-stone-300 focus:border-amber-500 focus:ring-amber-500"
+              className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">Last Name *</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Last Name *</label>
             <Input
               placeholder="Last name"
               value={data.lastName}
               onChange={(e) => onChange({ lastName: e.target.value })}
-              className="border-stone-300 focus:border-amber-500 focus:ring-amber-500"
+              className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
         </div>
 
         {/* Date of birth */}
         <div>
-          <label className="block text-sm font-medium text-stone-700 mb-1">Date of Birth *</label>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Date of Birth *</label>
           <Input
             type="date"
             value={data.dateOfBirth}
             onChange={(e) => onChange({ dateOfBirth: e.target.value })}
-            className="border-stone-300 focus:border-amber-500 focus:ring-amber-500"
+            className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
 
         {/* Gender */}
         <div>
-          <label className="block text-sm font-medium text-stone-700 mb-1">Gender</label>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Gender</label>
           <select
             value={data.gender}
             onChange={(e) => onChange({ gender: e.target.value })}
-            className="w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+            className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           >
             <option value="">Select gender</option>
             {GENDER_OPTIONS.map((opt) => (
@@ -263,15 +263,15 @@ function StepPersonalInfo({
 
         {/* Preferred language */}
         <div>
-          <label className="block text-sm font-medium text-stone-700 mb-1">Preferred Language</label>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Preferred Language</label>
           <div className="flex gap-3">
             <button
               type="button"
               onClick={() => onChange({ preferredLanguage: 'en' })}
               className={`flex-1 rounded-md border px-4 py-2.5 text-sm font-medium transition-colors ${
                 data.preferredLanguage === 'en'
-                  ? 'border-amber-600 bg-amber-50 text-amber-700'
-                  : 'border-stone-300 bg-white text-stone-600 hover:bg-stone-50'
+                  ? 'border-blue-600 bg-blue-50 text-blue-700'
+                  : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
               }`}
             >
               English
@@ -281,8 +281,8 @@ function StepPersonalInfo({
               onClick={() => onChange({ preferredLanguage: 'es' })}
               className={`flex-1 rounded-md border px-4 py-2.5 text-sm font-medium transition-colors ${
                 data.preferredLanguage === 'es'
-                  ? 'border-amber-600 bg-amber-50 text-amber-700'
-                  : 'border-stone-300 bg-white text-stone-600 hover:bg-stone-50'
+                  ? 'border-blue-600 bg-blue-50 text-blue-700'
+                  : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
               }`}
             >
               Espa&ntilde;ol
@@ -308,15 +308,15 @@ function StepYourJourney({
   return (
     <>
       <CardHeader className="text-center pb-2">
-        <CardTitle className="text-xl text-stone-800">Your Journey</CardTitle>
-        <CardDescription className="text-stone-500">
+        <CardTitle className="text-xl text-slate-800">Your Journey</CardTitle>
+        <CardDescription className="text-slate-500">
           Understanding where you're coming from helps us connect you with the right resources.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Referral source */}
         <div>
-          <label className="block text-sm font-medium text-stone-700 mb-2">How did you get here? *</label>
+          <label className="block text-sm font-medium text-slate-700 mb-2">How did you get here? *</label>
           <div className="space-y-2">
             {REFERRAL_OPTIONS.map((opt) => (
               <button
@@ -325,8 +325,8 @@ function StepYourJourney({
                 onClick={() => onChange({ referralSource: opt.value })}
                 className={`w-full text-left rounded-md border px-4 py-3 text-sm font-medium transition-colors ${
                   data.referralSource === opt.value
-                    ? 'border-amber-600 bg-amber-50 text-amber-700'
-                    : 'border-stone-300 bg-white text-stone-600 hover:bg-stone-50'
+                    ? 'border-blue-600 bg-blue-50 text-blue-700'
+                    : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
                 }`}
               >
                 {opt.label}
@@ -340,37 +340,37 @@ function StepYourJourney({
           data.referralSource === 'prison' ||
           data.referralSource === 'other_program') && (
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">Facility / Program Name</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Facility / Program Name</label>
             <Input
               placeholder="Name of facility or program"
               value={data.facilityName}
               onChange={(e) => onChange({ facilityName: e.target.value })}
-              className="border-stone-300 focus:border-amber-500 focus:ring-amber-500"
+              className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
         )}
 
         {/* Release date */}
         <div>
-          <label className="block text-sm font-medium text-stone-700 mb-1">Release Date</label>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Release Date</label>
           <Input
             type="date"
             value={data.releaseDate}
             onChange={(e) => onChange({ releaseDate: e.target.value })}
-            className="border-stone-300 focus:border-amber-500 focus:ring-amber-500"
+            className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
 
         {/* Parole officer */}
         <div>
-          <label className="block text-sm font-medium text-stone-700 mb-1">
-            Parole / Probation Officer <span className="text-stone-400 font-normal">(optional)</span>
+          <label className="block text-sm font-medium text-slate-700 mb-1">
+            Parole / Probation Officer <span className="text-slate-400 font-normal">(optional)</span>
           </label>
           <Input
             placeholder="Officer name"
             value={data.paroleOfficerName}
             onChange={(e) => onChange({ paroleOfficerName: e.target.value })}
-            className="border-stone-300 focus:border-amber-500 focus:ring-amber-500"
+            className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
       </CardContent>
@@ -400,8 +400,8 @@ function StepNeedsAssessment({
   return (
     <>
       <CardHeader className="text-center pb-2">
-        <CardTitle className="text-xl text-stone-800">Needs Assessment</CardTitle>
-        <CardDescription className="text-stone-500">
+        <CardTitle className="text-xl text-slate-800">Needs Assessment</CardTitle>
+        <CardDescription className="text-slate-500">
           Help us understand what support you need most. Select all that apply.
         </CardDescription>
       </CardHeader>
@@ -416,27 +416,27 @@ function StepNeedsAssessment({
                 onClick={() => toggleNeed(need.key)}
                 className={`flex items-center gap-2.5 rounded-lg border-2 px-3 py-3 text-left transition-all duration-200 ${
                   selected
-                    ? 'border-amber-600 bg-amber-50'
-                    : 'border-stone-200 bg-white hover:border-stone-300'
+                    ? 'border-blue-600 bg-blue-50'
+                    : 'border-slate-200 bg-white hover:border-slate-300'
                 }`}
               >
                 <span className="text-lg">{need.icon}</span>
                 <span
                   className={`text-sm font-medium ${
-                    selected ? 'text-amber-700' : 'text-stone-600'
+                    selected ? 'text-blue-700' : 'text-slate-600'
                   }`}
                 >
                   {need.label}
                 </span>
                 {selected && (
-                  <CheckCircle2 className="h-4 w-4 text-amber-600 ml-auto flex-shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-blue-600 ml-auto flex-shrink-0" />
                 )}
               </button>
             );
           })}
         </div>
 
-        <p className="text-center text-xs text-stone-400 mt-4">
+        <p className="text-center text-xs text-slate-400 mt-4">
           {selectedCount === 0
             ? 'Select at least one area where you need support'
             : `${selectedCount} area${selectedCount !== 1 ? 's' : ''} selected`}
@@ -468,8 +468,8 @@ function StepGoals({
   return (
     <>
       <CardHeader className="text-center pb-2">
-        <CardTitle className="text-xl text-stone-800">What Are Your Goals?</CardTitle>
-        <CardDescription className="text-stone-500">
+        <CardTitle className="text-xl text-slate-800">What Are Your Goals?</CardTitle>
+        <CardDescription className="text-slate-500">
           Select the areas you'd like to focus on. You can always change these later.
         </CardDescription>
       </CardHeader>
@@ -484,13 +484,13 @@ function StepGoals({
                 onClick={() => toggleGoal(goal.value)}
                 className={`relative flex flex-col items-center justify-center rounded-xl border-2 px-3 py-5 text-center transition-all duration-200 ${
                   selected
-                    ? 'border-amber-600 bg-amber-50 shadow-sm'
-                    : 'border-stone-200 bg-white hover:border-stone-300 hover:bg-stone-50'
+                    ? 'border-blue-600 bg-blue-50 shadow-sm'
+                    : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
                 }`}
               >
                 {/* Selection indicator */}
                 {selected && (
-                  <div className="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-amber-600 text-white">
+                  <div className="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-white">
                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
@@ -499,7 +499,7 @@ function StepGoals({
                 <span className="text-2xl mb-2">{goal.icon}</span>
                 <span
                   className={`text-sm font-medium ${
-                    selected ? 'text-amber-700' : 'text-stone-600'
+                    selected ? 'text-blue-700' : 'text-slate-600'
                   }`}
                 >
                   {goal.label}
@@ -514,7 +514,7 @@ function StepGoals({
             {data.selectedGoals.map((g) => (
               <Badge
                 key={g}
-                className="bg-amber-100 text-amber-700 border-amber-200 capitalize"
+                className="bg-blue-100 text-blue-700 border-blue-200 capitalize"
               >
                 {g}
               </Badge>
@@ -523,7 +523,7 @@ function StepGoals({
         )}
 
         {data.selectedGoals.length === 0 && (
-          <p className="mt-4 text-center text-sm text-stone-400">
+          <p className="mt-4 text-center text-sm text-slate-400">
             Pick at least one area to get started
           </p>
         )}
@@ -567,19 +567,19 @@ function StepDocumentUploads({
   return (
     <>
       <CardHeader className="text-center pb-2">
-        <CardTitle className="text-xl text-stone-800">Upload Documents</CardTitle>
-        <CardDescription className="text-stone-500">
+        <CardTitle className="text-xl text-slate-800">Upload Documents</CardTitle>
+        <CardDescription className="text-slate-500">
           Upload your ID, court papers, or any documents you have. You can always add more later.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Upload button */}
-        <label className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 hover:border-amber-400 bg-stone-50 hover:bg-amber-50/30 cursor-pointer py-8 transition-colors">
-          <Upload className="h-8 w-8 text-stone-400 mb-2" />
-          <span className="text-sm font-medium text-stone-600">
+        <label className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 hover:border-blue-400 bg-slate-50 hover:bg-blue-50/30 cursor-pointer py-8 transition-colors">
+          <Upload className="h-8 w-8 text-slate-400 mb-2" />
+          <span className="text-sm font-medium text-slate-600">
             Tap to upload a document
           </span>
-          <span className="text-xs text-stone-400 mt-1">
+          <span className="text-xs text-slate-400 mt-1">
             PDF, JPG, PNG, DOC accepted
           </span>
           <input
@@ -596,21 +596,21 @@ function StepDocumentUploads({
             {data.uploadedDocs.map((doc, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-3 p-3 rounded-lg bg-white border border-stone-200"
+                className="flex items-center gap-3 p-3 rounded-lg bg-white border border-slate-200"
               >
-                <FileText className="h-5 w-5 text-amber-600 flex-shrink-0" />
+                <FileText className="h-5 w-5 text-blue-600 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-stone-800 truncate">
+                  <p className="text-sm font-medium text-slate-800 truncate">
                     {doc.name}
                   </p>
-                  <p className="text-xs text-stone-400">
+                  <p className="text-xs text-slate-400">
                     {(doc.file.size / 1024).toFixed(0)} KB
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => removeDoc(idx)}
-                  className="text-stone-400 hover:text-red-500 transition-colors"
+                  className="text-slate-400 hover:text-red-500 transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -621,7 +621,7 @@ function StepDocumentUploads({
           </div>
         )}
 
-        <p className="text-center text-xs text-stone-400">
+        <p className="text-center text-xs text-slate-400">
           This step is optional. You can skip and upload documents anytime from your Document Vault.
         </p>
       </CardContent>
@@ -645,57 +645,57 @@ function StepSobriety({
   return (
     <>
       <CardHeader className="text-center pb-2">
-        <CardTitle className="text-xl text-stone-800">Your Sobriety Journey</CardTitle>
-        <CardDescription className="text-stone-500">
+        <CardTitle className="text-xl text-slate-800">Your Sobriety Journey</CardTitle>
+        <CardDescription className="text-slate-500">
           If you'd like to track your sobriety, enter your date below. This is completely optional.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Encouraging message */}
-        <div className="rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 p-5 text-center">
+        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-orange-50 border border-blue-200 p-5 text-center">
           <div className="text-3xl mb-3">🌅</div>
-          <p className="text-stone-700 font-medium leading-relaxed">
+          <p className="text-slate-700 font-medium leading-relaxed">
             Every sunrise is a new beginning. No matter where you've been,
-            <span className="text-amber-700 font-semibold"> today is the first day of the rest of your life.</span>
+            <span className="text-blue-700 font-semibold"> today is the first day of the rest of your life.</span>
           </p>
-          <p className="text-stone-500 text-sm mt-2">
+          <p className="text-slate-500 text-sm mt-2">
             We're honored to walk this path with you.
           </p>
         </div>
 
         {/* Sobriety date */}
         <div>
-          <label className="block text-sm font-medium text-stone-700 mb-1">
-            Sobriety Date <span className="text-stone-400 font-normal">(optional)</span>
+          <label className="block text-sm font-medium text-slate-700 mb-1">
+            Sobriety Date <span className="text-slate-400 font-normal">(optional)</span>
           </label>
           <Input
             type="date"
             value={data.sobrietyDate}
             onChange={(e) => onChange({ sobrietyDate: e.target.value })}
-            className="border-stone-300 focus:border-amber-500 focus:ring-amber-500"
+            className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
           />
-          <p className="text-xs text-stone-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             The date you started or plan to start your sobriety journey
           </p>
         </div>
 
         {/* Summary badges */}
-        <div className="rounded-lg bg-stone-50 border border-stone-200 p-4">
-          <p className="text-sm font-medium text-stone-600 mb-3 text-center">Your Profile Summary</p>
+        <div className="rounded-lg bg-slate-50 border border-slate-200 p-4">
+          <p className="text-sm font-medium text-slate-600 mb-3 text-center">Your Profile Summary</p>
           <div className="space-y-2">
             <div className="flex flex-wrap gap-1.5 justify-center text-xs">
-              <Badge className="bg-amber-100 text-amber-700 border-amber-200">
+              <Badge className="bg-blue-100 text-blue-700 border-blue-200">
                 {data.firstName} {data.lastName}
               </Badge>
               {data.referralSource && (
-                <Badge className="bg-stone-100 text-stone-600 border-stone-200 capitalize">
+                <Badge className="bg-slate-100 text-slate-600 border-slate-200 capitalize">
                   {data.referralSource.replace('_', ' ')}
                 </Badge>
               )}
             </div>
             <div className="flex flex-wrap gap-1.5 justify-center text-xs">
               {data.selectedGoals.map((g) => (
-                <Badge key={g} className="bg-amber-50 text-amber-600 border-amber-200 capitalize">
+                <Badge key={g} className="bg-blue-50 text-blue-600 border-blue-200 capitalize">
                   {g}
                 </Badge>
               ))}
@@ -712,7 +712,7 @@ function StepSobriety({
               </div>
             )}
             {data.uploadedDocs.length > 0 && (
-              <p className="text-center text-xs text-stone-500">
+              <p className="text-center text-xs text-slate-500">
                 {data.uploadedDocs.length} document{data.uploadedDocs.length !== 1 ? 's' : ''} ready to upload
               </p>
             )}
@@ -875,8 +875,8 @@ export default function Onboarding() {
       <div className="max-w-lg mx-auto py-6 px-4">
         {/* Header */}
         <div className="text-center mb-2">
-          <h1 className="text-2xl font-bold text-stone-800">Welcome to Re-Entry</h1>
-          <p className="text-stone-500 text-sm mt-1">
+          <h1 className="text-2xl font-bold text-slate-800">Welcome to Re-Entry</h1>
+          <p className="text-slate-500 text-sm mt-1">
             Step {step} of {TOTAL_STEPS} &mdash; {stepLabels[step - 1]}
           </p>
         </div>
@@ -885,7 +885,7 @@ export default function Onboarding() {
         <StepIndicator currentStep={step} />
 
         {/* Card */}
-        <Card className="border-stone-200 shadow-sm">
+        <Card className="border-slate-200 shadow-sm">
           {step === 1 && <StepPersonalInfo data={formData} onChange={updateForm} />}
           {step === 2 && <StepYourJourney data={formData} onChange={updateForm} />}
           {step === 3 && <StepNeedsAssessment data={formData} onChange={updateForm} />}
@@ -908,7 +908,7 @@ export default function Onboarding() {
               variant="outline"
               onClick={handleBack}
               disabled={saving}
-              className="border-stone-300 text-stone-600 hover:bg-stone-50"
+              className="border-slate-300 text-slate-600 hover:bg-slate-50"
             >
               <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -923,7 +923,7 @@ export default function Onboarding() {
             <Button
               onClick={handleNext}
               disabled={!canProceed()}
-              className="bg-amber-600 hover:bg-amber-700 text-white disabled:opacity-40"
+              className="bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-40"
             >
               Next
               <svg className="w-4 h-4 ml-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -934,7 +934,7 @@ export default function Onboarding() {
             <Button
               onClick={handleComplete}
               disabled={saving}
-              className="bg-amber-600 hover:bg-amber-700 text-white disabled:opacity-60 min-w-[160px]"
+              className="bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-60 min-w-[160px]"
             >
               {saving ? (
                 <span className="flex items-center gap-2">
@@ -957,7 +957,7 @@ export default function Onboarding() {
             <button
               type="button"
               onClick={handleSaveDraft}
-              className="text-xs text-stone-400 hover:text-amber-600 underline transition-colors"
+              className="text-xs text-slate-400 hover:text-blue-600 underline transition-colors"
             >
               {draftSaved ? 'Draft saved!' : 'Save draft and continue later'}
             </button>
@@ -965,7 +965,7 @@ export default function Onboarding() {
         )}
 
         {/* Footer encouragement */}
-        <p className="text-center text-xs text-stone-400 mt-6">
+        <p className="text-center text-xs text-slate-400 mt-6">
           Your information is private and secure. We're here to help, not judge.
         </p>
       </div>

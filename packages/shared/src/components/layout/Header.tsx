@@ -13,10 +13,10 @@ export function Header({ title, currentLane }: HeaderProps) {
   const { user } = useAuth();
 
   return (
-    <header className="sticky top-0 z-40 bg-white border-b border-stone-200">
+    <header className="sticky top-0 z-40 bg-white border-b border-slate-200">
       <div className="flex items-center justify-between h-14 px-4 max-w-7xl mx-auto">
         <div className="flex items-center gap-3">
-          <h1 className="text-lg font-semibold text-stone-800">
+          <h1 className="text-lg font-semibold text-slate-800">
             {title || 'REPrieve'}
           </h1>
           <LaneSwitcher currentLane={currentLane} />

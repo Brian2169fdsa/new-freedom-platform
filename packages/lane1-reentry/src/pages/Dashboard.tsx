@@ -72,13 +72,13 @@ function formatTime(ts: Timestamp | Date | string | undefined): string {
 function SkeletonCard({ className = '' }: { className?: string }) {
   return (
     <div
-      className={`animate-pulse rounded-2xl bg-stone-100 ${className}`}
+      className={`animate-pulse rounded-2xl bg-slate-100 ${className}`}
       aria-hidden
     >
       <div className="p-6 space-y-3">
-        <div className="h-4 w-1/3 rounded bg-stone-200" />
-        <div className="h-8 w-1/2 rounded bg-stone-200" />
-        <div className="h-3 w-2/3 rounded bg-stone-200" />
+        <div className="h-4 w-1/3 rounded bg-slate-200" />
+        <div className="h-8 w-1/2 rounded bg-slate-200" />
+        <div className="h-3 w-2/3 rounded bg-slate-200" />
       </div>
     </div>
   );
@@ -87,10 +87,10 @@ function SkeletonCard({ className = '' }: { className?: string }) {
 function SkeletonRow() {
   return (
     <div className="animate-pulse flex items-center gap-4 py-3" aria-hidden>
-      <div className="h-10 w-10 rounded-full bg-stone-200" />
+      <div className="h-10 w-10 rounded-full bg-slate-200" />
       <div className="flex-1 space-y-2">
-        <div className="h-3 w-3/4 rounded bg-stone-200" />
-        <div className="h-3 w-1/2 rounded bg-stone-200" />
+        <div className="h-3 w-3/4 rounded bg-slate-200" />
+        <div className="h-3 w-1/2 rounded bg-slate-200" />
       </div>
     </div>
   );
@@ -110,18 +110,18 @@ function SobrietyCounter({
   // No sobriety date set -- prompt the user
   if (days === null) {
     return (
-      <Card className="border-none bg-gradient-to-br from-amber-50 to-stone-50 shadow-sm">
+      <Card className="border-none bg-gradient-to-br from-blue-50 to-slate-50 shadow-sm">
         <CardContent className="flex flex-col items-center justify-center py-10 text-center">
-          <Heart className="h-10 w-10 text-amber-400 mb-3" />
-          <h2 className="text-xl font-semibold text-stone-800 mb-1">
+          <Heart className="h-10 w-10 text-blue-400 mb-3" />
+          <h2 className="text-xl font-semibold text-slate-800 mb-1">
             Track Your Journey
           </h2>
-          <p className="text-stone-500 mb-4 max-w-md">
+          <p className="text-slate-500 mb-4 max-w-md">
             Set your sobriety date and we will celebrate every milestone with
             you.
           </p>
           <Link to="/profile">
-            <Button className="bg-amber-600 hover:bg-amber-700 text-white">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white">
               Set Sobriety Date
             </Button>
           </Link>
@@ -147,13 +147,13 @@ function SobrietyCounter({
             : 'A living testament to resilience and courage.';
 
   return (
-    <Card className="border-none bg-gradient-to-br from-amber-50 via-orange-50 to-stone-50 shadow-sm overflow-hidden relative">
+    <Card className="border-none bg-gradient-to-br from-blue-50 via-orange-50 to-slate-50 shadow-sm overflow-hidden relative">
       {/* Decorative circle */}
-      <div className="absolute top-0 right-0 w-40 h-40 bg-amber-100/40 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+      <div className="absolute top-0 right-0 w-40 h-40 bg-blue-100/40 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
       <CardContent className="relative py-8 px-6 flex flex-col sm:flex-row items-center gap-6">
         {/* Big counter circle */}
-        <div className="flex-shrink-0 flex items-center justify-center w-28 h-28 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg">
+        <div className="flex-shrink-0 flex items-center justify-center w-28 h-28 rounded-full bg-gradient-to-br from-blue-500 to-orange-600 shadow-lg">
           <div className="text-center text-white">
             <span className="block text-3xl font-bold leading-none">
               {days}
@@ -165,20 +165,20 @@ function SobrietyCounter({
         </div>
 
         <div className="flex-1 text-center sm:text-left">
-          <h2 className="text-2xl font-bold text-stone-800 mb-1">
+          <h2 className="text-2xl font-bold text-slate-800 mb-1">
             {days} {days === 1 ? 'Day' : 'Days'} Strong
           </h2>
-          <p className="text-stone-500 mb-3">{encouragement}</p>
+          <p className="text-slate-500 mb-3">{encouragement}</p>
 
           {/* Progress bar toward next milestone */}
           <div className="max-w-xs mx-auto sm:mx-0">
-            <div className="flex justify-between text-xs text-stone-400 mb-1">
+            <div className="flex justify-between text-xs text-slate-400 mb-1">
               <span>Next milestone</span>
               <span>{nextMilestone} days</span>
             </div>
-            <div className="h-2 rounded-full bg-stone-200 overflow-hidden">
+            <div className="h-2 rounded-full bg-slate-200 overflow-hidden">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-500 transition-all duration-700"
+                className="h-full rounded-full bg-gradient-to-r from-blue-400 to-orange-500 transition-all duration-700"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -215,17 +215,17 @@ function StatCard({ icon, label, value, to, color, loading }: StatCardProps) {
           <div className="flex-1 min-w-0">
             {loading ? (
               <div className="animate-pulse space-y-1">
-                <div className="h-6 w-10 rounded bg-stone-200" />
-                <div className="h-3 w-16 rounded bg-stone-100" />
+                <div className="h-6 w-10 rounded bg-slate-200" />
+                <div className="h-3 w-16 rounded bg-slate-100" />
               </div>
             ) : (
               <>
-                <p className="text-2xl font-bold text-stone-800">{value}</p>
-                <p className="text-sm text-stone-500 truncate">{label}</p>
+                <p className="text-2xl font-bold text-slate-800">{value}</p>
+                <p className="text-sm text-slate-500 truncate">{label}</p>
               </>
             )}
           </div>
-          <ChevronRight className="h-5 w-5 text-stone-300 group-hover:text-amber-500 transition-colors" />
+          <ChevronRight className="h-5 w-5 text-slate-300 group-hover:text-blue-500 transition-colors" />
         </CardContent>
       </Card>
     </Link>
@@ -239,8 +239,8 @@ function StatCard({ icon, label, value, to, color, loading }: StatCardProps) {
 const APPOINTMENT_TYPE_COLORS: Record<string, string> = {
   medical: 'bg-blue-100 text-blue-700',
   therapy: 'bg-violet-100 text-violet-700',
-  legal: 'bg-stone-100 text-stone-700',
-  employment: 'bg-amber-100 text-amber-700',
+  legal: 'bg-slate-100 text-slate-700',
+  employment: 'bg-blue-100 text-blue-700',
   housing: 'bg-green-100 text-green-700',
   case_management: 'bg-orange-100 text-orange-700',
 };
@@ -250,18 +250,18 @@ function AppointmentItem({ appointment }: { appointment: Appointment }) {
 
   const apptType: string | undefined = (appointment as any).type;
   const badgeColor =
-    APPOINTMENT_TYPE_COLORS[apptType ?? ''] ?? 'bg-stone-100 text-stone-600';
+    APPOINTMENT_TYPE_COLORS[apptType ?? ''] ?? 'bg-slate-100 text-slate-600';
 
   return (
-    <div className="flex items-start gap-4 py-3 border-b border-stone-100 last:border-b-0">
-      <div className="flex-shrink-0 flex flex-col items-center justify-center w-12 h-12 rounded-xl bg-amber-50 text-amber-700">
+    <div className="flex items-start gap-4 py-3 border-b border-slate-100 last:border-b-0">
+      <div className="flex-shrink-0 flex flex-col items-center justify-center w-12 h-12 rounded-xl bg-blue-50 text-blue-700">
         <Clock className="h-5 w-5" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-medium text-stone-800 truncate">
+        <p className="font-medium text-slate-800 truncate">
           {(appointment as any).title ?? 'Appointment'}
         </p>
-        <p className="text-sm text-stone-500">
+        <p className="text-sm text-slate-500">
           {formatDate(dt)} &middot; {formatTime(dt)}
         </p>
       </div>
@@ -290,7 +290,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     icon: <Sparkles className="h-5 w-5" />,
     label: 'AI Chat',
     to: '/ai-chat',
-    color: 'bg-amber-100 text-amber-700',
+    color: 'bg-blue-100 text-blue-700',
   },
   {
     icon: <Plus className="h-5 w-5" />,
@@ -302,13 +302,13 @@ const QUICK_ACTIONS: QuickAction[] = [
     icon: <MessageSquare className="h-5 w-5" />,
     label: 'Check In',
     to: '/journal',
-    color: 'bg-stone-100 text-stone-700',
+    color: 'bg-slate-100 text-slate-700',
   },
   {
     icon: <Calendar className="h-5 w-5" />,
     label: 'Schedule',
     to: '/tools/calendar',
-    color: 'bg-amber-100 text-amber-700',
+    color: 'bg-blue-100 text-blue-700',
   },
 ];
 
@@ -327,7 +327,7 @@ function QuickActions() {
             >
               {action.icon}
             </div>
-            <span className="text-xs font-medium text-stone-600 group-hover:text-amber-700 transition-colors">
+            <span className="text-xs font-medium text-slate-600 group-hover:text-blue-700 transition-colors">
               {action.label}
             </span>
           </div>
@@ -346,23 +346,23 @@ function GoalItem({ goal }: { goal: Goal }) {
     typeof (goal as any).progress === 'number' ? (goal as any).progress : 0;
 
   return (
-    <div className="py-3 border-b border-stone-100 last:border-b-0">
+    <div className="py-3 border-b border-slate-100 last:border-b-0">
       <div className="flex items-center justify-between mb-1">
-        <p className="font-medium text-stone-800 truncate pr-4">
+        <p className="font-medium text-slate-800 truncate pr-4">
           {(goal as any).title ?? 'Untitled Goal'}
         </p>
-        <span className="text-xs font-semibold text-amber-700 flex-shrink-0">
+        <span className="text-xs font-semibold text-blue-700 flex-shrink-0">
           {progress}%
         </span>
       </div>
       {(goal as any).description && (
-        <p className="text-sm text-stone-500 truncate mb-2">
+        <p className="text-sm text-slate-500 truncate mb-2">
           {(goal as any).description}
         </p>
       )}
-      <div className="h-2 rounded-full bg-stone-100 overflow-hidden">
+      <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-500 transition-all duration-500"
+          className="h-full rounded-full bg-gradient-to-r from-blue-400 to-orange-500 transition-all duration-500"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -378,15 +378,15 @@ function GettingStartedCard() {
   const navigate = useNavigate();
 
   return (
-    <Card className="border-none bg-gradient-to-br from-amber-50 to-orange-50 shadow-sm">
+    <Card className="border-none bg-gradient-to-br from-blue-50 to-orange-50 shadow-sm">
       <CardHeader>
         <div className="flex items-center gap-2 mb-1">
-          <Sparkles className="h-5 w-5 text-amber-500" />
-          <CardTitle className="text-lg text-stone-800">
+          <Sparkles className="h-5 w-5 text-blue-500" />
+          <CardTitle className="text-lg text-slate-800">
             Welcome to REPrieve
           </CardTitle>
         </div>
-        <CardDescription className="text-stone-500">
+        <CardDescription className="text-slate-500">
           Your journey to a new chapter starts here. Setting a goal is the first
           step toward building the future you deserve.
         </CardDescription>
@@ -394,7 +394,7 @@ function GettingStartedCard() {
       <CardContent>
         <Button
           onClick={() => navigate('/goals')}
-          className="bg-amber-600 hover:bg-amber-700 text-white"
+          className="bg-blue-600 hover:bg-blue-700 text-white"
         >
           <Target className="h-4 w-4 mr-2" />
           Set Your First Goal
@@ -484,10 +484,10 @@ export default function Dashboard() {
       <div className="max-w-4xl mx-auto space-y-6 pb-12">
         {/* ── Greeting ──────────────────────────────────────────────── */}
         <div>
-          <h1 className="text-2xl font-bold text-stone-800">
+          <h1 className="text-2xl font-bold text-slate-800">
             Welcome back, {firstName}
           </h1>
-          <p className="text-stone-500 text-sm mt-0.5">
+          <p className="text-slate-500 text-sm mt-0.5">
             {new Date().toLocaleDateString('en-US', {
               weekday: 'long',
               month: 'long',
@@ -506,11 +506,11 @@ export default function Dashboard() {
         {/* ── 2. Quick Stats Grid (2x2) ────────────────────────────── */}
         <div className="grid grid-cols-2 gap-3">
           <StatCard
-            icon={<Target className="h-5 w-5 text-amber-700" />}
+            icon={<Target className="h-5 w-5 text-blue-700" />}
             label="Active Goals"
             value={allActiveGoals.length}
             to="/goals"
-            color="bg-amber-100"
+            color="bg-blue-100"
             loading={allGoalsLoading}
           />
           <StatCard
@@ -522,19 +522,19 @@ export default function Dashboard() {
             loading={jobAppsLoading}
           />
           <StatCard
-            icon={<Calendar className="h-5 w-5 text-stone-700" />}
+            icon={<Calendar className="h-5 w-5 text-slate-700" />}
             label="Upcoming"
             value={appointments.length}
             to="/tools/calendar"
-            color="bg-stone-100"
+            color="bg-slate-100"
             loading={appointmentsLoading}
           />
           <StatCard
-            icon={<MessageSquare className="h-5 w-5 text-amber-700" />}
+            icon={<MessageSquare className="h-5 w-5 text-blue-700" />}
             label="Messages"
             value={0}
             to="/messages"
-            color="bg-amber-50"
+            color="bg-blue-50"
             loading={false}
           />
         </div>
@@ -542,12 +542,12 @@ export default function Dashboard() {
         {/* ── 3. Upcoming Appointments ──────────────────────────────── */}
         <Card className="border-none shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-base text-stone-700">
+            <CardTitle className="text-base text-slate-700">
               Upcoming Appointments
             </CardTitle>
             <Link
               to="/tools/calendar"
-              className="text-sm text-amber-600 hover:text-amber-700 font-medium flex items-center gap-1"
+              className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
             >
               View All <ChevronRight className="h-4 w-4" />
             </Link>
@@ -560,14 +560,14 @@ export default function Dashboard() {
                 <SkeletonRow />
               </div>
             ) : appointments.length === 0 ? (
-              <div className="text-center py-8 text-stone-400">
+              <div className="text-center py-8 text-slate-400">
                 <Calendar className="h-8 w-8 mx-auto mb-2 opacity-50" />
                 <p className="text-sm">No upcoming appointments</p>
                 <Link to="/tools/calendar">
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="mt-2 text-amber-600 hover:text-amber-700"
+                    className="mt-2 text-blue-600 hover:text-blue-700"
                   >
                     <Plus className="h-4 w-4 mr-1" /> Schedule One
                   </Button>
@@ -587,7 +587,7 @@ export default function Dashboard() {
         {/* ── 4. Quick Actions ──────────────────────────────────────── */}
         <Card className="border-none shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base text-stone-700">
+            <CardTitle className="text-base text-slate-700">
               Quick Actions
             </CardTitle>
           </CardHeader>
@@ -604,12 +604,12 @@ export default function Dashboard() {
         ) : (
           <Card className="border-none shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-base text-stone-700">
+              <CardTitle className="text-base text-slate-700">
                 Recent Goals
               </CardTitle>
               <Link
                 to="/goals"
-                className="text-sm text-amber-600 hover:text-amber-700 font-medium flex items-center gap-1"
+                className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
               >
                 View All <ChevronRight className="h-4 w-4" />
               </Link>
@@ -624,7 +624,7 @@ export default function Dashboard() {
 
         {/* ── Motivational Footer ───────────────────────────────────── */}
         <div className="text-center pt-4 pb-8">
-          <p className="text-sm text-stone-400 italic flex items-center justify-center gap-2">
+          <p className="text-sm text-slate-400 italic flex items-center justify-center gap-2">
             <TrendingUp className="h-4 w-4" />
             One day at a time. You are building something real.
           </p>

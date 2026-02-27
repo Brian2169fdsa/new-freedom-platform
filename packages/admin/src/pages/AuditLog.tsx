@@ -41,13 +41,13 @@ const SEVERITY_CONFIG: Record<string, {
   icon: React.ElementType;
 }> = {
   info: { label: 'Info', bg: 'bg-blue-100', text: 'text-blue-800', icon: Info },
-  warning: { label: 'Warning', bg: 'bg-amber-100', text: 'text-amber-800', icon: AlertTriangle },
+  warning: { label: 'Warning', bg: 'bg-blue-100', text: 'text-blue-800', icon: AlertTriangle },
   critical: { label: 'Critical', bg: 'bg-red-100', text: 'text-red-800', icon: AlertOctagon },
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
   'User Management': '#6366f1',
-  'Moderation': '#f59e0b',
+  'Moderation': '#3b82f6',
   'Content': '#10b981',
   'Settings': '#78716c',
   'Access': '#0ea5e9',
@@ -201,7 +201,7 @@ function PieChart({ slices }: { readonly slices: readonly PieSlice[] }) {
   const total = slices.reduce((sum, s) => sum + s.count, 0);
   if (total === 0) {
     return (
-      <div className="flex items-center justify-center h-32 text-sm text-stone-400">
+      <div className="flex items-center justify-center h-32 text-sm text-slate-400">
         No data to display
       </div>
     );
@@ -235,8 +235,8 @@ function PieChart({ slices }: { readonly slices: readonly PieSlice[] }) {
                 className="h-2.5 w-2.5 rounded-full shrink-0"
                 style={{ backgroundColor: s.color }}
               />
-              <span className="text-stone-600">{s.label}</span>
-              <span className="text-stone-400">({s.count})</span>
+              <span className="text-slate-600">{s.label}</span>
+              <span className="text-slate-400">({s.count})</span>
             </div>
           ))}
       </div>
@@ -251,8 +251,8 @@ function PieChart({ slices }: { readonly slices: readonly PieSlice[] }) {
 function RowDetail({ entry }: { readonly entry: AuditLogEntry }) {
   return (
     <tr>
-      <td colSpan={6} className="px-4 py-3 bg-stone-50 border-b border-stone-100">
-        <div className="text-xs font-mono text-stone-600 whitespace-pre-wrap max-h-64 overflow-y-auto">
+      <td colSpan={6} className="px-4 py-3 bg-slate-50 border-b border-slate-100">
+        <div className="text-xs font-mono text-slate-600 whitespace-pre-wrap max-h-64 overflow-y-auto">
           {JSON.stringify(
             {
               id: entry.id,
@@ -333,23 +333,23 @@ function SummaryStats({ entries, totalEstimate }: SummaryStatsProps) {
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-2">
-            <Clock className="h-4 w-4 text-stone-400" />
+            <Clock className="h-4 w-4 text-slate-400" />
             Activity Overview
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-3 gap-3">
-            <div className="text-center p-2 bg-stone-50 rounded-lg">
-              <p className="text-xl font-bold text-stone-800">{todayCount}</p>
-              <p className="text-xs text-stone-500">Today</p>
+            <div className="text-center p-2 bg-slate-50 rounded-lg">
+              <p className="text-xl font-bold text-slate-800">{todayCount}</p>
+              <p className="text-xs text-slate-500">Today</p>
             </div>
-            <div className="text-center p-2 bg-stone-50 rounded-lg">
-              <p className="text-xl font-bold text-stone-800">{weekCount}</p>
-              <p className="text-xs text-stone-500">This Week</p>
+            <div className="text-center p-2 bg-slate-50 rounded-lg">
+              <p className="text-xl font-bold text-slate-800">{weekCount}</p>
+              <p className="text-xs text-slate-500">This Week</p>
             </div>
-            <div className="text-center p-2 bg-stone-50 rounded-lg">
-              <p className="text-xl font-bold text-stone-800">{totalEstimate}</p>
-              <p className="text-xs text-stone-500">Total</p>
+            <div className="text-center p-2 bg-slate-50 rounded-lg">
+              <p className="text-xl font-bold text-slate-800">{totalEstimate}</p>
+              <p className="text-xs text-slate-500">Total</p>
             </div>
           </div>
         </CardContent>
@@ -359,7 +359,7 @@ function SummaryStats({ entries, totalEstimate }: SummaryStatsProps) {
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-2">
-            <BarChart3 className="h-4 w-4 text-stone-400" />
+            <BarChart3 className="h-4 w-4 text-slate-400" />
             Actions by Category
           </CardTitle>
         </CardHeader>
@@ -372,13 +372,13 @@ function SummaryStats({ entries, totalEstimate }: SummaryStatsProps) {
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-2">
-            <Users className="h-4 w-4 text-stone-400" />
+            <Users className="h-4 w-4 text-slate-400" />
             Most Active Admins
           </CardTitle>
         </CardHeader>
         <CardContent>
           {topAdmins.length === 0 ? (
-            <p className="text-sm text-stone-400 text-center py-4">No data</p>
+            <p className="text-sm text-slate-400 text-center py-4">No data</p>
           ) : (
             <div className="space-y-2">
               {topAdmins.map((admin) => (
@@ -387,10 +387,10 @@ function SummaryStats({ entries, totalEstimate }: SummaryStatsProps) {
                   className="flex items-center justify-between text-sm"
                 >
                   <div className="min-w-0">
-                    <p className="font-medium text-stone-700 truncate">
+                    <p className="font-medium text-slate-700 truncate">
                       {admin.name}
                     </p>
-                    <p className="text-xs text-stone-400 truncate">
+                    <p className="text-xs text-slate-400 truncate">
                       {admin.email}
                     </p>
                   </div>
@@ -430,7 +430,7 @@ function FilterPanel({ filters, onFilterChange, onApply, onReset }: FilterPanelP
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-sm flex items-center gap-2">
-          <Filter className="h-4 w-4 text-stone-400" />
+          <Filter className="h-4 w-4 text-slate-400" />
           Filters
         </CardTitle>
       </CardHeader>
@@ -438,7 +438,7 @@ function FilterPanel({ filters, onFilterChange, onApply, onReset }: FilterPanelP
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
           {/* Date From */}
           <div>
-            <label className="text-xs font-medium text-stone-600">Date From</label>
+            <label className="text-xs font-medium text-slate-600">Date From</label>
             <Input
               type="date"
               value={filters.dateFrom}
@@ -449,7 +449,7 @@ function FilterPanel({ filters, onFilterChange, onApply, onReset }: FilterPanelP
 
           {/* Date To */}
           <div>
-            <label className="text-xs font-medium text-stone-600">Date To</label>
+            <label className="text-xs font-medium text-slate-600">Date To</label>
             <Input
               type="date"
               value={filters.dateTo}
@@ -460,11 +460,11 @@ function FilterPanel({ filters, onFilterChange, onApply, onReset }: FilterPanelP
 
           {/* Action Category */}
           <div>
-            <label className="text-xs font-medium text-stone-600">Action Type</label>
+            <label className="text-xs font-medium text-slate-600">Action Type</label>
             <select
               value={filters.actionCategory}
               onChange={(e) => updateFilter('actionCategory', e.target.value)}
-              className="mt-1 w-full h-9 rounded-lg border border-stone-300 bg-white px-3 text-sm"
+              className="mt-1 w-full h-9 rounded-lg border border-slate-300 bg-white px-3 text-sm"
             >
               {ACTION_CATEGORIES.map((cat) => (
                 <option key={cat} value={cat}>{cat}</option>
@@ -474,9 +474,9 @@ function FilterPanel({ filters, onFilterChange, onApply, onReset }: FilterPanelP
 
           {/* Actor Search */}
           <div>
-            <label className="text-xs font-medium text-stone-600">Actor</label>
+            <label className="text-xs font-medium text-slate-600">Actor</label>
             <div className="relative mt-1">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-stone-400" />
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
               <Input
                 type="text"
                 placeholder="Search name or email"
@@ -489,11 +489,11 @@ function FilterPanel({ filters, onFilterChange, onApply, onReset }: FilterPanelP
 
           {/* Severity */}
           <div>
-            <label className="text-xs font-medium text-stone-600">Severity</label>
+            <label className="text-xs font-medium text-slate-600">Severity</label>
             <select
               value={filters.severity}
               onChange={(e) => updateFilter('severity', e.target.value)}
-              className="mt-1 w-full h-9 rounded-lg border border-stone-300 bg-white px-3 text-sm"
+              className="mt-1 w-full h-9 rounded-lg border border-slate-300 bg-white px-3 text-sm"
             >
               {SEVERITY_OPTIONS.map((sev) => (
                 <option key={sev} value={sev}>
@@ -668,15 +668,15 @@ export default function AuditLog() {
   if (loading && entries.length === 0) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-52 bg-stone-200 rounded animate-pulse" />
-        <div className="h-4 w-80 bg-stone-100 rounded animate-pulse" />
+        <div className="h-8 w-52 bg-slate-200 rounded animate-pulse" />
+        <div className="h-4 w-80 bg-slate-100 rounded animate-pulse" />
         <div className="grid grid-cols-3 gap-4">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-36 bg-stone-100 rounded-xl animate-pulse" />
+            <div key={i} className="h-36 bg-slate-100 rounded-xl animate-pulse" />
           ))}
         </div>
-        <div className="h-20 bg-stone-100 rounded-xl animate-pulse" />
-        <div className="h-80 bg-stone-100 rounded-xl animate-pulse" />
+        <div className="h-20 bg-slate-100 rounded-xl animate-pulse" />
+        <div className="h-80 bg-slate-100 rounded-xl animate-pulse" />
       </div>
     );
   }
@@ -686,11 +686,11 @@ export default function AuditLog() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-stone-800 flex items-center gap-2">
-            <ShieldCheck className="h-6 w-6 text-amber-600" />
+          <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+            <ShieldCheck className="h-6 w-6 text-blue-600" />
             Audit Log
           </h1>
-          <p className="text-sm text-stone-500">
+          <p className="text-sm text-slate-500">
             Track all administrative actions for compliance and accountability
           </p>
         </div>
@@ -765,16 +765,16 @@ export default function AuditLog() {
         <CardContent className="p-0">
           {sortedEntries.length === 0 ? (
             <div className="p-12 text-center">
-              <ShieldCheck className="h-12 w-12 text-stone-300 mx-auto mb-3" />
-              <p className="text-stone-500">No audit log entries match your filters.</p>
+              <ShieldCheck className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+              <p className="text-slate-500">No audit log entries match your filters.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-stone-200 bg-stone-50">
+                  <tr className="border-b border-slate-200 bg-slate-50">
                     <th
-                      className="text-left px-4 py-2.5 font-medium text-stone-600 cursor-pointer select-none"
+                      className="text-left px-4 py-2.5 font-medium text-slate-600 cursor-pointer select-none"
                       onClick={() => setSortAsc((prev) => !prev)}
                     >
                       <span className="flex items-center gap-1">
@@ -786,19 +786,19 @@ export default function AuditLog() {
                         )}
                       </span>
                     </th>
-                    <th className="text-left px-4 py-2.5 font-medium text-stone-600">
+                    <th className="text-left px-4 py-2.5 font-medium text-slate-600">
                       Actor
                     </th>
-                    <th className="text-left px-4 py-2.5 font-medium text-stone-600">
+                    <th className="text-left px-4 py-2.5 font-medium text-slate-600">
                       Action
                     </th>
-                    <th className="text-left px-4 py-2.5 font-medium text-stone-600">
+                    <th className="text-left px-4 py-2.5 font-medium text-slate-600">
                       Target
                     </th>
-                    <th className="text-left px-4 py-2.5 font-medium text-stone-600">
+                    <th className="text-left px-4 py-2.5 font-medium text-slate-600">
                       Severity
                     </th>
-                    <th className="text-left px-4 py-2.5 font-medium text-stone-600">
+                    <th className="text-left px-4 py-2.5 font-medium text-slate-600">
                       Details
                     </th>
                   </tr>
@@ -810,47 +810,47 @@ export default function AuditLog() {
                         key={entry.id}
                         onClick={() => handleRowClick(entry.id)}
                         className={cn(
-                          'border-b border-stone-100 cursor-pointer transition-colors',
+                          'border-b border-slate-100 cursor-pointer transition-colors',
                           expandedRowId === entry.id
-                            ? 'bg-stone-50'
-                            : 'hover:bg-stone-50/50',
+                            ? 'bg-slate-50'
+                            : 'hover:bg-slate-50/50',
                         )}
                       >
-                        <td className="px-4 py-2.5 whitespace-nowrap text-stone-500 text-xs">
+                        <td className="px-4 py-2.5 whitespace-nowrap text-slate-500 text-xs">
                           {formatTimestamp(entry.createdAt)}
                         </td>
                         <td className="px-4 py-2.5">
-                          <p className="font-medium text-stone-700 text-xs">
+                          <p className="font-medium text-slate-700 text-xs">
                             {entry.actor.displayName}
                           </p>
-                          <p className="text-xs text-stone-400">
+                          <p className="text-xs text-slate-400">
                             {entry.actor.email}
                           </p>
                         </td>
                         <td className="px-4 py-2.5">
-                          <p className="font-mono text-xs text-stone-700">
+                          <p className="font-mono text-xs text-slate-700">
                             {entry.action}
                           </p>
-                          <p className="text-xs text-stone-400">
+                          <p className="text-xs text-slate-400">
                             {entry.category}
                           </p>
                         </td>
-                        <td className="px-4 py-2.5 text-xs text-stone-600">
+                        <td className="px-4 py-2.5 text-xs text-slate-600">
                           {entry.target ? (
                             <span>
-                              <span className="text-stone-400">
+                              <span className="text-slate-400">
                                 {entry.target.type}:
                               </span>{' '}
                               {entry.target.name ?? entry.target.id}
                             </span>
                           ) : (
-                            <span className="text-stone-300">--</span>
+                            <span className="text-slate-300">--</span>
                           )}
                         </td>
                         <td className="px-4 py-2.5">
                           <SeverityBadge severity={entry.severity} />
                         </td>
-                        <td className="px-4 py-2.5 text-xs text-stone-500 max-w-[200px] truncate">
+                        <td className="px-4 py-2.5 text-xs text-slate-500 max-w-[200px] truncate">
                           {entry.details
                             ? JSON.stringify(entry.details).slice(0, 60) + '...'
                             : '--'}
@@ -868,8 +868,8 @@ export default function AuditLog() {
 
           {/* Pagination */}
           {sortedEntries.length > 0 && (
-            <div className="flex items-center justify-between px-4 py-3 border-t border-stone-200">
-              <p className="text-xs text-stone-500">
+            <div className="flex items-center justify-between px-4 py-3 border-t border-slate-200">
+              <p className="text-xs text-slate-500">
                 Page {currentPage + 1}
                 {totalEstimate > 0 && (
                   <> of ~{Math.ceil(totalEstimate / PAGE_SIZE)}</>

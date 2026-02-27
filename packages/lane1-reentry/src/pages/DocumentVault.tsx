@@ -87,14 +87,14 @@ const categoryIcons: Record<DocumentCategory, React.ElementType> = {
 };
 
 const categoryColors: Record<DocumentCategory, string> = {
-  id: 'bg-amber-100 text-amber-700',
+  id: 'bg-blue-100 text-blue-700',
   birth_certificate: 'bg-pink-100 text-pink-700',
   social_security: 'bg-blue-100 text-blue-700',
   court_papers: 'bg-purple-100 text-purple-700',
   diploma: 'bg-green-100 text-green-700',
   certification: 'bg-teal-100 text-teal-700',
   medical: 'bg-red-100 text-red-700',
-  other: 'bg-stone-100 text-stone-700',
+  other: 'bg-slate-100 text-slate-700',
 };
 
 function isExpiringSoon(expirationDate?: unknown): boolean {
@@ -219,7 +219,7 @@ export default function DocumentVault() {
       {/* Back link */}
       <Link
         to="/tools"
-        className="inline-flex items-center gap-1 text-sm text-amber-700 hover:text-amber-800 -mt-2 mb-2"
+        className="inline-flex items-center gap-1 text-sm text-blue-700 hover:text-blue-800 -mt-2 mb-2"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Tools
@@ -233,8 +233,8 @@ export default function DocumentVault() {
             onClick={() => setActiveTab(cat.value)}
             className={`px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
               activeTab === cat.value
-                ? 'bg-amber-700 text-white'
-                : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                ? 'bg-blue-700 text-white'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
             {cat.label}
@@ -245,14 +245,14 @@ export default function DocumentVault() {
       {/* Document list */}
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="h-8 w-8 border-2 border-amber-700 border-t-transparent rounded-full animate-spin" />
+          <div className="h-8 w-8 border-2 border-blue-700 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filteredDocuments.length === 0 ? (
         <Card>
           <CardContent className="p-8 text-center">
-            <FolderOpen className="h-12 w-12 text-stone-300 mx-auto mb-3" />
-            <p className="text-stone-500 font-medium">No documents found</p>
-            <p className="text-sm text-stone-400 mt-1">
+            <FolderOpen className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+            <p className="text-slate-500 font-medium">No documents found</p>
+            <p className="text-sm text-slate-400 mt-1">
               {activeTab === 'all'
                 ? 'Upload your first document to get started.'
                 : `No documents in this category yet.`}
@@ -270,7 +270,7 @@ export default function DocumentVault() {
         <div className="space-y-3">
           {filteredDocuments.map((docItem) => {
             const Icon = categoryIcons[docItem.category] || FileText;
-            const colorClass = categoryColors[docItem.category] || 'bg-stone-100 text-stone-700';
+            const colorClass = categoryColors[docItem.category] || 'bg-slate-100 text-slate-700';
             const expired = isExpired(docItem.expirationDate);
             const expiringSoon = isExpiringSoon(docItem.expirationDate);
 
@@ -285,7 +285,7 @@ export default function DocumentVault() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="font-medium text-stone-800 truncate">
+                        <h4 className="font-medium text-slate-800 truncate">
                           {docItem.fileName}
                         </h4>
                         {docItem.verified && (
@@ -301,7 +301,7 @@ export default function DocumentVault() {
                           </Badge>
                         )}
                       </div>
-                      <div className="flex items-center gap-3 mt-1 text-xs text-stone-400">
+                      <div className="flex items-center gap-3 mt-1 text-xs text-slate-400">
                         <span>Uploaded {formatDate(docItem.uploadedAt)}</span>
                         {docItem.expirationDate && (
                           <span
@@ -323,7 +323,7 @@ export default function DocumentVault() {
                         href={docItem.fileURL}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="h-8 w-8 rounded-lg flex items-center justify-center text-stone-400 hover:text-amber-700 hover:bg-amber-50 transition-colors"
+                        className="h-8 w-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-blue-700 hover:bg-blue-50 transition-colors"
                         title="View"
                       >
                         <Eye className="h-4 w-4" />
@@ -331,7 +331,7 @@ export default function DocumentVault() {
                       <a
                         href={docItem.fileURL}
                         download
-                        className="h-8 w-8 rounded-lg flex items-center justify-center text-stone-400 hover:text-amber-700 hover:bg-amber-50 transition-colors"
+                        className="h-8 w-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-blue-700 hover:bg-blue-50 transition-colors"
                         title="Download"
                       >
                         <Download className="h-4 w-4" />
@@ -340,8 +340,8 @@ export default function DocumentVault() {
                         onClick={() => handleToggleSharing(docItem)}
                         className={`h-8 w-8 rounded-lg flex items-center justify-center transition-colors ${
                           (docItem as any).shared
-                            ? 'text-amber-600 bg-amber-50 hover:text-amber-700'
-                            : 'text-stone-400 hover:text-amber-600 hover:bg-amber-50'
+                            ? 'text-blue-600 bg-blue-50 hover:text-blue-700'
+                            : 'text-slate-400 hover:text-blue-600 hover:bg-blue-50'
                         }`}
                         title={(docItem as any).shared ? 'Stop sharing' : 'Share with case manager'}
                       >
@@ -349,7 +349,7 @@ export default function DocumentVault() {
                       </button>
                       <button
                         onClick={() => setDeleteTarget(docItem)}
-                        className="h-8 w-8 rounded-lg flex items-center justify-center text-stone-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                        className="h-8 w-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                         title="Delete"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -371,13 +371,13 @@ export default function DocumentVault() {
         <DialogContent>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">
+              <label className="block text-sm font-medium text-slate-700 mb-1">
                 Category
               </label>
               <select
                 value={uploadCategory}
                 onChange={(e) => setUploadCategory(e.target.value as DocumentCategory)}
-                className="flex h-10 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 {UPLOAD_CATEGORIES.map((cat) => (
                   <option key={cat.value} value={cat.value}>
@@ -388,26 +388,26 @@ export default function DocumentVault() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">
+              <label className="block text-sm font-medium text-slate-700 mb-1">
                 File
               </label>
               <div className="relative">
                 <input
                   type="file"
                   onChange={(e) => setUploadFile(e.target.files?.[0] ?? null)}
-                  className="flex h-10 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 file:mr-3 file:border-0 file:bg-amber-50 file:text-amber-700 file:text-sm file:font-medium file:rounded file:px-2 file:py-0.5 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 file:mr-3 file:border-0 file:bg-blue-50 file:text-blue-700 file:text-sm file:font-medium file:rounded file:px-2 file:py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
                 />
               </div>
               {uploadFile_ && (
-                <p className="text-xs text-stone-400 mt-1">
+                <p className="text-xs text-slate-400 mt-1">
                   {uploadFile_.name} ({(uploadFile_.size / 1024).toFixed(0)} KB)
                 </p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">
+              <label className="block text-sm font-medium text-slate-700 mb-1">
                 Expiration Date (optional)
               </label>
               <Input
@@ -438,22 +438,22 @@ export default function DocumentVault() {
       </Dialog>
 
       {/* Request Document Section */}
-      <Card className="bg-gradient-to-br from-amber-50 to-stone-50 border-amber-200">
+      <Card className="bg-gradient-to-br from-blue-50 to-slate-50 border-blue-200">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
-            <div className="h-10 w-10 rounded-lg flex items-center justify-center bg-amber-100 flex-shrink-0">
-              <AlertTriangle className="h-5 w-5 text-amber-700" />
+            <div className="h-10 w-10 rounded-lg flex items-center justify-center bg-blue-100 flex-shrink-0">
+              <AlertTriangle className="h-5 w-5 text-blue-700" />
             </div>
             <div className="flex-1 min-w-0">
-              <h4 className="text-sm font-semibold text-stone-800 mb-1">
+              <h4 className="text-sm font-semibold text-slate-800 mb-1">
                 Document Requests
               </h4>
-              <p className="text-xs text-stone-500 mb-3">
+              <p className="text-xs text-slate-500 mb-3">
                 Your case manager may request specific documents. Any pending
                 requests will appear here.
               </p>
               {pendingRequests.length === 0 ? (
-                <p className="text-xs text-stone-400 italic">
+                <p className="text-xs text-slate-400 italic">
                   No pending document requests.
                 </p>
               ) : (
@@ -461,11 +461,11 @@ export default function DocumentVault() {
                   {pendingRequests.map((req) => (
                     <div
                       key={req.id}
-                      className="flex items-center justify-between rounded-lg bg-white border border-stone-200 p-2.5"
+                      className="flex items-center justify-between rounded-lg bg-white border border-slate-200 p-2.5"
                     >
                       <div className="flex items-center gap-2 min-w-0">
-                        <Upload className="h-4 w-4 text-amber-600 flex-shrink-0" />
-                        <span className="text-sm text-stone-700 truncate">
+                        <Upload className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                        <span className="text-sm text-slate-700 truncate">
                           {(req as any).documentName || 'Requested Document'}
                         </span>
                       </div>
@@ -492,9 +492,9 @@ export default function DocumentVault() {
           <DialogTitle>Delete Document</DialogTitle>
         </DialogHeader>
         <DialogContent>
-          <p className="text-sm text-stone-600">
+          <p className="text-sm text-slate-600">
             Are you sure you want to delete{' '}
-            <span className="font-medium text-stone-800">
+            <span className="font-medium text-slate-800">
               {deleteTarget?.fileName}
             </span>
             ? This action cannot be undone.
