@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   Card, CardContent, CardHeader, CardTitle, CardDescription,
   Badge, Avatar, Button, Input,
@@ -6,11 +6,12 @@ import {
   useCollection,
   formatDate, cn,
 } from '@reprieve/shared';
+import { addDocument, updateDocument, deleteDocument } from '@reprieve/shared/services/firebase/firestore';
 import type { User, JobApplication, JobApplicationStatus } from '@reprieve/shared';
 import {
   Briefcase, TrendingUp, DollarSign, Building2,
   Plus, Search, Edit, ChevronRight,
-  Users, ArrowRight, CheckCircle,
+  Users, ArrowRight, CheckCircle, Trash2,
 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -69,9 +70,19 @@ interface Employer {
   readonly fairChance: boolean;
   readonly openPositions: number;
   readonly placements: number;
+  readonly contactName?: string;
+  readonly contactEmail?: string;
 }
 
-function EmployerCard({ employer }: { readonly employer: Employer }) {
+function EmployerCard({
+  employer,
+  onEdit,
+  onDelete,
+}: {
+  readonly employer: Employer;
+  readonly onEdit: () => void;
+  readonly onDelete: () => void;
+}) {
   return (
     <div className="flex items-center gap-4 p-4 rounded-lg border border-stone-100 hover:bg-stone-50 transition-colors">
       <div className="h-10 w-10 rounded-lg bg-stone-100 flex items-center justify-center shrink-0">
@@ -90,8 +101,11 @@ function EmployerCard({ employer }: { readonly employer: Employer }) {
         <p className="text-sm font-medium text-stone-700">{employer.openPositions} open</p>
         <p className="text-xs text-stone-500">{employer.placements} placed</p>
       </div>
-      <Button size="sm" variant="ghost">
+      <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); onEdit(); }}>
         <Edit className="h-3.5 w-3.5" />
+      </Button>
+      <Button size="sm" variant="ghost" className="text-red-500 hover:text-red-700" onClick={(e) => { e.stopPropagation(); onDelete(); }}>
+        <Trash2 className="h-3.5 w-3.5" />
       </Button>
     </div>
   );
@@ -143,48 +157,155 @@ function MemberTimeline({ member, applications }: TimelineItemProps) {
 }
 
 // ---------------------------------------------------------------------------
-// Add Employer Dialog
+// Employer Form Dialog (Create + Edit)
 // ---------------------------------------------------------------------------
 
-function AddEmployerDialog({
+function EmployerFormDialog({
   open,
+  employer,
   onClose,
+  onSave,
+  saving,
 }: {
   readonly open: boolean;
+  readonly employer: Employer | null;
   readonly onClose: () => void;
+  readonly onSave: (data: Omit<Employer, 'id'>) => Promise<void>;
+  readonly saving: boolean;
 }) {
+  const isEdit = employer !== null;
+
+  const [name, setName] = useState('');
+  const [industry, setIndustry] = useState('');
+  const [contactName, setContactName] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [fairChance, setFairChance] = useState(false);
+  const [openPositions, setOpenPositions] = useState(0);
+
+  useEffect(() => {
+    setName(employer?.name ?? '');
+    setIndustry(employer?.industry ?? '');
+    setContactName(employer?.contactName ?? '');
+    setContactEmail(employer?.contactEmail ?? '');
+    setFairChance(employer?.fairChance ?? false);
+    setOpenPositions(employer?.openPositions ?? 0);
+  }, [employer]);
+
+  const handleSubmit = () => {
+    onSave({
+      name,
+      industry,
+      contactName,
+      contactEmail,
+      fairChance,
+      openPositions,
+      placements: employer?.placements ?? 0,
+    });
+  };
+
   return (
     <Dialog open={open} onOpenChange={() => onClose()}>
       <DialogHeader>
-        <DialogTitle>Add Employer Partnership</DialogTitle>
+        <DialogTitle>{isEdit ? 'Edit Employer' : 'Add Employer Partnership'}</DialogTitle>
       </DialogHeader>
       <DialogContent>
         <div className="space-y-4">
           <div>
             <label className="text-sm font-medium text-stone-700">Company Name</label>
-            <Input placeholder="Company name" className="mt-1" />
+            <Input
+              placeholder="Company name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="mt-1"
+            />
           </div>
           <div>
             <label className="text-sm font-medium text-stone-700">Industry</label>
-            <Input placeholder="e.g., Construction, Food Service" className="mt-1" />
+            <Input
+              placeholder="e.g., Construction, Food Service"
+              value={industry}
+              onChange={(e) => setIndustry(e.target.value)}
+              className="mt-1"
+            />
           </div>
           <div>
             <label className="text-sm font-medium text-stone-700">Contact Name</label>
-            <Input placeholder="Primary contact" className="mt-1" />
+            <Input
+              placeholder="Primary contact"
+              value={contactName}
+              onChange={(e) => setContactName(e.target.value)}
+              className="mt-1"
+            />
           </div>
           <div>
             <label className="text-sm font-medium text-stone-700">Contact Email</label>
-            <Input type="email" placeholder="email@company.com" className="mt-1" />
+            <Input
+              type="email"
+              placeholder="email@company.com"
+              value={contactEmail}
+              onChange={(e) => setContactEmail(e.target.value)}
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-stone-700">Open Positions</label>
+            <Input
+              type="number"
+              min={0}
+              value={openPositions}
+              onChange={(e) => setOpenPositions(Number(e.target.value) || 0)}
+              className="mt-1"
+            />
           </div>
           <label className="flex items-center gap-2">
-            <input type="checkbox" className="rounded border-stone-300" />
+            <input
+              type="checkbox"
+              checked={fairChance}
+              onChange={(e) => setFairChance(e.target.checked)}
+              className="rounded border-stone-300"
+            />
             <span className="text-sm text-stone-700">Fair Chance Employer (hires individuals with criminal records)</span>
           </label>
         </div>
       </DialogContent>
       <DialogFooter>
         <Button variant="outline" onClick={onClose}>Cancel</Button>
-        <Button onClick={onClose}>Add Employer</Button>
+        <Button onClick={handleSubmit} disabled={saving || !name.trim()}>
+          {saving ? 'Saving...' : isEdit ? 'Save Changes' : 'Add Employer'}
+        </Button>
+      </DialogFooter>
+    </Dialog>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Delete Employer Confirm Dialog
+// ---------------------------------------------------------------------------
+
+function DeleteEmployerDialog({
+  open,
+  employerName,
+  onConfirm,
+  onCancel,
+}: {
+  readonly open: boolean;
+  readonly employerName: string;
+  readonly onConfirm: () => void;
+  readonly onCancel: () => void;
+}) {
+  return (
+    <Dialog open={open} onOpenChange={() => onCancel()}>
+      <DialogHeader>
+        <DialogTitle>Delete Employer</DialogTitle>
+      </DialogHeader>
+      <DialogContent>
+        <p className="text-sm text-stone-600">
+          Are you sure you want to delete <strong>{employerName}</strong>? This action cannot be undone.
+        </p>
+      </DialogContent>
+      <DialogFooter>
+        <Button variant="outline" onClick={onCancel}>Cancel</Button>
+        <Button variant="destructive" onClick={onConfirm}>Delete</Button>
       </DialogFooter>
     </Dialog>
   );
@@ -194,22 +315,18 @@ function AddEmployerDialog({
 // Main
 // ---------------------------------------------------------------------------
 
-// Mock employers for directory management (would come from Firestore in production)
-const MOCK_EMPLOYERS: readonly Employer[] = [
-  { id: '1', name: 'Southwest Construction Co.', industry: 'Construction', fairChance: true, openPositions: 5, placements: 12 },
-  { id: '2', name: 'Desert Valley Foods', industry: 'Food Service', fairChance: true, openPositions: 3, placements: 8 },
-  { id: '3', name: 'Phoenix Auto Group', industry: 'Automotive', fairChance: false, openPositions: 2, placements: 4 },
-  { id: '4', name: 'Sunrise Landscaping', industry: 'Landscaping', fairChance: true, openPositions: 7, placements: 15 },
-];
-
 export default function Employment() {
   const { data: users, loading: usersLoading } = useCollection<User>('users');
   const { data: applications, loading: appsLoading } = useCollection<JobApplication>('jobApplications');
+  const { data: employers, loading: employersLoading } = useCollection<Employer>('employers');
 
   const [addEmployerOpen, setAddEmployerOpen] = useState(false);
+  const [editingEmployer, setEditingEmployer] = useState<Employer | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Employer | null>(null);
+  const [saving, setSaving] = useState(false);
   const [employerSearch, setEmployerSearch] = useState('');
 
-  const loading = usersLoading || appsLoading;
+  const loading = usersLoading || appsLoading || employersLoading;
 
   // Funnel data
   const funnelData = useMemo(() => {
@@ -248,10 +365,38 @@ export default function Employment() {
 
   const filteredEmployers = useMemo(() => {
     const q = employerSearch.toLowerCase();
-    return MOCK_EMPLOYERS.filter(
+    return employers.filter(
       (e) => e.name.toLowerCase().includes(q) || e.industry.toLowerCase().includes(q),
     );
-  }, [employerSearch]);
+  }, [employers, employerSearch]);
+
+  // Employer CRUD handlers
+  const handleSaveEmployer = async (data: Omit<Employer, 'id'>) => {
+    setSaving(true);
+    try {
+      if (editingEmployer) {
+        await updateDocument('employers', editingEmployer.id, data);
+      } else {
+        await addDocument('employers', data);
+      }
+      setAddEmployerOpen(false);
+      setEditingEmployer(null);
+    } catch (err) {
+      console.error('Failed to save employer:', err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteEmployer = async () => {
+    if (!deleteTarget) return;
+    try {
+      await deleteDocument('employers', deleteTarget.id);
+      setDeleteTarget(null);
+    } catch (err) {
+      console.error('Failed to delete employer:', err);
+    }
+  };
 
   if (loading) {
     return (
@@ -384,7 +529,7 @@ export default function Employment() {
               <CardTitle>Employer Partnerships</CardTitle>
               <CardDescription>Fair-chance employers and open positions</CardDescription>
             </div>
-            <Button size="sm" onClick={() => setAddEmployerOpen(true)}>
+            <Button size="sm" onClick={() => { setEditingEmployer(null); setAddEmployerOpen(true); }}>
               <Plus className="h-4 w-4 mr-1.5" />
               Add Employer
             </Button>
@@ -404,17 +549,40 @@ export default function Employment() {
           </div>
           <div className="space-y-2">
             {filteredEmployers.map((employer) => (
-              <EmployerCard key={employer.id} employer={employer} />
+              <EmployerCard
+                key={employer.id}
+                employer={employer}
+                onEdit={() => { setEditingEmployer(employer); setAddEmployerOpen(true); }}
+                onDelete={() => setDeleteTarget(employer)}
+              />
             ))}
+            {filteredEmployers.length === 0 && (
+              <p className="text-sm text-stone-400 text-center py-8">
+                No employers found.
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>
 
-      {/* Add Employer Dialog */}
-      <AddEmployerDialog
+      {/* Employer Form Dialog */}
+      <EmployerFormDialog
         open={addEmployerOpen}
-        onClose={() => setAddEmployerOpen(false)}
+        employer={editingEmployer}
+        onClose={() => { setAddEmployerOpen(false); setEditingEmployer(null); }}
+        onSave={handleSaveEmployer}
+        saving={saving}
       />
+
+      {/* Delete Confirm Dialog */}
+      {deleteTarget && (
+        <DeleteEmployerDialog
+          open
+          employerName={deleteTarget.name}
+          onConfirm={handleDeleteEmployer}
+          onCancel={() => setDeleteTarget(null)}
+        />
+      )}
     </div>
   );
 }

@@ -10,6 +10,7 @@ import {
   Input,
   Badge,
   useAuth,
+  useCollection,
 } from '@reprieve/shared';
 import {
   createCheckoutSession,
@@ -53,47 +54,23 @@ const IMPACT_BREAKDOWN: readonly { readonly amount: number; readonly icon: React
   { amount: 250, icon: <Briefcase className="h-4 w-4" />, label: 'Job interview prep kit', description: 'Professional clothes, haircut, and resume printing' },
 ] as const;
 
-const MOCK_CAMPAIGNS: readonly {
+// Campaign data fetched from Firestore via useCollection('campaigns').
+// Icons are stored as string names and resolved at render time.
+interface Campaign {
   readonly id: string;
   readonly name: string;
   readonly description: string;
   readonly goal: number;
   readonly raised: number;
-  readonly icon: React.ReactNode;
-}[] = [
-  {
-    id: 'winter-shelter',
-    name: 'Winter Shelter Fund',
-    description: 'Help us keep emergency shelters open through the cold months. Every night matters when temperatures drop below freezing.',
-    goal: 15000,
-    raised: 11240,
-    icon: <Home className="h-5 w-5" />,
-  },
-  {
-    id: 'employment-ready',
-    name: 'Employment Ready Program',
-    description: 'Fund interview clothes, resume services, and job training for community members ready to re-enter the workforce.',
-    goal: 8000,
-    raised: 3650,
-    icon: <Briefcase className="h-5 w-5" />,
-  },
-  {
-    id: 'community-kitchen',
-    name: 'Community Kitchen',
-    description: 'Our kitchen serves 200+ meals daily. Help us keep the stoves on and the tables full for those who need it most.',
-    goal: 12000,
-    raised: 9800,
-    icon: <Utensils className="h-5 w-5" />,
-  },
-  {
-    id: 'phone-connectivity',
-    name: 'Phone & Connectivity',
-    description: 'A phone number is the lifeline to jobs, housing, and services. Fund prepaid phones and charging stations.',
-    goal: 5000,
-    raised: 2100,
-    icon: <Phone className="h-5 w-5" />,
-  },
-] as const;
+  readonly iconName: string;
+}
+
+const CAMPAIGN_ICONS: Record<string, React.ReactNode> = {
+  Home: <Home className="h-5 w-5" />,
+  Briefcase: <Briefcase className="h-5 w-5" />,
+  Utensils: <Utensils className="h-5 w-5" />,
+  Phone: <Phone className="h-5 w-5" />,
+};
 
 const FUND_ALLOCATION = [
   { label: 'Direct Services', percentage: 70, color: 'bg-purple-600' },
@@ -516,7 +493,7 @@ function SuccessModal({ amount, isMonthly, onClose }: {
 }
 
 function CampaignCard({ campaign }: {
-  readonly campaign: typeof MOCK_CAMPAIGNS[number];
+  readonly campaign: Campaign;
 }) {
   const [contributed, setContributed] = useState(false);
   const progressPercent = Math.min(
@@ -529,7 +506,7 @@ function CampaignCard({ campaign }: {
       <CardContent className="p-4 space-y-3">
         <div className="flex items-start gap-3">
           <div className="h-10 w-10 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0 text-purple-600">
-            {campaign.icon}
+            {CAMPAIGN_ICONS[campaign.iconName] ?? <Heart className="h-5 w-5" />}
           </div>
           <div className="flex-1 min-w-0">
             <h4 className="font-semibold text-stone-800 text-sm">{campaign.name}</h4>
@@ -580,7 +557,7 @@ function CampaignCard({ campaign }: {
   );
 }
 
-function ActiveCampaigns() {
+function ActiveCampaigns({ campaigns }: { readonly campaigns: Campaign[] }) {
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
@@ -591,7 +568,7 @@ function ActiveCampaigns() {
         Support a specific cause that speaks to you. Every contribution counts.
       </p>
       <div className="grid gap-3 sm:grid-cols-2">
-        {MOCK_CAMPAIGNS.map((campaign) => (
+        {campaigns.map((campaign) => (
           <CampaignCard key={campaign.id} campaign={campaign} />
         ))}
       </div>
@@ -860,6 +837,7 @@ function ErrorBanner({
 
 export default function Donate() {
   const { firebaseUser } = useAuth();
+  const { data: campaigns } = useCollection<Campaign>('campaigns');
   const [selectedAmount, setSelectedAmount] = useState<number | null>(25);
   const [customAmount, setCustomAmount] = useState('');
   const [isMonthly, setIsMonthly] = useState(false);
@@ -937,7 +915,7 @@ export default function Donate() {
         {firebaseUser && <ManageDonationsButton />}
 
         {/* 5. Active Campaigns */}
-        <ActiveCampaigns />
+        <ActiveCampaigns campaigns={campaigns} />
 
         {/* 6. Transparency Section */}
         <TransparencySection />
