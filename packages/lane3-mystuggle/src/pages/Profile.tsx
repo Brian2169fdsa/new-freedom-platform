@@ -64,7 +64,13 @@ export default function Profile() {
             <p className="text-sm text-stone-500">{user?.email}</p>
             {user?.myStruggle?.joinDate && (
               <p className="text-xs text-stone-400 mt-1">
-                Member since {user.myStruggle.joinDate.toDate().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                Member since {(
+                  user.myStruggle.joinDate instanceof Date
+                    ? user.myStruggle.joinDate
+                    : typeof (user.myStruggle.joinDate as any).toDate === 'function'
+                    ? (user.myStruggle.joinDate as any).toDate()
+                    : new Date(user.myStruggle.joinDate as any)
+                ).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
               </p>
             )}
           </div>

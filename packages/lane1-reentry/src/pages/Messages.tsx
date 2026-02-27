@@ -22,7 +22,6 @@ import {
   orderBy,
   limit,
 } from '@reprieve/shared/services/firebase/firestore';
-import { Timestamp } from 'firebase/firestore';
 import {
   Send,
   MessageSquare,
@@ -36,9 +35,18 @@ import {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function formatTimestamp(ts: Timestamp | null | undefined): string {
+/** Safely convert Timestamp-like objects, Dates, or strings to a native Date. */
+function toNativeDate(ts: unknown): Date {
+  if (ts instanceof Date) return ts;
+  if (typeof ts === 'string') return new Date(ts);
+  if (ts && typeof (ts as any).toDate === 'function')
+    return (ts as any).toDate();
+  return new Date(ts as number);
+}
+
+function formatTimestamp(ts: unknown): string {
   if (!ts) return '';
-  const date = ts.toDate();
+  const date = toNativeDate(ts);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffMins = Math.floor(diffMs / 60_000);
@@ -52,9 +60,9 @@ function formatTimestamp(ts: Timestamp | null | undefined): string {
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-function formatMessageTime(ts: Timestamp | null | undefined): string {
+function formatMessageTime(ts: unknown): string {
   if (!ts) return '';
-  const date = ts.toDate();
+  const date = toNativeDate(ts);
   return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 }
 

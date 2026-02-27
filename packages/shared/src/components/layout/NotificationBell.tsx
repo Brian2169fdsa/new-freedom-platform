@@ -31,8 +31,14 @@ function NotificationItem({ notification, onMarkRead }: {
   onMarkRead: (id: string) => void;
 }) {
   const icon = NOTIFICATION_ICONS[notification.type] || <Bell className="h-4 w-4 text-stone-500" />;
-  const timeAgo = notification.createdAt?.toDate
-    ? formatTimeAgo(notification.createdAt.toDate())
+  const timeAgo = notification.createdAt
+    ? formatTimeAgo(
+        notification.createdAt instanceof Date
+          ? notification.createdAt
+          : typeof (notification.createdAt as any).toDate === 'function'
+          ? (notification.createdAt as any).toDate()
+          : new Date(notification.createdAt as any)
+      )
     : '';
 
   return (

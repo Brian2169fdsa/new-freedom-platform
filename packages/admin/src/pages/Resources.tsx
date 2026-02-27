@@ -42,6 +42,26 @@ const RESOURCE_TYPE_OPTIONS: { value: ResourceType; label: string }[] = Object.e
 type SortField = 'name' | 'type' | 'lastVerified';
 type SortDir = 'asc' | 'desc';
 
+/** Safely convert Timestamp-like objects, Dates, or strings to epoch ms. */
+function toEpochMs(ts: unknown): number {
+  if (!ts) return 0;
+  if (ts instanceof Date) return ts.getTime();
+  if (typeof ts === 'number') return ts;
+  if (typeof ts === 'string') return new Date(ts).getTime();
+  if (typeof (ts as any).toMillis === 'function') return (ts as any).toMillis();
+  if (typeof (ts as any).toDate === 'function') return (ts as any).toDate().getTime();
+  return 0;
+}
+
+/** Safely convert Timestamp-like objects, Dates, or strings to a native Date. */
+function toNativeDate(ts: unknown): Date {
+  if (ts instanceof Date) return ts;
+  if (typeof ts === 'string') return new Date(ts);
+  if (ts && typeof (ts as any).toDate === 'function')
+    return (ts as any).toDate();
+  return new Date(ts as number);
+}
+
 function compareResource(a: Resource, b: Resource, field: SortField, dir: SortDir): number {
   let cmp = 0;
   switch (field) {
@@ -52,8 +72,8 @@ function compareResource(a: Resource, b: Resource, field: SortField, dir: SortDi
       cmp = a.type.localeCompare(b.type);
       break;
     case 'lastVerified': {
-      const da = a.lastVerified?.toMillis?.() ?? 0;
-      const db = b.lastVerified?.toMillis?.() ?? 0;
+      const da = toEpochMs(a.lastVerified);
+      const db = toEpochMs(b.lastVerified);
       cmp = da - db;
       break;
     }
@@ -366,7 +386,7 @@ export default function Resources() {
                   filtered.map((resource) => {
                     const daysSinceVerified = resource.lastVerified
                       ? Math.floor(
-                          (Date.now() - resource.lastVerified.toDate().getTime()) /
+                          (Date.now() - toNativeDate(resource.lastVerified).getTime()) /
                             (1000 * 60 * 60 * 24),
                         )
                       : Infinity;

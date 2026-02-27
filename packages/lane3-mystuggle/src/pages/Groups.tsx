@@ -353,8 +353,14 @@ function GroupCard({
 }) {
   const member = isMember(group, uid);
   const pending = isPending(group, uid);
-  const lastActive = group.lastActiveAt?.toDate
-    ? formatTimeAgo(group.lastActiveAt.toDate())
+  const lastActive = group.lastActiveAt
+    ? formatTimeAgo(
+        group.lastActiveAt instanceof Date
+          ? group.lastActiveAt
+          : typeof (group.lastActiveAt as any).toDate === 'function'
+          ? (group.lastActiveAt as any).toDate()
+          : new Date(group.lastActiveAt as any)
+      )
     : '';
   const categoryStyle = CATEGORY_COLORS[group.category] || 'bg-stone-50 text-stone-600';
   const avatarColor = getAvatarColor(group.name);
@@ -743,8 +749,14 @@ function GroupDiscussion({
           messages.map((msg) => {
             const isOwn = msg.authorId === uid;
             const avatarColor = getAvatarColor(msg.authorName || msg.authorId);
-            const timestamp = msg.createdAt?.toDate
-              ? formatTimeAgo(msg.createdAt.toDate())
+            const timestamp = msg.createdAt
+              ? formatTimeAgo(
+                  msg.createdAt instanceof Date
+                    ? msg.createdAt
+                    : typeof (msg.createdAt as any).toDate === 'function'
+                    ? (msg.createdAt as any).toDate()
+                    : new Date(msg.createdAt as any)
+                )
               : '';
 
             return (

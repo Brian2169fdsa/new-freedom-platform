@@ -31,7 +31,15 @@ function formatTimeAgo(date: Date): string {
 function StoryCard({ story, currentUserId }: { story: Post; currentUserId: string }) {
   const isLiked = story.likes.includes(currentUserId);
   const [likeLoading, setLikeLoading] = useState(false);
-  const timeAgo = story.createdAt?.toDate ? formatTimeAgo(story.createdAt.toDate()) : '';
+  const timeAgo = story.createdAt
+    ? formatTimeAgo(
+        story.createdAt instanceof Date
+          ? story.createdAt
+          : typeof (story.createdAt as any).toDate === 'function'
+          ? (story.createdAt as any).toDate()
+          : new Date(story.createdAt as any)
+      )
+    : '';
   const preview = story.content.length > 200 ? story.content.substring(0, 200) + '...' : story.content;
   const [expanded, setExpanded] = useState(false);
 

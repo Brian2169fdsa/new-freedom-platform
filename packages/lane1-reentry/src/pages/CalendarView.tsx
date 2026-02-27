@@ -98,6 +98,15 @@ function getReminderLabel(apptDate: Date): string | null {
   return null;
 }
 
+/** Safely convert Timestamp-like objects, Dates, or strings to a native Date. */
+function toNativeDate(ts: unknown): Date {
+  if (ts instanceof Date) return ts;
+  if (typeof ts === 'string') return new Date(ts);
+  if (ts && typeof (ts as any).toDate === 'function')
+    return (ts as any).toDate();
+  return new Date(ts as number);
+}
+
 export default function CalendarView() {
   const { user } = useAuth();
   const { data: appointments, loading } = useCollection<Appointment>(
@@ -133,7 +142,7 @@ export default function CalendarView() {
   const appointmentsByDay = useMemo(() => {
     const map: Record<number, Appointment[]> = {};
     appointments.forEach((appt) => {
-      const apptDate = appt.dateTime.toDate();
+      const apptDate = toNativeDate(appt.dateTime);
       if (apptDate.getFullYear() === year && apptDate.getMonth() === month) {
         const day = apptDate.getDate();
         if (!map[day]) map[day] = [];
@@ -147,8 +156,8 @@ export default function CalendarView() {
   const selectedDayAppointments = useMemo(() => {
     if (!selectedDate) return [];
     return appointments
-      .filter((appt) => isSameDay(appt.dateTime.toDate(), selectedDate))
-      .sort((a, b) => a.dateTime.toDate().getTime() - b.dateTime.toDate().getTime());
+      .filter((appt) => isSameDay(toNativeDate(appt.dateTime), selectedDate))
+      .sort((a, b) => toNativeDate(a.dateTime).getTime() - toNativeDate(b.dateTime).getTime());
   }, [appointments, selectedDate]);
 
   const navigateMonth = (direction: -1 | 1) => {
@@ -324,7 +333,7 @@ export default function CalendarView() {
           {(() => {
             const courtDates = appointments
               .filter((a) => {
-                const d = a.dateTime.toDate();
+                const d = toNativeDate(a.dateTime);
                 return (
                   (a.type === 'court' || a.type === 'parole') &&
                   d > new Date()
@@ -332,7 +341,7 @@ export default function CalendarView() {
               })
               .sort(
                 (a, b) =>
-                  a.dateTime.toDate().getTime() - b.dateTime.toDate().getTime(),
+                  toNativeDate(a.dateTime).getTime() - toNativeDate(b.dateTime).getTime(),
               )
               .slice(0, 3);
 
@@ -349,7 +358,7 @@ export default function CalendarView() {
                 <CardContent>
                   <div className="space-y-2">
                     {courtDates.map((appt) => {
-                      const apptDate = appt.dateTime.toDate();
+                      const apptDate = toNativeDate(appt.dateTime);
                       const days = daysUntil(apptDate);
                       const typeInfo = appointmentTypeMap[appt.type];
 
@@ -401,7 +410,7 @@ export default function CalendarView() {
           {(() => {
             const upcoming = appointments
               .filter((a) => {
-                const reminder = getReminderLabel(a.dateTime.toDate());
+                const reminder = getReminderLabel(toNativeDate(a.dateTime));
                 return reminder !== null;
               })
               .slice(0, 3);
@@ -419,7 +428,7 @@ export default function CalendarView() {
                 <CardContent>
                   <div className="space-y-2">
                     {upcoming.map((appt) => {
-                      const reminder = getReminderLabel(appt.dateTime.toDate());
+                      const reminder = getReminderLabel(toNativeDate(appt.dateTime));
                       return (
                         <div
                           key={appt.id}
@@ -471,7 +480,7 @@ export default function CalendarView() {
                   <div className="space-y-3">
                     {selectedDayAppointments.map((appt) => {
                       const typeInfo = appointmentTypeMap[appt.type];
-                      const apptDate = appt.dateTime.toDate();
+                      const apptDate = toNativeDate(appt.dateTime);
 
                       return (
                         <div

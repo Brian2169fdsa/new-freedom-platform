@@ -43,19 +43,28 @@ import {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function toInputDate(ts?: Timestamp | null): string {
+/** Safely convert Timestamp-like objects, Dates, or strings to a native Date. */
+function toNativeDate(ts: unknown): Date {
+  if (ts instanceof Date) return ts;
+  if (typeof ts === 'string') return new Date(ts);
+  if (ts && typeof (ts as any).toDate === 'function')
+    return (ts as any).toDate();
+  return new Date(ts as number);
+}
+
+function toInputDate(ts?: unknown): string {
   if (!ts) return '';
-  const d = ts.toDate();
+  const d = toNativeDate(ts);
   const yyyy = d.getFullYear();
   const mm = String(d.getMonth() + 1).padStart(2, '0');
   const dd = String(d.getDate()).padStart(2, '0');
   return `${yyyy}-${mm}-${dd}`;
 }
 
-function daysSince(ts?: Timestamp | null): number | null {
+function daysSince(ts?: unknown): number | null {
   if (!ts) return null;
   const now = new Date();
-  const then = ts.toDate();
+  const then = toNativeDate(ts);
   return Math.floor((now.getTime() - then.getTime()) / (1000 * 60 * 60 * 24));
 }
 

@@ -101,8 +101,14 @@ function ConversationCard({
   onSelect: () => void;
 }) {
   const unread = conversation.unreadCount?.[currentUserId] || 0;
-  const timeAgo = conversation.lastMessageAt?.toDate
-    ? formatTimeAgo(conversation.lastMessageAt.toDate())
+  const timeAgo = conversation.lastMessageAt
+    ? formatTimeAgo(
+        conversation.lastMessageAt instanceof Date
+          ? conversation.lastMessageAt
+          : typeof (conversation.lastMessageAt as any).toDate === 'function'
+          ? (conversation.lastMessageAt as any).toDate()
+          : new Date(conversation.lastMessageAt as any)
+      )
     : '';
 
   return (

@@ -35,8 +35,17 @@ const CATEGORY_CONFIG: Record<EventCategory, { label: string; icon: React.ReactN
   other: { label: 'Other', icon: <Music className="h-4 w-4" />, color: 'bg-stone-50 text-stone-600' },
 };
 
-function formatEventDate(timestamp: Timestamp): string {
-  const date = timestamp.toDate();
+/** Safely convert Timestamp-like objects, Dates, or strings to a native Date. */
+function toNativeDate(ts: unknown): Date {
+  if (ts instanceof Date) return ts;
+  if (typeof ts === 'string') return new Date(ts);
+  if (ts && typeof (ts as any).toDate === 'function')
+    return (ts as any).toDate();
+  return new Date(ts as number);
+}
+
+function formatEventDate(timestamp: unknown): string {
+  const date = toNativeDate(timestamp);
   const now = new Date();
   const tomorrow = new Date(now);
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -50,8 +59,8 @@ function formatEventDate(timestamp: Timestamp): string {
   return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
-function formatTime(timestamp: Timestamp): string {
-  return timestamp.toDate().toLocaleTimeString('en-US', {
+function formatTime(timestamp: unknown): string {
+  return toNativeDate(timestamp).toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
     hour12: true,
@@ -69,10 +78,10 @@ function EventCard({ event }: { event: CommunityEvent }) {
         {/* Date badge */}
         <div className="flex flex-col items-center justify-center h-14 w-14 rounded-lg bg-amber-50 border border-amber-100 flex-shrink-0">
           <span className="text-xs font-medium text-amber-600 uppercase">
-            {event.dateTime.toDate().toLocaleDateString('en-US', { month: 'short' })}
+            {toNativeDate(event.dateTime).toLocaleDateString('en-US', { month: 'short' })}
           </span>
           <span className="text-lg font-bold text-amber-800 -mt-0.5">
-            {event.dateTime.toDate().getDate()}
+            {toNativeDate(event.dateTime).getDate()}
           </span>
         </div>
 

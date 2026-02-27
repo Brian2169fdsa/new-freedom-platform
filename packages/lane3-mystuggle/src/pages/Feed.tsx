@@ -13,8 +13,14 @@ function PostCard({ post, currentUserId }: { post: Post; currentUserId: string }
   const [showComments, setShowComments] = useState(false);
   const [likeLoading, setLikeLoading] = useState(false);
   const isLiked = post.likes.includes(currentUserId);
-  const timeAgo = post.createdAt?.toDate
-    ? formatTimeAgo(post.createdAt.toDate())
+  const timeAgo = post.createdAt
+    ? formatTimeAgo(
+        post.createdAt instanceof Date
+          ? post.createdAt
+          : typeof (post.createdAt as any).toDate === 'function'
+          ? (post.createdAt as any).toDate()
+          : new Date(post.createdAt as any)
+      )
     : '';
 
   const handleLike = async () => {

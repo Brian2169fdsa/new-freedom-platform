@@ -31,24 +31,26 @@ import {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function daysSince(date: Date | string | undefined | null): number | null {
+function daysSince(date: unknown): number | null {
   if (!date) return null;
-  const start = typeof date === 'string' ? new Date(date) : date;
+  const start = toDate(date);
   if (isNaN(start.getTime())) return null;
   const now = new Date();
   const diff = now.getTime() - start.getTime();
   return Math.floor(diff / (1000 * 60 * 60 * 24));
 }
 
+function toDate(ts: unknown): Date {
+  if (ts instanceof Date) return ts;
+  if (typeof ts === 'string') return new Date(ts);
+  if (ts && typeof (ts as { toDate?: unknown }).toDate === 'function')
+    return (ts as Timestamp).toDate();
+  return new Date(ts as number);
+}
+
 function formatDate(ts: Timestamp | Date | string | undefined): string {
   if (!ts) return '';
-  const date =
-    ts instanceof Timestamp
-      ? ts.toDate()
-      : typeof ts === 'string'
-        ? new Date(ts)
-        : ts;
-  return date.toLocaleDateString('en-US', {
+  return toDate(ts).toLocaleDateString('en-US', {
     weekday: 'short',
     month: 'short',
     day: 'numeric',
@@ -57,13 +59,7 @@ function formatDate(ts: Timestamp | Date | string | undefined): string {
 
 function formatTime(ts: Timestamp | Date | string | undefined): string {
   if (!ts) return '';
-  const date =
-    ts instanceof Timestamp
-      ? ts.toDate()
-      : typeof ts === 'string'
-        ? new Date(ts)
-        : ts;
-  return date.toLocaleTimeString('en-US', {
+  return toDate(ts).toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
   });
@@ -250,12 +246,7 @@ const APPOINTMENT_TYPE_COLORS: Record<string, string> = {
 };
 
 function AppointmentItem({ appointment }: { appointment: Appointment }) {
-  const dt =
-    (appointment as any).dateTime instanceof Timestamp
-      ? ((appointment as any).dateTime as Timestamp).toDate()
-      : typeof (appointment as any).dateTime === 'string'
-        ? new Date((appointment as any).dateTime)
-        : (appointment as any).dateTime;
+  const dt = toDate((appointment as any).dateTime);
 
   const apptType: string | undefined = (appointment as any).type;
   const badgeColor =
@@ -478,8 +469,7 @@ export default function Dashboard() {
     const raw =
       (user as any)?.profile?.sobrietyDate ?? (user as any)?.sobrietyDate;
     if (!raw) return null;
-    if (raw instanceof Timestamp) return raw.toDate();
-    return raw;
+    return toDate(raw);
   }, [user]);
 
   const firstName =

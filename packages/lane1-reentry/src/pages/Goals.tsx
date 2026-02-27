@@ -39,6 +39,18 @@ import {
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function tsToDate(ts: unknown): Date {
+  if (ts instanceof Date) return ts;
+  if (typeof ts === 'string') return new Date(ts);
+  if (ts && typeof (ts as { toDate?: unknown }).toDate === 'function')
+    return (ts as Timestamp).toDate();
+  return new Date(ts as number);
+}
+
+// ---------------------------------------------------------------------------
 // Category configuration
 // ---------------------------------------------------------------------------
 
@@ -145,13 +157,11 @@ function GoalCard({ goal, onToggleMilestone, onDelete, onEdit }: GoalCardProps) 
   const status = STATUS_BADGE[goal.status] ?? STATUS_BADGE.active;
 
   const targetDateStr = goal.targetDate
-    ? goal.targetDate instanceof Timestamp
-      ? goal.targetDate.toDate().toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric',
-        })
-      : ''
+    ? tsToDate(goal.targetDate).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
     : null;
 
   return (
@@ -602,9 +612,7 @@ export default function Goals() {
         title: editGoal.title,
         category: editGoal.category,
         targetDate: editGoal.targetDate
-          ? editGoal.targetDate instanceof Timestamp
-            ? editGoal.targetDate.toDate().toISOString().split('T')[0]
-            : ''
+          ? tsToDate(editGoal.targetDate).toISOString().split('T')[0]
           : '',
         milestones: editGoal.milestones.map((m) => ({ id: m.id, title: m.title })),
         newMilestone: '',

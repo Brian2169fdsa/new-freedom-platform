@@ -123,8 +123,18 @@ export default function Tools() {
 
   const upcomingCount = appointments.filter((a) => {
     const dt = (a as any).dateTime;
-    if (!dt || typeof dt.toDate !== 'function') return false;
-    return dt.toDate() > new Date();
+    if (!dt) return false;
+    let date: Date;
+    if (dt instanceof Date) {
+      date = dt;
+    } else if (typeof dt === 'string') {
+      date = new Date(dt);
+    } else if (typeof dt.toDate === 'function') {
+      date = dt.toDate();
+    } else {
+      return false;
+    }
+    return date > new Date();
   }).length;
 
   return (

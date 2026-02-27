@@ -46,6 +46,15 @@ import { Link } from 'react-router-dom';
 
 const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === 'true';
 
+/** Safely convert Timestamp-like objects, Dates, or strings to a native Date. */
+function toNativeDate(ts: unknown): Date {
+  if (ts instanceof Date) return ts;
+  if (typeof ts === 'string') return new Date(ts);
+  if (ts && typeof (ts as any).toDate === 'function')
+    return (ts as any).toDate();
+  return new Date(ts as number);
+}
+
 const CATEGORIES: { value: DocumentCategory | 'all'; label: string }[] = [
   { value: 'all', label: 'All' },
   { value: 'id', label: 'IDs' },
@@ -88,22 +97,22 @@ const categoryColors: Record<DocumentCategory, string> = {
   other: 'bg-stone-100 text-stone-700',
 };
 
-function isExpiringSoon(expirationDate?: Timestamp): boolean {
+function isExpiringSoon(expirationDate?: unknown): boolean {
   if (!expirationDate) return false;
   const now = new Date();
-  const expDate = expirationDate.toDate();
+  const expDate = toNativeDate(expirationDate);
   const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
   return expDate <= thirtyDaysFromNow && expDate > now;
 }
 
-function isExpired(expirationDate?: Timestamp): boolean {
+function isExpired(expirationDate?: unknown): boolean {
   if (!expirationDate) return false;
-  return expirationDate.toDate() <= new Date();
+  return toNativeDate(expirationDate) <= new Date();
 }
 
-function formatDate(timestamp?: Timestamp): string {
+function formatDate(timestamp?: unknown): string {
   if (!timestamp) return '';
-  return timestamp.toDate().toLocaleDateString('en-US', {
+  return toNativeDate(timestamp).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
