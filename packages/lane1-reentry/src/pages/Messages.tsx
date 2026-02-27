@@ -11,7 +11,7 @@ import {
   DialogContent,
   DialogFooter,
 } from '@reprieve/shared';
-import type { Message, Conversation } from '@reprieve/shared';
+import type { Message, Conversation, MessageType } from '@reprieve/shared';
 import { useAuth } from '@reprieve/shared/hooks/useAuth';
 import {
   addDocument,
@@ -22,6 +22,8 @@ import {
   orderBy,
   limit,
 } from '@reprieve/shared/services/firebase/firestore';
+import { uploadFile } from '@reprieve/shared/services/firebase/storage';
+import { markMessageAsRead } from '@reprieve/shared/services/firebase/functions';
 import {
   Send,
   MessageSquare,
@@ -29,6 +31,8 @@ import {
   Search,
   Paperclip,
   Plus,
+  FileText,
+  Loader2,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -127,7 +131,8 @@ interface ChatBubbleProps {
 }
 
 function ChatBubble({ message, isOwn }: ChatBubbleProps) {
-  const hasAttachment = !!(message as any).attachmentURL;
+  const hasAttachment = !!message.attachmentURL;
+  const isImage = message.attachmentType === 'image' || message.type === 'image';
 
   return (
     <div className={`flex ${isOwn ? 'justify-end' : 'justify-start'} mb-3`}>
@@ -138,19 +143,40 @@ function ChatBubble({ message, isOwn }: ChatBubbleProps) {
             : 'bg-stone-200 text-stone-800 rounded-bl-md'
         }`}
       >
-        {hasAttachment && (
+        {/* Image attachment: inline preview */}
+        {hasAttachment && isImage && (
           <a
-            href={(message as any).attachmentURL}
+            href={message.attachmentURL}
             target="_blank"
             rel="noopener noreferrer"
-            className={`flex items-center gap-1.5 text-xs mb-1.5 underline ${
-              isOwn ? 'text-amber-200' : 'text-amber-700'
-            }`}
+            className="block mb-1.5"
           >
-            <Paperclip className="h-3 w-3" />
-            {(message as any).attachmentName || 'Attachment'}
+            <img
+              src={message.attachmentURL}
+              alt={message.attachmentName || 'Image attachment'}
+              className="rounded-lg max-h-60 w-auto object-contain"
+              loading="lazy"
+            />
           </a>
         )}
+
+        {/* Document attachment: download link */}
+        {hasAttachment && !isImage && (
+          <a
+            href={message.attachmentURL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`flex items-center gap-2 text-xs mb-1.5 px-3 py-2 rounded-lg transition-colors ${
+              isOwn
+                ? 'bg-amber-700/30 text-amber-100 hover:bg-amber-700/50'
+                : 'bg-stone-300/50 text-stone-700 hover:bg-stone-300'
+            }`}
+          >
+            <FileText className="h-4 w-4 flex-shrink-0" />
+            <span className="truncate">{message.attachmentName || 'Attachment'}</span>
+          </a>
+        )}
+
         {message.content && (
           <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
         )}
@@ -305,10 +331,15 @@ export default function Messages() {
   const [newMessage, setNewMessage] = useState('');
   const [sending, setSending] = useState(false);
 
+  // File upload
+  const [uploading, setUploading] = useState(false);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+
   // Refs
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const markedMessageIds = useRef<Set<string>>(new Set());
 
   // ---- real-time conversation list ----
   useEffect(() => {
@@ -330,6 +361,8 @@ export default function Messages() {
 
   // ---- real-time messages for selected conversation ----
   useEffect(() => {
+    markedMessageIds.current.clear();
+
     if (!activeConversation) {
       setMessages([]);
       return;
@@ -376,6 +409,32 @@ export default function Messages() {
     },
     [markAsRead],
   );
+
+  // ---- call markMessageAsRead cloud function for unread messages ----
+  useEffect(() => {
+    if (!activeConversation || !currentUserId || messages.length === 0) return;
+
+    const unread = messages.filter(
+      (msg) =>
+        msg.senderId !== currentUserId &&
+        !msg.readBy?.includes(currentUserId) &&
+        !markedMessageIds.current.has(msg.id),
+    );
+
+    if (unread.length === 0) return;
+
+    for (const msg of unread) {
+      markedMessageIds.current.add(msg.id);
+    }
+
+    Promise.allSettled(
+      unread.map((msg) => markMessageAsRead({ id: msg.id })),
+    ).catch((err) => console.error('Failed to mark messages as read:', err));
+
+    updateDocument('conversations', activeConversation.id, {
+      [`unreadCount.${currentUserId}`]: 0,
+    }).catch((err) => console.error('Failed to reset unread count:', err));
+  }, [activeConversation?.id, messages, currentUserId]);
 
   // ---- auto-scroll to bottom on new messages ----
   useEffect(() => {
@@ -434,14 +493,59 @@ export default function Messages() {
     fileInputRef.current?.click();
   }
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file || !activeConversation || !currentUserId) return;
 
-    // TODO: Upload file to Firebase Storage, get URL, then send as message
-    console.log('File selected for upload:', file.name);
     // Reset input so the same file can be re-selected
     e.target.value = '';
+
+    // Validate file size (10MB limit)
+    const MAX_SIZE = 10 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      console.warn('File too large. Maximum size is 10MB.');
+      return;
+    }
+
+    setUploading(true);
+    setPendingFile(file);
+
+    try {
+      const timestamp = Date.now();
+      const storagePath = `messages/${activeConversation.id}/${timestamp}_${file.name}`;
+      const downloadURL = await uploadFile(storagePath, file);
+
+      const isImage = file.type.startsWith('image/');
+      const attachmentType: 'image' | 'document' = isImage ? 'image' : 'document';
+      const messageType: MessageType = isImage ? 'image' : 'file';
+      const content = newMessage.trim() || (isImage ? '' : file.name);
+
+      await addDocument('messages', {
+        conversationId: activeConversation.id,
+        senderId: currentUserId,
+        content,
+        type: messageType,
+        readBy: [currentUserId],
+        attachmentURL: downloadURL,
+        attachmentName: file.name,
+        attachmentType,
+      });
+
+      const lastMessageText = isImage ? 'Image' : file.name;
+      await updateDocument('conversations', activeConversation.id, {
+        lastMessage: lastMessageText,
+        lastMessageAt: new Date(),
+        [`unreadCount.${currentUserId}`]: 0,
+      });
+
+      setNewMessage('');
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    } finally {
+      setUploading(false);
+      setPendingFile(null);
+      inputRef.current?.focus();
+    }
   }
 
   // ---- start new conversation ----
@@ -544,6 +648,19 @@ export default function Messages() {
               {messages.map((msg) => (
                 <ChatBubble key={msg.id} message={msg} isOwn={msg.senderId === currentUserId} />
               ))}
+
+              {/* Upload in progress indicator */}
+              {uploading && pendingFile && (
+                <div className="flex justify-end mb-3">
+                  <div className="max-w-[80%] rounded-2xl px-4 py-2.5 bg-amber-600/60 text-white rounded-br-md">
+                    <div className="flex items-center gap-2 text-sm">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span>Uploading {pendingFile.name}...</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div ref={messagesEndRef} />
             </>
           )}
@@ -561,10 +678,19 @@ export default function Messages() {
           />
           <button
             onClick={handleFileSelect}
-            className="flex-shrink-0 p-2 rounded-lg text-stone-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
+            disabled={uploading}
+            className={`flex-shrink-0 p-2 rounded-lg transition-colors ${
+              uploading
+                ? 'text-stone-300 cursor-not-allowed'
+                : 'text-stone-400 hover:text-amber-600 hover:bg-amber-50'
+            }`}
             aria-label="Attach file"
           >
-            <Paperclip className="h-5 w-5" />
+            {uploading ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              <Paperclip className="h-5 w-5" />
+            )}
           </button>
           <Input
             ref={inputRef}
@@ -577,7 +703,7 @@ export default function Messages() {
           />
           <Button
             onClick={handleSend}
-            disabled={!newMessage.trim() || sending}
+            disabled={!newMessage.trim() || sending || uploading}
             size="icon"
             className="flex-shrink-0"
           >

@@ -321,6 +321,9 @@ export interface Message {
   type: MessageType;
   readBy: string[];
   createdAt: Timestamp;
+  attachmentURL?: string;
+  attachmentName?: string;
+  attachmentType?: 'image' | 'document';
 }
 
 export interface Conversation {
