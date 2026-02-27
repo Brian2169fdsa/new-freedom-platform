@@ -1,9 +1,9 @@
 {
   "projects": {
-    "default": "newfreedom-637b5"
+    "default": "newfreedom-637b5-7c3c3"
   },
   "targets": {
-    "newfreedom-637b5": {
+    "newfreedom-637b5-7c3c3": {
       "hosting": {
         "reentry": [
           "newfreedom-637b5"
