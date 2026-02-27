@@ -3,6 +3,7 @@ import { cn } from '@reprieve/shared/utils/cn';
 import {
   LayoutDashboard, Users, UserCog, Shield, BookOpen,
   MapPin, Briefcase, BarChart3, Heart, Settings, ShieldCheck,
+  Home, Activity, MessageSquare,
 } from 'lucide-react';
 
 const sidebarItems = [
@@ -15,6 +16,9 @@ const sidebarItems = [
   { label: 'Employment', path: '/employment', icon: Briefcase },
   { label: 'Reports', path: '/reports', icon: BarChart3 },
   { label: 'Donations', path: '/donations', icon: Heart },
+  { label: 'Housing Outcomes', path: '/housing-outcomes', icon: Home },
+  { label: 'Sobriety Metrics', path: '/sobriety-metrics', icon: Activity },
+  { label: 'Communication Logs', path: '/communication-logs', icon: MessageSquare },
   { label: 'Audit Log', path: '/audit-log', icon: ShieldCheck },
   { label: 'Settings', path: '/settings', icon: Settings },
 ];

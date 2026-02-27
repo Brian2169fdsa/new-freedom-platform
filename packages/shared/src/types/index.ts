@@ -358,3 +358,21 @@ export interface Assessment {
   score?: number;
   completedAt: Timestamp;
 }
+
+// Housing types
+export type HousingType = 'emergency_shelter' | 'transitional' | 'sober_living' | 'permanent';
+export type HousingStatus = 'stable' | 'at_risk' | 'lost';
+
+export interface HousingPlacement {
+  id: string;
+  userId: string;
+  memberName: string;
+  housingType: HousingType;
+  partnerOrganization: string;
+  moveInDate: Timestamp;
+  status: HousingStatus;
+  notes?: string;
+  caseManagerId?: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}

@@ -14,6 +14,9 @@ const Reports = lazy(() => import('./pages/Reports'));
 const Donations = lazy(() => import('./pages/Donations'));
 const AdminSettings = lazy(() => import('./pages/AdminSettings'));
 const AuditLog = lazy(() => import('./pages/AuditLog'));
+const HousingOutcomes = lazy(() => import('./pages/HousingOutcomes'));
+const SobrietyMetrics = lazy(() => import('./pages/SobrietyMetrics'));
+const CommunicationLogs = lazy(() => import('./pages/CommunicationLogs'));
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -46,6 +49,9 @@ function App() {
                   <Route path="/donations" element={<Donations />} />
                   <Route path="/settings" element={<AdminSettings />} />
                   <Route path="/audit-log" element={<AuditLog />} />
+                  <Route path="/housing-outcomes" element={<HousingOutcomes />} />
+                  <Route path="/sobriety-metrics" element={<SobrietyMetrics />} />
+                  <Route path="/communication-logs" element={<CommunicationLogs />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </AdminLayout>
