@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { useCollection } from '@reprieve/shared';
+import { useAuth, useCollection, Dialog, DialogHeader, DialogTitle, DialogContent, DialogFooter, Input, Button, Textarea } from '@reprieve/shared';
 import { where, orderBy } from 'firebase/firestore';
 import { Timestamp } from 'firebase/firestore';
+import { addDocument, updateDocument } from '@reprieve/shared/services/firebase/firestore';
 import {
   Calendar, Clock, MapPin, Users, ChevronRight, Filter,
   Heart, Coffee, BookOpen, Dumbbell, Music, Mic,
+  Plus, Loader2, Globe, Building2,
 } from 'lucide-react';
 
 type EventCategory = 'meeting' | 'workshop' | 'social' | 'wellness' | 'support' | 'other';
@@ -20,6 +22,7 @@ interface CommunityEvent {
   isVirtual: boolean;
   virtualLink?: string;
   organizer: string;
+  attendees: string[];
   attendeeCount: number;
   maxAttendees?: number;
   isRecurring: boolean;
@@ -67,10 +70,16 @@ function formatTime(timestamp: unknown): string {
   });
 }
 
-function EventCard({ event }: { event: CommunityEvent }) {
+function isEventPast(dateTime: unknown): boolean {
+  return toNativeDate(dateTime).getTime() < Date.now();
+}
+
+function EventCard({ event, currentUserId, onRsvp }: { event: CommunityEvent; currentUserId: string; onRsvp: (event: CommunityEvent) => void }) {
   const config = CATEGORY_CONFIG[event.category] || CATEGORY_CONFIG.other;
   const spotsLeft = event.maxAttendees ? event.maxAttendees - event.attendeeCount : null;
   const isFull = spotsLeft !== null && spotsLeft <= 0;
+  const isRsvped = event.attendees?.includes(currentUserId);
+  const isPast = isEventPast(event.dateTime);
 
   return (
     <div className="bg-white rounded-xl border border-stone-200 p-4 hover:border-amber-200 transition-colors">
@@ -114,17 +123,32 @@ function EventCard({ event }: { event: CommunityEvent }) {
 
           {/* RSVP section */}
           <div className="flex items-center gap-2 mt-3">
-            {isFull ? (
+            {isPast ? (
+              <span className="px-3 py-1.5 bg-stone-100 text-stone-400 rounded-lg text-xs font-medium">
+                Event Passed
+              </span>
+            ) : isRsvped ? (
+              <button
+                onClick={() => onRsvp(event)}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-stone-200 text-stone-700 rounded-lg text-xs font-medium hover:bg-stone-300 transition-colors"
+              >
+                <Calendar className="h-3.5 w-3.5" />
+                Cancel RSVP
+              </button>
+            ) : isFull ? (
               <span className="px-3 py-1.5 bg-stone-100 text-stone-500 rounded-lg text-xs font-medium">
                 Event Full
               </span>
             ) : (
-              <button className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 text-white rounded-lg text-xs font-medium hover:bg-amber-600 transition-colors">
+              <button
+                onClick={() => onRsvp(event)}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 text-white rounded-lg text-xs font-medium hover:bg-amber-600 transition-colors"
+              >
                 <Calendar className="h-3.5 w-3.5" />
                 RSVP
               </button>
             )}
-            {spotsLeft !== null && spotsLeft > 0 && spotsLeft <= 5 && (
+            {spotsLeft !== null && spotsLeft > 0 && spotsLeft <= 5 && !isPast && (
               <span className="text-xs text-orange-600 font-medium">
                 Only {spotsLeft} spots left
               </span>
@@ -136,6 +160,198 @@ function EventCard({ event }: { event: CommunityEvent }) {
         </div>
       </div>
     </div>
+  );
+}
+
+function CreateEventDialog({
+  open,
+  onOpenChange,
+  currentUserId,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  currentUserId: string;
+}) {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [category, setCategory] = useState<EventCategory>('meeting');
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
+  const [location, setLocation] = useState('');
+  const [isVirtual, setIsVirtual] = useState(false);
+  const [maxAttendees, setMaxAttendees] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const resetForm = () => {
+    setTitle('');
+    setDescription('');
+    setCategory('meeting');
+    setDate('');
+    setTime('');
+    setLocation('');
+    setIsVirtual(false);
+    setMaxAttendees('');
+  };
+
+  const handleSubmit = async () => {
+    if (!title.trim() || !date || !time || !currentUserId) return;
+    if (!isVirtual && !location.trim()) return;
+
+    setSaving(true);
+    try {
+      const dateTime = Timestamp.fromDate(new Date(`${date}T${time}`));
+      const max = maxAttendees ? parseInt(maxAttendees, 10) : undefined;
+
+      await addDocument('events', {
+        title: title.trim(),
+        description: description.trim(),
+        category,
+        dateTime,
+        location: isVirtual ? 'Virtual' : location.trim(),
+        isVirtual,
+        organizer: currentUserId,
+        attendees: [currentUserId],
+        attendeeCount: 1,
+        ...(max ? { maxAttendees: max } : {}),
+        isRecurring: false,
+      });
+
+      resetForm();
+      onOpenChange(false);
+    } catch (err) {
+      console.error('Failed to create event:', err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const canSubmit = title.trim() && date && time && (isVirtual || location.trim());
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogHeader>
+        <DialogTitle>Create Event</DialogTitle>
+      </DialogHeader>
+      <DialogContent>
+        <div className="space-y-4">
+          <div>
+            <label className="text-xs font-medium text-stone-600 mb-1 block">Title</label>
+            <Input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Event title"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs font-medium text-stone-600 mb-1 block">Description</label>
+            <Textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="What's this event about?"
+              rows={3}
+            />
+          </div>
+
+          <div>
+            <label className="text-xs font-medium text-stone-600 mb-1.5 block">Category</label>
+            <div className="flex gap-2 flex-wrap">
+              {Object.entries(CATEGORY_CONFIG).map(([key, config]) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setCategory(key as EventCategory)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                    category === key
+                      ? 'bg-amber-500 text-white'
+                      : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                  }`}
+                >
+                  {config.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-medium text-stone-600 mb-1 block">Date</label>
+              <Input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-stone-600 mb-1 block">Time</label>
+              <Input
+                type="time"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-xs font-medium text-stone-600 mb-1.5 block">Location</label>
+            <div className="flex gap-2 mb-2">
+              <button
+                type="button"
+                onClick={() => setIsVirtual(false)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  !isVirtual ? 'bg-amber-100 text-amber-700' : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                }`}
+              >
+                <Building2 className="h-3.5 w-3.5" />
+                In-Person
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsVirtual(true)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  isVirtual ? 'bg-amber-100 text-amber-700' : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                }`}
+              >
+                <Globe className="h-3.5 w-3.5" />
+                Virtual
+              </button>
+            </div>
+            {!isVirtual && (
+              <Input
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="Address or venue name"
+              />
+            )}
+          </div>
+
+          <div>
+            <label className="text-xs font-medium text-stone-600 mb-1 block">
+              Max Attendees <span className="text-stone-400">(optional)</span>
+            </label>
+            <Input
+              type="number"
+              value={maxAttendees}
+              onChange={(e) => setMaxAttendees(e.target.value)}
+              placeholder="Leave blank for unlimited"
+              min="1"
+            />
+          </div>
+        </div>
+      </DialogContent>
+      <DialogFooter>
+        <Button variant="outline" onClick={() => onOpenChange(false)}>
+          Cancel
+        </Button>
+        <Button onClick={handleSubmit} disabled={!canSubmit || saving}>
+          {saving ? (
+            <><Loader2 className="h-4 w-4 animate-spin mr-1" /> Creating...</>
+          ) : (
+            'Create Event'
+          )}
+        </Button>
+      </DialogFooter>
+    </Dialog>
   );
 }
 
@@ -159,7 +375,11 @@ function LoadingSkeleton() {
 }
 
 export default function Events() {
+  const { firebaseUser } = useAuth();
+  const currentUserId = firebaseUser?.uid ?? '';
   const [filter, setFilter] = useState<EventCategory | 'all'>('all');
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [rsvpLoading, setRsvpLoading] = useState<string | null>(null);
 
   const now = Timestamp.now();
   const { data: events, loading } = useCollection<CommunityEvent>(
@@ -167,6 +387,34 @@ export default function Events() {
     where('dateTime', '>=', now),
     orderBy('dateTime', 'asc')
   );
+
+  const handleRsvp = async (event: CommunityEvent) => {
+    if (!currentUserId || rsvpLoading) return;
+    setRsvpLoading(event.id);
+
+    try {
+      const isRsvped = event.attendees?.includes(currentUserId);
+      if (isRsvped) {
+        // Cancel RSVP
+        const updatedAttendees = (event.attendees || []).filter((id) => id !== currentUserId);
+        await updateDocument('events', event.id, {
+          attendees: updatedAttendees,
+          attendeeCount: Math.max(0, event.attendeeCount - 1),
+        });
+      } else {
+        // RSVP
+        const updatedAttendees = [...(event.attendees || []), currentUserId];
+        await updateDocument('events', event.id, {
+          attendees: updatedAttendees,
+          attendeeCount: event.attendeeCount + 1,
+        });
+      }
+    } catch (err) {
+      console.error('RSVP failed:', err);
+    } finally {
+      setRsvpLoading(null);
+    }
+  };
 
   const filtered = filter === 'all'
     ? events
@@ -186,9 +434,14 @@ export default function Events() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-xl font-bold text-stone-800">Events</h1>
-        <p className="text-sm text-stone-500 mt-0.5">Community gatherings and meetings</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-stone-800">Events</h1>
+          <p className="text-sm text-stone-500 mt-0.5">Community gatherings and meetings</p>
+        </div>
+        <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
+          <Plus className="h-4 w-4 mr-1" /> Create Event
+        </Button>
       </div>
 
       {/* Category Filter */}
@@ -240,13 +493,24 @@ export default function Events() {
               </h3>
               <div className="space-y-3">
                 {group.events.map((event) => (
-                  <EventCard key={event.id} event={event} />
+                  <EventCard
+                    key={event.id}
+                    event={event}
+                    currentUserId={currentUserId}
+                    onRsvp={handleRsvp}
+                  />
                 ))}
               </div>
             </div>
           ))}
         </div>
       )}
+
+      <CreateEventDialog
+        open={createDialogOpen}
+        onOpenChange={setCreateDialogOpen}
+        currentUserId={currentUserId}
+      />
     </div>
   );
 }

@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth, useCollection, type Post } from '@reprieve/shared';
 import { where, orderBy } from 'firebase/firestore';
-import { addDocument } from '@reprieve/shared/services/firebase/firestore';
+import { addDocument, deleteDocument, getDocuments } from '@reprieve/shared/services/firebase/firestore';
 import { uploadFile } from '@reprieve/shared/services/firebase/storage';
 import { likePost, unlikePost } from '@reprieve/shared/services/firebase/functions';
 import {
@@ -29,7 +29,17 @@ function formatTimeAgo(date: Date): string {
   return date.toLocaleDateString();
 }
 
-function StoryCard({ story, currentUserId }: { story: Post; currentUserId: string }) {
+function StoryCard({
+  story,
+  currentUserId,
+  isBookmarked,
+  onToggleBookmark,
+}: {
+  story: Post;
+  currentUserId: string;
+  isBookmarked: boolean;
+  onToggleBookmark: (storyId: string) => void;
+}) {
   const isLiked = story.likes.includes(currentUserId);
   const [likeLoading, setLikeLoading] = useState(false);
   const timeAgo = story.createdAt
@@ -133,8 +143,13 @@ function StoryCard({ story, currentUserId }: { story: Post; currentUserId: strin
           {story.commentCount > 0 && <span>{story.commentCount}</span>}
         </button>
         <div className="flex-1" />
-        <button className="text-stone-400 hover:text-amber-600 p-1.5">
-          <Bookmark className="h-4 w-4" />
+        <button
+          onClick={() => onToggleBookmark(story.id)}
+          className={`p-1.5 transition-colors ${
+            isBookmarked ? 'text-amber-600' : 'text-stone-400 hover:text-amber-600'
+          }`}
+        >
+          <Bookmark className={`h-4 w-4 ${isBookmarked ? 'fill-current' : ''}`} />
         </button>
       </div>
     </div>
@@ -321,12 +336,82 @@ export default function Stories() {
   const { firebaseUser } = useAuth();
   const uid = firebaseUser?.uid || '';
 
+  const [tab, setTab] = useState<'all' | 'saved'>('all');
+  const [bookmarkedIds, setBookmarkedIds] = useState<Set<string>>(new Set());
+  const [bookmarkDocIds, setBookmarkDocIds] = useState<Record<string, string>>({});
+  const [bookmarksLoading, setBookmarksLoading] = useState(false);
+
   const { data: stories, loading } = useCollection<Post>(
     'posts',
     where('type', '==', 'story'),
     where('moderationStatus', 'in', ['approved', 'pending']),
     orderBy('createdAt', 'desc')
   );
+
+  // Load bookmarks for current user
+  useEffect(() => {
+    if (!uid) return;
+    setBookmarksLoading(true);
+
+    getDocuments<{ id: string; userId: string; postId: string }>('bookmarks', where('userId', '==', uid))
+      .then((docs) => {
+        const ids = new Set<string>();
+        const docMap: Record<string, string> = {};
+        for (const doc of docs) {
+          ids.add(doc.postId);
+          docMap[doc.postId] = doc.id;
+        }
+        setBookmarkedIds(ids);
+        setBookmarkDocIds(docMap);
+      })
+      .catch((err) => console.error('Failed to load bookmarks:', err))
+      .finally(() => setBookmarksLoading(false));
+  }, [uid]);
+
+  const handleToggleBookmark = async (storyId: string) => {
+    if (!uid) return;
+
+    if (bookmarkedIds.has(storyId)) {
+      // Remove bookmark — optimistic update
+      const docId = bookmarkDocIds[storyId];
+      if (docId) {
+        setBookmarkedIds((prev) => {
+          const next = new Set(prev);
+          next.delete(storyId);
+          return next;
+        });
+        setBookmarkDocIds((prev) => {
+          const next = { ...prev };
+          delete next[storyId];
+          return next;
+        });
+        try {
+          await deleteDocument('bookmarks', docId);
+        } catch (err) {
+          console.error('Failed to remove bookmark:', err);
+          setBookmarkedIds((prev) => new Set(prev).add(storyId));
+          setBookmarkDocIds((prev) => ({ ...prev, [storyId]: docId }));
+        }
+      }
+    } else {
+      // Add bookmark — optimistic update
+      setBookmarkedIds((prev) => new Set(prev).add(storyId));
+      try {
+        const newDocId = await addDocument('bookmarks', {
+          userId: uid,
+          postId: storyId,
+        });
+        setBookmarkDocIds((prev) => ({ ...prev, [storyId]: newDocId }));
+      } catch (err) {
+        console.error('Failed to add bookmark:', err);
+        setBookmarkedIds((prev) => {
+          const next = new Set(prev);
+          next.delete(storyId);
+          return next;
+        });
+      }
+    }
+  };
 
   const handleNewStory = async (content: string, isAnonymous: boolean, mediaURLs: string[]) => {
     if (!uid) return;
@@ -342,6 +427,9 @@ export default function Stories() {
     });
   };
 
+  const savedStories = stories.filter((s) => bookmarkedIds.has(s.id));
+  const displayStories = tab === 'saved' ? savedStories : stories;
+
   return (
     <div className="space-y-4">
       <div>
@@ -349,23 +437,62 @@ export default function Stories() {
         <p className="text-sm text-stone-500 mt-0.5">Real stories from real people. You are not alone.</p>
       </div>
 
-      <StoryComposer onSubmit={handleNewStory} userId={uid} />
+      {/* Tabs */}
+      <div className="flex gap-1 bg-stone-100 rounded-lg p-1">
+        <button
+          onClick={() => setTab('all')}
+          className={`flex-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+            tab === 'all'
+              ? 'bg-white text-stone-800 shadow-sm'
+              : 'text-stone-500 hover:text-stone-700'
+          }`}
+        >
+          All Stories
+        </button>
+        <button
+          onClick={() => setTab('saved')}
+          className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+            tab === 'saved'
+              ? 'bg-white text-stone-800 shadow-sm'
+              : 'text-stone-500 hover:text-stone-700'
+          }`}
+        >
+          <Bookmark className="h-3.5 w-3.5" />
+          Saved{bookmarkedIds.size > 0 ? ` (${bookmarkedIds.size})` : ''}
+        </button>
+      </div>
 
-      {loading ? (
+      {tab === 'all' && <StoryComposer onSubmit={handleNewStory} userId={uid} />}
+
+      {loading || bookmarksLoading ? (
         <LoadingSkeleton />
-      ) : stories.length === 0 ? (
+      ) : displayStories.length === 0 ? (
         <div className="bg-white rounded-xl border border-stone-200 p-8 text-center">
           <BookHeart className="h-10 w-10 text-stone-300 mx-auto" />
-          <h3 className="font-medium text-stone-800 mt-3">No stories yet</h3>
+          <h3 className="font-medium text-stone-800 mt-3">
+            {tab === 'saved' ? 'No saved stories' : 'No stories yet'}
+          </h3>
           <p className="text-sm text-stone-500 mt-1">
-            Be the first to share your journey. Your story could help someone else feel less alone.
+            {tab === 'saved'
+              ? 'Bookmark stories to find them here later.'
+              : 'Be the first to share your journey. Your story could help someone else feel less alone.'}
           </p>
         </div>
       ) : (
         <div className="space-y-4">
-          <p className="text-xs text-stone-400">{stories.length} stories shared</p>
-          {stories.map((story) => (
-            <StoryCard key={story.id} story={story} currentUserId={uid} />
+          <p className="text-xs text-stone-400">
+            {tab === 'saved'
+              ? `${savedStories.length} saved ${savedStories.length === 1 ? 'story' : 'stories'}`
+              : `${stories.length} stories shared`}
+          </p>
+          {displayStories.map((story) => (
+            <StoryCard
+              key={story.id}
+              story={story}
+              currentUserId={uid}
+              isBookmarked={bookmarkedIds.has(story.id)}
+              onToggleBookmark={handleToggleBookmark}
+            />
           ))}
         </div>
       )}
