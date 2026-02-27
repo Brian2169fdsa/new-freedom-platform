@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import { signUpWithEmail, signInWithEmail, signInWithGoogle } from '../../services/firebase/auth';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../ui/tabs';
 
+const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === 'true';
+
 export function LoginForm() {
   const navigate = useNavigate();
+  const loginDemo = useAuth((s) => s.loginDemo);
   const [tab, setTab] = useState('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,6 +21,11 @@ export function LoginForm() {
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (DEMO_MODE) {
+      loginDemo();
+      navigate('/');
+      return;
+    }
     setError(null);
     setLoading(true);
     try {
@@ -43,6 +52,11 @@ export function LoginForm() {
   };
 
   const handleGoogle = async () => {
+    if (DEMO_MODE) {
+      loginDemo();
+      navigate('/');
+      return;
+    }
     setError(null);
     try {
       await signInWithGoogle();
@@ -60,6 +74,11 @@ export function LoginForm() {
           <CardDescription>Your recovery, your way</CardDescription>
         </CardHeader>
         <CardContent>
+          {DEMO_MODE && (
+            <div className="mb-4 rounded-md bg-amber-50 border border-amber-200 p-3 text-center">
+              <p className="text-sm text-amber-800">Demo Mode — click any button to enter</p>
+            </div>
+          )}
           <Tabs value={tab} onValueChange={setTab}>
             <TabsList className="w-full">
               <TabsTrigger value="signin" className="flex-1">Sign In</TabsTrigger>
@@ -73,14 +92,14 @@ export function LoginForm() {
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
+                  required={!DEMO_MODE}
                 />
                 <Input
                   type="password"
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
+                  required={!DEMO_MODE}
                 />
                 {error && <p className="text-sm text-red-600">{error}</p>}
                 <Button type="submit" className="w-full" disabled={loading}>
@@ -95,22 +114,22 @@ export function LoginForm() {
                   placeholder="Full Name"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  required
+                  required={!DEMO_MODE}
                 />
                 <Input
                   type="email"
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
+                  required={!DEMO_MODE}
                 />
                 <Input
                   type="password"
                   placeholder="Password (8+ characters)"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={8}
+                  required={!DEMO_MODE}
+                  minLength={DEMO_MODE ? undefined : 8}
                 />
                 {error && <p className="text-sm text-red-600">{error}</p>}
                 <Button type="submit" className="w-full" disabled={loading}>

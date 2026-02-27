@@ -4,6 +4,8 @@ import { useAuth } from '../../hooks/useAuth';
 import { LoadingScreen } from '../layout/LoadingScreen';
 import type { UserRole } from '../../types';
 
+const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === 'true';
+
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requiredRoles?: UserRole[];
@@ -15,7 +17,8 @@ export function ProtectedRoute({ children, requiredRoles }: ProtectedRouteProps)
 
   if (!initialized || loading) return <LoadingScreen />;
 
-  if (!firebaseUser) {
+  const isAuthenticated = firebaseUser || (DEMO_MODE && user);
+  if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
