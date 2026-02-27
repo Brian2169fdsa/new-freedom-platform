@@ -2125,6 +2125,49 @@ const employers: Record<string, any> = {
 };
 
 // ---------------------------------------------------------------------------
+// Comments
+// ---------------------------------------------------------------------------
+
+const comments: Record<string, any> = {
+  'comment-1': {
+    id: 'comment-1',
+    postId: 'post-1',
+    authorId: MENTOR_ID,
+    content: 'Proud of you! First week is always the hardest. Keep it up.',
+    likes: [DEMO_USER],
+    moderationStatus: 'approved',
+    createdAt: daysFromNow(-7),
+  },
+  'comment-2': {
+    id: 'comment-2',
+    postId: 'post-1',
+    authorId: 'peer-williams-01',
+    content: 'That first paycheck feeling is unbeatable. You earned it.',
+    likes: ['peer-thompson-01'],
+    moderationStatus: 'approved',
+    createdAt: daysFromNow(-7),
+  },
+  'comment-3': {
+    id: 'comment-3',
+    postId: 'post-2',
+    authorId: DEMO_USER,
+    content: 'Thanks for sharing this! Going to check it out tomorrow.',
+    likes: ['peer-williams-01'],
+    moderationStatus: 'approved',
+    createdAt: daysFromNow(-5),
+  },
+  'comment-4': {
+    id: 'comment-4',
+    postId: 'post-2',
+    authorId: 'peer-garcia-01',
+    content: 'I went last Thursday. Can confirm, the food is great.',
+    likes: [DEMO_USER, 'peer-williams-01'],
+    moderationStatus: 'approved',
+    createdAt: daysFromNow(-5),
+  },
+};
+
+// ---------------------------------------------------------------------------
 // Export
 // ---------------------------------------------------------------------------
 
@@ -2142,6 +2185,7 @@ export const DEMO_DATA: Record<string, Record<string, any>> = {
   user_progress,
   daily_checkins,
   posts,
+  comments,
   resources,
   courses,
   users,

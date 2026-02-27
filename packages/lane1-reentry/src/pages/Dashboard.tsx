@@ -301,7 +301,7 @@ const QUICK_ACTIONS: QuickAction[] = [
   {
     icon: <MessageSquare className="h-5 w-5" />,
     label: 'Check In',
-    to: '/journal',
+    to: '/messages',
     color: 'bg-stone-100 text-stone-700',
   },
   {
