@@ -581,12 +581,17 @@ export default function Steps() {
                               </button>
                             );
                           })
+                      ) : coursesLoading ? (
+                        <div className="text-center py-6 text-stone-400">
+                          <div className="h-8 w-8 mx-auto mb-2 rounded-full border-2 border-stone-200 border-t-amber-500 animate-spin" />
+                          <p className="text-sm">Loading course content...</p>
+                        </div>
                       ) : (
                         <div className="text-center py-6 text-stone-400">
                           <BookOpen className="h-8 w-8 mx-auto mb-2" />
-                          <p className="text-sm">Course content coming soon</p>
+                          <p className="text-sm">No modules published yet for this step</p>
                           <p className="text-xs mt-1">
-                            Joe McDonald's teaching for this step is being prepared.
+                            Content will appear here once an admin publishes course materials.
                           </p>
                         </div>
                       )}

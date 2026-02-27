@@ -11,6 +11,7 @@ const Community = lazy(() => import('./pages/Community'));
 const Profile = lazy(() => import('./pages/Profile'));
 const Achievements = lazy(() => import('./pages/Achievements'));
 const StepDetail = lazy(() => import('./pages/StepDetail'));
+const Onboarding = lazy(() => import('./pages/Onboarding'));
 
 const navItems: NavItem[] = [
   { label: 'Home', path: '/', icon: Home },
@@ -25,6 +26,14 @@ function App() {
     <Suspense fallback={<LoadingScreen />}>
       <Routes>
         <Route path="/login" element={<LoginForm />} />
+        <Route
+          path="/onboarding"
+          element={
+            <ProtectedRoute>
+              <Onboarding />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/*"
           element={

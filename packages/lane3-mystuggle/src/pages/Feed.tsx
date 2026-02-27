@@ -1,17 +1,43 @@
-import React, { useState } from 'react';
-import { useAuth, useCollection, type Post, type User } from '@reprieve/shared';
-import { where, orderBy } from 'firebase/firestore';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useAuth, useCollection, type Post, type Comment } from '@reprieve/shared';
+import { where, orderBy, collection, addDoc, onSnapshot, query, serverTimestamp, increment, doc, updateDoc } from 'firebase/firestore';
+import { db } from '@reprieve/shared/services/firebase/config';
 import { addDocument } from '@reprieve/shared/services/firebase/firestore';
 import { likePost, unlikePost, reportPost } from '@reprieve/shared/services/firebase/functions';
-import { Heart, MessageCircle, Share2, MoreHorizontal, Send, Eye, EyeOff, Image, Flag } from 'lucide-react';
+import { Heart, MessageCircle, Share2, MoreHorizontal, Send, Eye, EyeOff, Image, Flag, Check, Copy } from 'lucide-react';
 
 const MOOD_EMOJI: Record<string, string> = {
   great: '😊', good: '🙂', okay: '😐', struggling: '😔', crisis: '😢',
 };
 
+async function shareContent(title: string, text: string) {
+  const shareData = { title, text, url: window.location.href };
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData);
+      return 'shared';
+    } catch {
+      return 'cancelled';
+    }
+  } else {
+    try {
+      await navigator.clipboard.writeText(`${text}\n${window.location.href}`);
+      return 'copied';
+    } catch {
+      return 'error';
+    }
+  }
+}
+
 function PostCard({ post, currentUserId }: { post: Post; currentUserId: string }) {
   const [showComments, setShowComments] = useState(false);
   const [likeLoading, setLikeLoading] = useState(false);
+  const [commentText, setCommentText] = useState('');
+  const [commentSubmitting, setCommentSubmitting] = useState(false);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [shareStatus, setShareStatus] = useState<'idle' | 'copied'>('idle');
+
   const isLiked = post.likes.includes(currentUserId);
   const timeAgo = post.createdAt
     ? formatTimeAgo(
@@ -22,6 +48,27 @@ function PostCard({ post, currentUserId }: { post: Post; currentUserId: string }
           : new Date(post.createdAt as any)
       )
     : '';
+
+  // Subscribe to comments subcollection when comments section is open
+  useEffect(() => {
+    if (!showComments) return;
+    setCommentsLoading(true);
+    const commentsRef = collection(db, 'posts', post.id, 'comments');
+    const q = query(commentsRef, orderBy('createdAt', 'asc'));
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const loaded = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as unknown as Comment));
+        setComments(loaded);
+        setCommentsLoading(false);
+      },
+      (err) => {
+        console.error('Failed to load comments:', err);
+        setCommentsLoading(false);
+      }
+    );
+    return unsubscribe;
+  }, [showComments, post.id]);
 
   const handleLike = async () => {
     if (likeLoading || !currentUserId) return;
@@ -36,6 +83,39 @@ function PostCard({ post, currentUserId }: { post: Post; currentUserId: string }
       console.error('Like/unlike failed:', err);
     } finally {
       setLikeLoading(false);
+    }
+  };
+
+  const handleAddComment = async () => {
+    if (!commentText.trim() || !currentUserId || commentSubmitting) return;
+    setCommentSubmitting(true);
+    try {
+      const commentsRef = collection(db, 'posts', post.id, 'comments');
+      await addDoc(commentsRef, {
+        postId: post.id,
+        authorId: currentUserId,
+        content: commentText.trim(),
+        likes: [],
+        moderationStatus: 'approved',
+        createdAt: serverTimestamp(),
+      });
+      // Increment commentCount on the post document
+      const postRef = doc(db, 'posts', post.id);
+      await updateDoc(postRef, { commentCount: increment(1) });
+      setCommentText('');
+    } catch (err) {
+      console.error('Failed to add comment:', err);
+    } finally {
+      setCommentSubmitting(false);
+    }
+  };
+
+  const handleShare = async () => {
+    const preview = post.content.length > 100 ? post.content.slice(0, 100) + '...' : post.content;
+    const result = await shareContent('Community Post', preview);
+    if (result === 'copied') {
+      setShareStatus('copied');
+      setTimeout(() => setShareStatus('idle'), 2000);
     }
   };
 
@@ -107,13 +187,21 @@ function PostCard({ post, currentUserId }: { post: Post; currentUserId: string }
         </button>
         <button
           onClick={() => setShowComments(!showComments)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-stone-500 hover:bg-stone-100"
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
+            showComments ? 'text-amber-600 bg-amber-50' : 'text-stone-500 hover:bg-stone-100'
+          }`}
         >
           <MessageCircle className="h-4 w-4" />
           {post.commentCount > 0 && <span>{post.commentCount}</span>}
         </button>
-        <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-stone-500 hover:bg-stone-100">
-          <Share2 className="h-4 w-4" />
+        <button
+          onClick={handleShare}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
+            shareStatus === 'copied' ? 'text-green-600 bg-green-50' : 'text-stone-500 hover:bg-stone-100'
+          }`}
+        >
+          {shareStatus === 'copied' ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+          {shareStatus === 'copied' && <span className="text-xs">Copied</span>}
         </button>
         <div className="flex-1" />
         <button onClick={handleReport} className="text-stone-400 hover:text-stone-600 p-1.5">
@@ -123,14 +211,61 @@ function PostCard({ post, currentUserId }: { post: Post; currentUserId: string }
 
       {/* Comment Section */}
       {showComments && (
-        <div className="border-t border-stone-100 p-4">
+        <div className="border-t border-stone-100 p-4 space-y-3">
+          {/* Existing Comments */}
+          {commentsLoading ? (
+            <div className="space-y-2 animate-pulse">
+              <div className="h-8 bg-stone-100 rounded-lg" />
+              <div className="h-8 bg-stone-100 rounded-lg w-3/4" />
+            </div>
+          ) : comments.length > 0 ? (
+            <div className="space-y-3 max-h-64 overflow-y-auto">
+              {comments.map((comment) => {
+                const commentTime = comment.createdAt
+                  ? formatTimeAgo(
+                      typeof (comment.createdAt as any).toDate === 'function'
+                        ? (comment.createdAt as any).toDate()
+                        : new Date(comment.createdAt as any)
+                    )
+                  : '';
+                return (
+                  <div key={comment.id} className="flex gap-2.5">
+                    <div className="h-7 w-7 shrink-0 rounded-full bg-stone-100 flex items-center justify-center text-[10px] font-medium text-stone-600">
+                      {comment.authorId.substring(0, 2).toUpperCase()}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="bg-stone-50 rounded-lg px-3 py-2">
+                        <p className="text-xs font-medium text-stone-600">Community Member</p>
+                        <p className="text-sm text-stone-700 mt-0.5">{comment.content}</p>
+                      </div>
+                      <p className="text-[10px] text-stone-400 mt-1 px-1">{commentTime}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-xs text-stone-400 text-center py-2">
+              No comments yet. Be the first to respond!
+            </p>
+          )}
+
+          {/* Comment Input */}
           <div className="flex gap-2">
             <input
               type="text"
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAddComment(); } }}
               placeholder="Write a supportive comment..."
               className="flex-1 px-3 py-2 bg-stone-50 rounded-lg text-sm border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-300"
+              disabled={commentSubmitting}
             />
-            <button className="p-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600">
+            <button
+              onClick={handleAddComment}
+              disabled={!commentText.trim() || commentSubmitting}
+              className="p-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <Send className="h-4 w-4" />
             </button>
           </div>

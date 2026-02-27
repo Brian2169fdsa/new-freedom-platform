@@ -517,7 +517,7 @@ export default function Dashboard() {
             icon={<Briefcase className="h-5 w-5 text-orange-700" />}
             label="Applications"
             value={jobApps.length}
-            to="/employment"
+            to="/tools/jobs"
             color="bg-orange-100"
             loading={jobAppsLoading}
           />

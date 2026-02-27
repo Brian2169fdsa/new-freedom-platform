@@ -152,7 +152,7 @@ function BadgeDetailModal({ badge, earned, earnedAchievement, onClose, onShare }
               className="w-full flex items-center justify-center gap-2"
             >
               <Share2 className="h-4 w-4" />
-              Share to Community
+              Share Achievement
             </Button>
           )}
         </div>
@@ -224,10 +224,26 @@ export default function Achievements() {
     setSelectedBadge(badge);
   }, []);
 
-  // Handle share to Lane 3 community feed
-  const handleShare = useCallback((badge: BadgeData) => {
-    // Placeholder: in production, post to Lane 3 social feed via setDocument
-    console.log('Share achievement to Lane 3 community:', badge.title);
+  // Handle share via Web Share API with clipboard fallback
+  const [shareStatus, setShareStatus] = useState<'idle' | 'copied'>('idle');
+  const handleShare = useCallback(async (badge: BadgeData) => {
+    const text = `I earned the "${badge.title}" achievement! ${badge.description}`;
+    const shareData = { title: badge.title, text, url: window.location.href };
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch {
+        // User cancelled
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(`${text}\n${window.location.href}`);
+        setShareStatus('copied');
+        setTimeout(() => setShareStatus('idle'), 2000);
+      } catch {
+        // Clipboard not available
+      }
+    }
     setSelectedBadge(null);
   }, []);
 
