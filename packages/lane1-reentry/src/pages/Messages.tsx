@@ -13,21 +13,16 @@ import {
 } from '@reprieve/shared';
 import type { Message, Conversation } from '@reprieve/shared';
 import { useAuth } from '@reprieve/shared/hooks/useAuth';
-import { db } from '@reprieve/shared/services/firebase/config';
 import {
-  collection,
-  query,
+  addDocument,
+  updateDocument,
+  getDocuments,
+  subscribeToCollection,
   where,
   orderBy,
-  onSnapshot,
-  addDoc,
-  getDocs,
-  serverTimestamp,
-  Timestamp,
   limit,
-  doc,
-  updateDoc,
-} from 'firebase/firestore';
+} from '@reprieve/shared/services/firebase/firestore';
+import { Timestamp } from 'firebase/firestore';
 import {
   Send,
   MessageSquare,
@@ -192,22 +187,21 @@ function NewMessageDialog({
     if (!open || !currentUserId) return;
 
     setLoadingContacts(true);
-    const q = query(
-      collection(db, 'users'),
+
+    getDocuments<ContactUser & Record<string, any>>(
+      'users',
       where('lanes', 'array-contains', 'lane1'),
       limit(50),
-    );
-
-    getDocs(q)
-      .then((snapshot) => {
-        const users: ContactUser[] = snapshot.docs
-          .filter((d) => d.id !== currentUserId)
-          .map((d) => ({
-            id: d.id,
-            displayName: (d.data() as any).displayName || 'Unknown',
-            role: (d.data() as any).role,
+    )
+      .then((users) => {
+        const filtered: ContactUser[] = users
+          .filter((u) => u.id !== currentUserId)
+          .map((u) => ({
+            id: u.id,
+            displayName: u.displayName || 'Unknown',
+            role: u.role,
           }));
-        setContacts(users);
+        setContacts(filtered);
       })
       .catch((err) => {
         console.error('Failed to load contacts:', err);
@@ -312,27 +306,15 @@ export default function Messages() {
   useEffect(() => {
     if (!currentUserId) return;
 
-    const q = query(
-      collection(db, 'conversations'),
-      where('participants', 'array-contains', currentUserId),
-      orderBy('lastMessageAt', 'desc'),
-      limit(50),
-    );
-
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        const convos: Conversation[] = snapshot.docs.map((d) => ({
-          id: d.id,
-          ...d.data(),
-        })) as Conversation[];
+    const unsubscribe = subscribeToCollection<Conversation>(
+      'conversations',
+      (convos) => {
         setConversations(convos);
         setLoadingConversations(false);
       },
-      (error) => {
-        console.error('Error listening to conversations:', error);
-        setLoadingConversations(false);
-      },
+      where('participants', 'array-contains', currentUserId),
+      orderBy('lastMessageAt', 'desc'),
+      limit(50),
     );
 
     return () => unsubscribe();
@@ -347,27 +329,15 @@ export default function Messages() {
 
     setLoadingMessages(true);
 
-    const q = query(
-      collection(db, 'messages'),
-      where('conversationId', '==', activeConversation.id),
-      orderBy('createdAt', 'asc'),
-      limit(200),
-    );
-
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        const msgs: Message[] = snapshot.docs.map((d) => ({
-          id: d.id,
-          ...d.data(),
-        })) as Message[];
+    const unsubscribe = subscribeToCollection<Message>(
+      'messages',
+      (msgs) => {
         setMessages(msgs);
         setLoadingMessages(false);
       },
-      (error) => {
-        console.error('Error listening to messages:', error);
-        setLoadingMessages(false);
-      },
+      where('conversationId', '==', activeConversation.id),
+      orderBy('createdAt', 'asc'),
+      limit(200),
     );
 
     return () => unsubscribe();
@@ -381,8 +351,7 @@ export default function Messages() {
       if (unread === 0) return;
 
       try {
-        const convRef = doc(db, 'conversations', conv.id);
-        await updateDoc(convRef, {
+        await updateDocument('conversations', conv.id, {
           [`unreadCount.${currentUserId}`]: 0,
         });
       } catch (err) {
@@ -423,19 +392,17 @@ export default function Messages() {
     setNewMessage('');
 
     try {
-      await addDoc(collection(db, 'messages'), {
+      await addDocument('messages', {
         conversationId: activeConversation.id,
         senderId: currentUserId,
         content: trimmed,
         type: 'text' as const,
         readBy: [currentUserId],
-        createdAt: serverTimestamp(),
       });
 
-      const convRef = doc(db, 'conversations', activeConversation.id);
-      await updateDoc(convRef, {
+      await updateDocument('conversations', activeConversation.id, {
         lastMessage: trimmed,
-        lastMessageAt: serverTimestamp(),
+        lastMessageAt: new Date(),
         [`unreadCount.${currentUserId}`]: 0,
       });
     } catch (error) {
@@ -487,17 +454,16 @@ export default function Messages() {
     }
 
     try {
-      const convDoc = await addDoc(collection(db, 'conversations'), {
+      const convId = await addDocument('conversations', {
         participants: [currentUserId, targetUserId],
         title: targetName,
         lastMessage: '',
-        lastMessageAt: serverTimestamp(),
+        lastMessageAt: new Date(),
         unreadCount: { [currentUserId]: 0, [targetUserId]: 0 },
-        createdAt: serverTimestamp(),
       });
 
       const newConv: Conversation = {
-        id: convDoc.id,
+        id: convId,
         participants: [currentUserId, targetUserId],
         title: targetName,
         lastMessage: '',

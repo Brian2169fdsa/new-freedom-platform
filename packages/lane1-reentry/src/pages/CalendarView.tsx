@@ -17,8 +17,8 @@ import {
   useCollection,
 } from '@reprieve/shared';
 import type { Appointment, AppointmentType } from '@reprieve/shared';
-import { db } from '@reprieve/shared/services/firebase/config';
-import { addDoc, collection, Timestamp, where } from 'firebase/firestore';
+import { addDocument } from '@reprieve/shared/services/firebase/firestore';
+import { Timestamp, where } from 'firebase/firestore';
 import {
   Plus,
   ArrowLeft,
@@ -164,7 +164,7 @@ export default function CalendarView() {
       const dateObj = new Date(newDate);
       dateObj.setHours(hours, minutes, 0, 0);
 
-      await addDoc(collection(db, 'appointments'), {
+      await addDocument('appointments', {
         userId: user.uid,
         title: newTitle.trim(),
         type: newType,

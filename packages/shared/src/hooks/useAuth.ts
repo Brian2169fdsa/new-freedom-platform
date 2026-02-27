@@ -78,23 +78,54 @@ export const useAuth = create<AuthState>((set, get) => {
       }
     },
     loginDemo: () => {
+      // Build a rich demo user with data needed by all lanes
+      const sobrietyDate = new Date(Date.now() - 47 * 86400000);
+      const releaseDate = new Date(Date.now() - 60 * 86400000);
+      const enrollmentDate = new Date(Date.now() - 55 * 86400000);
+      // Create Timestamp-like objects so .toDate() works in pages
+      const toTimestampLike = (d: Date) => ({ toDate: () => d, seconds: Math.floor(d.getTime() / 1000), nanoseconds: 0 });
       const demoUser = {
         uid: 'demo-user',
         email: 'demo@reprieve.app',
-        displayName: 'Demo User',
+        displayName: 'Marcus Johnson',
         photoURL: '',
         role: 'member',
         lanes: ['lane1', 'lane2', 'lane3'],
+        createdAt: toTimestampLike(enrollmentDate),
+        updatedAt: toTimestampLike(new Date()),
+        lastLoginAt: toTimestampLike(new Date()),
         profile: {
-          firstName: 'Demo',
-          lastName: 'User',
+          firstName: 'Marcus',
+          lastName: 'Johnson',
           preferredLanguage: 'en',
+          city: 'Phoenix',
+          state: 'AZ',
+          gender: 'Male',
+          bio: 'Rebuilding my life one day at a time. 47 days sober and grateful for every one.',
+          sobrietyDate: toTimestampLike(sobrietyDate),
+          referralSource: 'court',
+        },
+        reentry: {
+          releaseDate: toTimestampLike(releaseDate),
+          facilityName: 'Arizona State Prison Complex - Lewis',
+          paroleOfficer: 'Officer Sarah Chen',
+          caseManagerId: 'cm-sarah',
+          enrollmentStatus: 'active',
+        },
+        stepExperience: {
+          currentStep: 3,
+          enrollmentDate: toTimestampLike(enrollmentDate),
+        },
+        myStruggle: {
+          isMentor: false,
+          mentorId: 'mentor-james',
+          joinDate: toTimestampLike(enrollmentDate),
         },
         settings: {
           notifications: { push: true, email: true, sms: false },
-          privacy: { profileVisible: true, showSobrietyDate: false, shareProgressWithMentor: true },
+          privacy: { profileVisible: true, showSobrietyDate: true, shareProgressWithMentor: true },
         },
-      } as User;
+      } as unknown as User;
       set({
         firebaseUser: { uid: 'demo-user', email: 'demo@reprieve.app', displayName: 'Demo User' } as unknown as FirebaseUser,
         user: demoUser,

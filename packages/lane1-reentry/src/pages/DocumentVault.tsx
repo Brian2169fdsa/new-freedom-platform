@@ -16,8 +16,12 @@ import {
 } from '@reprieve/shared';
 import type { UserDocument, DocumentCategory } from '@reprieve/shared';
 import { uploadFile } from '@reprieve/shared/services/firebase/storage';
-import { db } from '@reprieve/shared/services/firebase/config';
-import { addDoc, collection, serverTimestamp, Timestamp, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import {
+  addDocument,
+  deleteDocument,
+  updateDocument,
+} from '@reprieve/shared/services/firebase/firestore';
+import { Timestamp } from 'firebase/firestore';
 import { where } from 'firebase/firestore';
 import {
   Upload,
@@ -39,6 +43,8 @@ import {
   Share2,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+
+const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === 'true';
 
 const CATEGORIES: { value: DocumentCategory | 'all'; label: string }[] = [
   { value: 'all', label: 'All' },
@@ -138,17 +144,21 @@ export default function DocumentVault() {
 
     setUploading(true);
     try {
-      const timestamp = Date.now();
-      const storagePath = `documents/${user.uid}/${timestamp}_${uploadFile_.name}`;
-      const fileURL = await uploadFile(storagePath, uploadFile_);
+      let fileURL = '';
+      if (!DEMO_MODE) {
+        const timestamp = Date.now();
+        const storagePath = `documents/${user.uid}/${timestamp}_${uploadFile_.name}`;
+        fileURL = await uploadFile(storagePath, uploadFile_);
+      } else {
+        fileURL = `demo://documents/${uploadFile_.name}`;
+      }
 
-      await addDoc(collection(db, 'documents'), {
+      await addDocument('documents', {
         userId: user.uid,
         category: uploadCategory,
         fileName: uploadFile_.name,
         fileURL,
         verified: false,
-        uploadedAt: serverTimestamp(),
         ...(uploadExpiration
           ? { expirationDate: Timestamp.fromDate(new Date(uploadExpiration)) }
           : {}),
@@ -169,7 +179,7 @@ export default function DocumentVault() {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     try {
-      await deleteDoc(doc(db, 'documents', deleteTarget.id));
+      await deleteDocument('documents', deleteTarget.id);
       setDeleteTarget(null);
     } catch (error) {
       console.error('Delete failed:', error);
@@ -179,7 +189,7 @@ export default function DocumentVault() {
   const handleToggleSharing = async (docItem: UserDocument) => {
     try {
       const currentShared = (docItem as any).shared ?? false;
-      await updateDoc(doc(db, 'documents', docItem.id), {
+      await updateDocument('documents', docItem.id, {
         shared: !currentShared,
       });
     } catch (error) {

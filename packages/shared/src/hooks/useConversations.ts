@@ -10,7 +10,10 @@ import {
 } from 'firebase/firestore';
 import { db } from '../services/firebase/config';
 import { useAuth } from './useAuth';
+import { demoStore } from '../demo/store';
 import type { Conversation } from '../types';
+
+const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === 'true';
 
 interface UseConversationsReturn {
   conversations: Conversation[];
@@ -38,6 +41,20 @@ export function useConversations(): UseConversationsReturn {
 
     setLoading(true);
     setError(null);
+
+    if (DEMO_MODE) {
+      const readFromStore = () => {
+        const allConversations = demoStore.getDocs('conversations') as Conversation[];
+        const filtered = allConversations.filter((c) =>
+          c.participants.includes(firebaseUser.uid)
+        );
+        setConversations(filtered);
+        setLoading(false);
+      };
+      readFromStore();
+      const unsubscribe = demoStore.subscribe('conversations', readFromStore);
+      return unsubscribe;
+    }
 
     const q = query(
       collection(db, 'conversations'),
@@ -97,15 +114,22 @@ export function useConversations(): UseConversationsReturn {
         initialUnreadCount[uid] = 0;
       }
 
+      const now = new Date();
+      const toTimestampLike = (d: Date) => ({ toDate: () => d, seconds: Math.floor(d.getTime() / 1000), nanoseconds: 0 });
+
       const conversationData = {
         participants: allParticipants,
         type: isGroup ? 'group' : 'direct',
         ...(title ? { title } : {}),
         lastMessage: '',
-        lastMessageAt: serverTimestamp(),
+        lastMessageAt: DEMO_MODE ? toTimestampLike(now) : serverTimestamp(),
         unreadCount: initialUnreadCount,
-        createdAt: serverTimestamp(),
+        createdAt: DEMO_MODE ? toTimestampLike(now) : serverTimestamp(),
       };
+
+      if (DEMO_MODE) {
+        return demoStore.addDoc('conversations', conversationData);
+      }
 
       const docRef = await addDoc(collection(db, 'conversations'), conversationData);
       return docRef.id;

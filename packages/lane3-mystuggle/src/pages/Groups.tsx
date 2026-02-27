@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useAuth, useCollection } from '@reprieve/shared';
-import { Timestamp } from 'firebase/firestore';
-import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
-import { db } from '@reprieve/shared/services/firebase/config';
-import { addDocument, updateDocument } from '@reprieve/shared/services/firebase/firestore';
+import { Timestamp, orderBy } from 'firebase/firestore';
+import { addDocument, updateDocument, subscribeToCollection } from '@reprieve/shared/services/firebase/firestore';
 import {
   Search, Users, Plus, Lock, Globe, Clock, ChevronDown,
   ChevronRight, Send, X, Shield, MessageSquare, LogOut,
@@ -680,26 +678,15 @@ function GroupDiscussion({
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Real-time message listener
+  // Real-time message listener using demo-aware service layer
   useEffect(() => {
-    const messagesRef = collection(db, 'groups', groupId, 'messages');
-    const q = query(messagesRef, orderBy('createdAt', 'asc'));
-
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        const msgs: GroupMessage[] = snapshot.docs.map((d) => ({
-          id: d.id,
-          ...d.data(),
-        } as unknown as GroupMessage));
+    const unsubscribe = subscribeToCollection<GroupMessage>(
+      `groups/${groupId}/messages`,
+      (msgs) => {
         setMessages(msgs);
         setLoading(false);
       },
-      (error) => {
-        console.warn('Group messages subscription error:', error.message);
-        setMessages([]);
-        setLoading(false);
-      }
+      orderBy('createdAt', 'asc')
     );
 
     return () => unsubscribe();

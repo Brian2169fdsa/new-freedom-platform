@@ -20,14 +20,13 @@ import type { Goal, GoalCategory, Milestone } from '@reprieve/shared';
 import { useCollection } from '@reprieve/shared/hooks/useFirestore';
 import { useAuth } from '@reprieve/shared/hooks/useAuth';
 import {
+  addDocument,
   updateDocument,
   deleteDocument,
-  serverTimestamp,
   where,
   orderBy,
 } from '@reprieve/shared/services/firebase/firestore';
-import { addDoc, collection as firestoreCollection, Timestamp } from 'firebase/firestore';
-import { db } from '@reprieve/shared/services/firebase/config';
+import { Timestamp } from 'firebase/firestore';
 import {
   Plus,
   Target,
@@ -520,15 +519,13 @@ export default function Goals() {
       status: 'active',
       progress: 0,
       milestones,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
     };
 
     if (form.targetDate) {
       goalData.targetDate = Timestamp.fromDate(new Date(form.targetDate));
     }
 
-    await addDoc(firestoreCollection(db, 'goals'), goalData);
+    await addDocument('goals', goalData);
   };
 
   // ------- Edit goal -------

@@ -15,16 +15,12 @@ import {
   useAuth,
 } from '@reprieve/shared';
 import type { Budget, BudgetItem } from '@reprieve/shared';
-import { db } from '@reprieve/shared/services/firebase/config';
 import {
-  doc,
-  setDoc,
-  getDoc,
-  collection,
-  query,
-  where,
-  getDocs,
-} from 'firebase/firestore';
+  getDocuments,
+  setDocument,
+  addDocument,
+} from '@reprieve/shared/services/firebase/firestore';
+import { where } from 'firebase/firestore';
 import {
   DollarSign,
   Plus,
@@ -206,17 +202,16 @@ export default function BudgetTracker() {
     const loadBudget = async () => {
       setLoading(true);
       try {
-        const q = query(
-          collection(db, 'budgets'),
+        const results = await getDocuments<Budget>(
+          'budgets',
           where('userId', '==', user.uid),
           where('month', '==', currentMonth)
         );
-        const snapshot = await getDocs(q);
 
-        if (!snapshot.empty) {
-          const docData = snapshot.docs[0];
-          setBudget({ id: docData.id, ...docData.data() } as Budget);
-          setSavingsGoal(String(docData.data().savingsGoal || 0));
+        if (results.length > 0) {
+          const budgetDoc = results[0];
+          setBudget(budgetDoc);
+          setSavingsGoal(String((budgetDoc as any).savingsGoal || 0));
         } else {
           setBudget(null);
           setSavingsGoal('0');
@@ -264,12 +259,11 @@ export default function BudgetTracker() {
       };
 
       if (budget?.id) {
-        await setDoc(doc(db, 'budgets', budget.id), budgetData);
+        await setDocument('budgets', budget.id, budgetData);
         setBudget({ ...budgetData, id: budget.id });
       } else {
-        const newDocRef = doc(collection(db, 'budgets'));
-        await setDoc(newDocRef, budgetData);
-        setBudget({ ...budgetData, id: newDocRef.id });
+        const newId = await addDocument('budgets', budgetData);
+        setBudget({ ...budgetData, id: newId });
       }
     } catch (error) {
       console.error('Failed to save budget:', error);
